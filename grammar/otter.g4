@@ -32,9 +32,9 @@ AND: 'and';
 OR: 'or';
 NOT: 'not';
 LESS: '<';
-GREATHER: '>';
+GREATER: '>';
 LESS_EQUAL: '<=';
-GREATHER_EQUAL: '>=';
+GREATER_EQUAL: '>=';
 EQUAL: '==';
 NOT_EQUAL: '!=';
 ASSIGN: '=';
@@ -59,54 +59,103 @@ DOT: '.';
 BOOLEAN_PRIMITIVE: 'truthy' | 'falsy';
 FLOAT_PRIMITIVE: [0-9]+ . [0-9]+?;
 INT_PRIMITIVE: [0-9]+;
-STRING_PRIMITIVE: '".*"';
+STRING_PRIMITIVE: '"' .*? '"';
+VOID: 'void';
 ID: [A-Za-z]([A-Za-z0-9])*;
+
+// Whitespace and comments
+COMMENT: '/*' .*? '*/' -> skip;
+LINE_COMMENT: '//' ~[\r\n]* -> skip;
+WS: [ \t\r\n\u000C]+ -> skip;
 
 /* END TOKENS */
 
 /* START GRAMMAR */
 
-classAttributes: accessModifiers LET ID COLON otterType SEMICOLON;
+program: (classDeclaration | declaration)*;
 
-assigment: LET ID COLON otterType ASSIGN constant SEMICOLON | listAssigment;
+classDeclaration:
+    CLASS ID (INHERITS ID)? OPEN_CURLY classBlock CLOSE_CURLY;
+
+classBlock: (
+        classAttributes
+        | methodDeclaration
+        | classConstructor
+    )*;
+
+classAttributes:
+    accessModifiers LET ID COLON otterType SEMICOLON;
+
+classConstructor:
+    accessModifiers ID OPEN_PAR arguments? CLOSE_PAR block;
+
+declaration:
+    LET ID COLON otterType ASSIGN constant SEMICOLON
+    | listAssigment;
+
+assignment: (AT)? ID ASSIGN term SEMICOLON;
 
 methodCall: ID DOT ID OPEN_PAR arguments? CLOSE_PAR SEMICOLON;
 
-methodDeclaration: accessModifiers DEF ID OPEN_PAR arguments? CLOSE_PAR COLON otterType block;
+methodDeclaration:
+    accessModifiers DEF ID OPEN_PAR arguments? CLOSE_PAR COLON (
+        otterType
+        | VOID
+    ) block;
 
-block: OPEN_CURLY statements CLOSE_CURLY;
+block: OPEN_CURLY statements* CLOSE_CURLY;
 
-statements: conditional | whileLoop | forLoop | assigment;
+statements:
+    conditional
+    | whileLoop
+    | forLoop
+    | declaration
+    | assignment
+    | unless
+    | returnStatement;
 
-conditional: IF OPEN_PAR expression CLOSE_PAR block (ELSEIF block)* (ELSE block)?;
+conditional:
+    IF OPEN_PAR expression CLOSE_PAR block (
+        ELSEIF OPEN_PAR expression CLOSE_PAR block
+    )* (ELSE block)?;
 
 unless: UNLESS OPEN_PAR expression CLOSE_PAR block;
 
 whileLoop: WHILE OPEN_PAR expression CLOSE_PAR block;
 
-forLoop: FOR OPEN_PAR ID UNTIL ID (GREATHER | GREATHER_EQUAL | LESS | LESS_EQUAL | EQUAL) term BY term;
+forLoop:
+    FOR OPEN_PAR ID UNTIL ID (
+        GREATER
+        | GREATER_EQUAL
+        | LESS
+        | LESS_EQUAL
+        | EQUAL
+    ) term BY term CLOSE_PAR block;
 
-classDeclaration: CLASS ID (INHERITS ID)? classBlock;
+returnStatement: RETURN term SEMICOLON;
 
-classBlock: classAttributes | methodDeclaration | classConstructor;
-
-classConstructor: accessModifiers ID OPEN_PAR arguments CLOSE_PAR block;
-
-writeIO: WRITE OPEN_PAR (STRING_PRIMITIVE | ID) CLOSE_PAR SEMICOLON;
+writeIO:
+    WRITE OPEN_PAR (STRING_PRIMITIVE | ID) CLOSE_PAR SEMICOLON;
 
 readIO: READ OPEN_PAR CLOSE_PAR SEMICOLON;
 
-listAssigment: LET ID COLON LIST LESS otterType GREATHER ASSIGN OPEN_SQUARE listElements? CLOSE_SQUARE SEMICOLON;
+listAssigment:
+    LET ID COLON LIST LESS otterType GREATER ASSIGN OPEN_SQUARE listElements? CLOSE_SQUARE SEMICOLON
+        ;
 
 listElements: term (COMMA term)*;
 
 expression: NOT expr | expr;
 
-expr: term (GREATHER | GREATHER_EQUAL | LESS | LESS_EQUAL | EQUAL) term ((AND | OR) expr)* | term;
+expr:
+    term (GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | EQUAL) term (
+        (AND | OR) expr
+    )*
+    | term;
 
 term: ID | constant | arithmeticExpr | AT ID;
 
-arithmeticExpr: (ID | constant) (ADD | SUBS | MULT | DIV) term;
+arithmeticExpr: (ID | constant | AT ID) (ADD | SUBS | MULT | DIV) term;
 
 arguments: argument (COMMA argument)*;
 
@@ -116,11 +165,11 @@ accessModifiers: PUBLIC | PRIVATE;
 
 otterType: INT | FLOAT | STRING | BOOLEAN;
 
-constant: BOOLEAN_PRIMITIVE | FLOAT_PRIMITIVE | INT_PRIMITIVE | STRING_PRIMITIVE | ID;
+constant:
+    BOOLEAN_PRIMITIVE
+    | FLOAT_PRIMITIVE
+    | INT_PRIMITIVE
+    | STRING_PRIMITIVE
+    | ID;
 
 /* END GRAMMAR */
-
-// Whitespace and comments
-COMMENT: '/*' .*? '*/' -> skip;
-LINE_COMMENT: '//' ~[\r\n]* -> skip;
-WS: [ \t\r\n\u000C]+ -> skip;

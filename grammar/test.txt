@@ -1,0 +1,56 @@
+let global: int = 0;
+
+Class Main {
+  public let a: string;
+  private let b: boolean;
+  public let c: int;
+  private let d: float;
+
+  public Main() {
+    let falseExample: boolean = falsy;
+    @c = 2;
+  }
+
+  public def testPublic(i: int, j: float, k: string, f: boolean): string {
+    if (not f) {
+      return a;
+    } elseif (f) {
+      while(a > 1) {
+        return 1.1;
+      }
+    } elseif (i > 10) {
+      return 1;
+    } else {
+      return @a;
+    }
+
+    while(i + 4 < 10 and 5 < 3) {
+      if (i >= 10) {
+        return "asd";
+      }
+    }
+
+    unless(@a + @b == @c) {
+      if (@a > @b) {
+        return 1;
+      }
+    }
+
+    let i: int = 0;
+    for(i until i < 10 by 1) {
+      return "test";
+    }
+
+    return a;
+  }
+
+  private def testPrivate(): void {
+
+  }
+}
+
+class Child inherits Main {
+  public Child() {
+
+  }
+}
