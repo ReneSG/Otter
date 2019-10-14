@@ -90,12 +90,14 @@ classConstructor:
     accessModifiers ID OPEN_PAR arguments? CLOSE_PAR block;
 
 declaration:
-    LET ID COLON otterType ASSIGN constant SEMICOLON
+    LET ID COLON otterType ASSIGN term SEMICOLON
     | listAssigment;
 
 assignment: (AT)? ID ASSIGN term SEMICOLON;
 
-methodCall: ID DOT ID OPEN_PAR arguments? CLOSE_PAR SEMICOLON;
+methodCall: ID DOT ID OPEN_PAR parameters? CLOSE_PAR;
+
+constructorCall: ID OPEN_PAR parameters? CLOSE_PAR;
 
 methodDeclaration:
     accessModifiers DEF ID OPEN_PAR arguments? CLOSE_PAR COLON (
@@ -157,7 +159,7 @@ termino: factor ((MULT | DIV) termino)?;
 
 factor: (ID | constant | AT ID) | OPEN_PAR relationalExpr CLOSE_PAR;
 
-term: ID | constant | arithmeticExpr | AT ID;
+term: ID | constant | arithmeticExpr | AT ID | methodCall | constructorCall;
 
 arithmeticExpr: (ID | constant | AT ID) (ADD | SUBS | MULT | DIV) term;
 
@@ -165,9 +167,11 @@ arguments: argument (COMMA argument)*;
 
 argument: ID COLON otterType;
 
+parameters: term (COMMA term)*;
+
 accessModifiers: PUBLIC | PRIVATE;
 
-otterType: INT | FLOAT | STRING | BOOLEAN;
+otterType: INT | FLOAT | STRING | BOOLEAN | ID;
 
 constant:
     BOOLEAN_PRIMITIVE
