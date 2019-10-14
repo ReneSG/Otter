@@ -145,13 +145,17 @@ listAssigment:
 
 listElements: term (COMMA term)*;
 
-expression: NOT expr | expr;
+expression: NOT? relationalExpr;
 
-expr:
-    term (GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | EQUAL) term (
-        (AND | OR) expr
-    )*
-    | term;
+relationalExpr: comparisonExpr ((AND | OR) relationalExpr)?;
+
+comparisonExpr: expr ((GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | EQUAL) expr)?;
+
+expr: termino ((ADD | SUBS) expr)?;
+
+termino: factor ((MULT | DIV) termino)?;
+
+factor: (ID | constant | AT ID) | OPEN_PAR relationalExpr CLOSE_PAR;
 
 term: ID | constant | arithmeticExpr | AT ID;
 
