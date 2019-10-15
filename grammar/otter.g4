@@ -1,5 +1,9 @@
 grammar otter;
 
+@parser::header {
+from compilation.compiler import Compiler
+}
+
 /* START TOKENS */
 
 // Keywords
