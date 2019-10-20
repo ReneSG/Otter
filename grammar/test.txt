@@ -1,12 +1,18 @@
 let global: int = 0;
 
+Class Child inherits Main {
+  public Child() {
+    let main: Main = Main(param1, param2);
+  }
+}
+
 Class Main {
   public let a: string;
   private let b: boolean;
   public let c: int;
   private let d: float;
 
-  public Main() {
+  public Main(param1: string, param2: int) {
     let falseExample: boolean = falsy;
     @c = 2;
   }
@@ -49,8 +55,3 @@ Class Main {
   }
 }
 
-class Child inherits Main {
-  public Child() {
-
-  }
-}

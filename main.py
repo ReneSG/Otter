@@ -1,7 +1,7 @@
 import sys
 from antlr4 import *
-from otterLexer import otterLexer
-from otterParser import otterParser
+from grammar.otterLexer import otterLexer
+from grammar.otterParser import otterParser
 from antlr4.tree.Trees import Trees
 
 def main(argv):
