@@ -1,7 +1,7 @@
 from .variable import Variable
 
 class SymbolTable:
-    def __init__(self, name: str, parent: SymbolTable = None):
+    def __init__(self, name: str, parent):
         self._parent = parent
         self._name = name
         self._symbols = dict()

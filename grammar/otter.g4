@@ -153,13 +153,13 @@ listElements: term (COMMA term)*;
 
 expression: NOT? relationalExpr;
 
-relationalExpr: comparisonExpr (op=(AND | OR) {self.otterComp.gen_quad_add_op($op.text)} relationalExpr)?;
+relationalExpr: comparisonExpr (op=(AND | OR) {self.otterComp.push_op($op.text)} relationalExpr)?;
 
-comparisonExpr: expr (op=(GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | EQUAL) {self.otterComp.gen_quad_add_op($op.text)} expr)?;
+comparisonExpr: expr (op=(GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | EQUAL) {self.otterComp.push_op($op.text)} expr)?;
 
-expr: termino (op=(ADD | SUBS) {self.otterComp.gen_quad_add_op($op.text)} expr)?;
+expr: termino {self.otterComp.check_pending_sum_sub()} (op=(ADD | SUBS) {self.otterComp.push_op($op.text)} expr {self.otterComp.check_pending_sum_sub()})?;
 
-termino: factor (op=(MULT | DIV) {self.otterComp.gen_quad_add_op($op.text)} termino)?;
+termino: factor {self.otterComp.check_pending_div_prod()} (op=(MULT | DIV) {self.otterComp.push_op($op.text)} termino {self.otterComp.check_pending_div_prod()})?;
 
 factor: (ID | constant | AT ID) | OPEN_PAR relationalExpr CLOSE_PAR;
 
@@ -178,7 +178,7 @@ otterType: INT | FLOAT | STRING | BOOLEAN | ID;
 constant:
     BOOLEAN_PRIMITIVE
     | FLOAT_PRIMITIVE
-    | INT_PRIMITIVE
+    | INT_PRIMITIVE {self.otterComp.push_constant('int', $INT_PRIMITIVE.text)}
     | STRING_PRIMITIVE
     | ID;
 

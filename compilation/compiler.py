@@ -19,7 +19,16 @@ class Compiler:
     def gen_quad_assign(self):
         self.__interpreter.assign()
 
-    def gen_quad_add_op(self, op):
+    def push_op(self, op):
         self.__interpreter.push_operator(op)
+
+    def push_constant(self, type_, value):
+        self.__interpreter.push_constant(type_, value)
+
+    def check_pending_sum_sub(self):
+        self.__interpreter.check_pending_sum_sub()
+
+    def check_pending_div_prod(self):
+        self.__interpreter.check_pending_div_prod()
 
 

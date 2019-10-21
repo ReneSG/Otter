@@ -18,3 +18,15 @@ class Operations(Enum):
     LESS_EQUAL_THAN = ">="
 
     ASSIGN = "="
+
+    @staticmethod
+    def is_add_or_sub_op_(op) -> bool:
+        return op == Operations.ADD or op == Operations.SUBS
+
+    @staticmethod
+    def is_div_or_prod_op_(op) -> bool:
+        return op == Operations.DIV or op == Operations.PROD
+
+    @staticmethod
+    def is_add_or_sub_op_(op) -> bool:
+        return op == Operations.ADD or op == Operations.SUBS
