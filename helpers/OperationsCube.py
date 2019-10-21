@@ -1,5 +1,5 @@
-from Types import Types
-from Operations import Operations
+from .Types import Types
+from .Operations import Operations
 
 class OperationsCube:
 

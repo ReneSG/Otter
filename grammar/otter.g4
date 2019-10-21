@@ -76,7 +76,7 @@ WS: [ \t\r\n\u000C]+ -> skip;
 
 /* START GRAMMAR */
 
-program: (classDeclaration | declaration)*;
+program: {self.otterComp = Compiler()} (classDeclaration | declaration)*;
 
 classDeclaration:
     CLASS ID (INHERITS ID)? OPEN_CURLY classBlock CLOSE_CURLY;
@@ -94,10 +94,10 @@ classConstructor:
     accessModifiers ID OPEN_PAR arguments? CLOSE_PAR block;
 
 declaration:
-    LET ID COLON otterType ASSIGN term SEMICOLON
+    LET ID COLON otterType ASSIGN expression SEMICOLON
     | listAssigment;
 
-assignment: (AT)? ID ASSIGN term SEMICOLON;
+assignment: <assoc=right> (AT)? ID ASSIGN expression {self.otterComp.gen_quad_assign()} SEMICOLON;
 
 methodCall: ID DOT ID OPEN_PAR parameters? CLOSE_PAR;
 
@@ -153,19 +153,17 @@ listElements: term (COMMA term)*;
 
 expression: NOT? relationalExpr;
 
-relationalExpr: comparisonExpr ((AND | OR) relationalExpr)?;
+relationalExpr: comparisonExpr (op=(AND | OR) {self.otterComp.gen_quad_add_op($op.text)} relationalExpr)?;
 
-comparisonExpr: expr ((GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | EQUAL) expr)?;
+comparisonExpr: expr (op=(GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | EQUAL) {self.otterComp.gen_quad_add_op($op.text)} expr)?;
 
-expr: termino ((ADD | SUBS) expr)?;
+expr: termino (op=(ADD | SUBS) {self.otterComp.gen_quad_add_op($op.text)} expr)?;
 
-termino: factor ((MULT | DIV) termino)?;
+termino: factor (op=(MULT | DIV) {self.otterComp.gen_quad_add_op($op.text)} termino)?;
 
 factor: (ID | constant | AT ID) | OPEN_PAR relationalExpr CLOSE_PAR;
 
-term: ID | constant | arithmeticExpr | AT ID | methodCall | constructorCall;
-
-arithmeticExpr: (ID | constant | AT ID) (ADD | SUBS | MULT | DIV) term;
+term: ID | constant | expr | AT ID | methodCall | constructorCall;
 
 arguments: argument (COMMA argument)*;
 
