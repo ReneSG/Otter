@@ -2,6 +2,6 @@ let global: int = 0;
 
 Class Child inherits Main {
   public Child() {
-    ed = 10 + 5 - 3 * 4 / 5;
+    ed = 10 + 5 - 3 * 4 / 5 + (1 + 9 * 7);
   }
 }

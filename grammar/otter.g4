@@ -97,7 +97,7 @@ declaration:
     LET ID COLON otterType ASSIGN expression SEMICOLON
     | listAssigment;
 
-assignment: <assoc=right> (AT)? ID ASSIGN expression {self.otterComp.gen_quad_assign()} SEMICOLON;
+assignment: <assoc=right> (AT)? ID ASSIGN {self.otterComp.push_op($ASSIGN.text)} expression {self.otterComp.gen_quad_assign()} SEMICOLON;
 
 methodCall: ID DOT ID OPEN_PAR parameters? CLOSE_PAR;
 
@@ -161,9 +161,9 @@ expr: termino {self.otterComp.check_pending_sum_sub()} (op=(ADD | SUBS) {self.ot
 
 termino: factor {self.otterComp.check_pending_div_prod()} (op=(MULT | DIV) {self.otterComp.push_op($op.text)} termino {self.otterComp.check_pending_div_prod()})?;
 
-factor: (ID | constant | AT ID) | OPEN_PAR relationalExpr CLOSE_PAR;
+factor: (ID | constant | AT ID) | OPEN_PAR {self.otterComp.open_par()} relationalExpr CLOSE_PAR {self.otterComp.close_par()};
 
-term: ID | constant | expr | AT ID | methodCall | constructorCall;
+term: ID | constant | expression | AT ID | methodCall | constructorCall;
 
 arguments: argument (COMMA argument)*;
 

@@ -22,6 +22,12 @@ class Compiler:
     def push_op(self, op):
         self.__interpreter.push_operator(op)
 
+    def open_par(self):
+        self.__interpreter.open_par()
+
+    def close_par(self):
+        self.__interpreter.close_par()
+
     def push_constant(self, type_, value):
         self.__interpreter.push_constant(type_, value)
 

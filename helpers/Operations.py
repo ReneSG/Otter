@@ -2,6 +2,8 @@ from enum import Enum
 
 class Operations(Enum):
 
+    FAKE_BOTTOM = "("
+
     # Arithmethic
     ADD = "+"
     SUBS = "-"

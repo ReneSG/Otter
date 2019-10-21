@@ -22,7 +22,12 @@ class Interpreter:
 
     def assign(self) -> bool:
         logging.info("Current quads at assign", self.quads)
-        self.__quads.append((Operations.ASSIGN, None, None, None))
+        op = self.__operators.pop()
+        l_op = self.__operands.pop()
+        self.__quads.append((Operations.ASSIGN, op, l_op, None))
+        print(self.__operands)
+        print(self.__operators)
+        print(self.__quads)
 
     def check_pending_sum_sub(self) -> bool:
         if not self.__operands.isEmpty() and Operations.is_add_or_sub_op_(self.__operators.top()):
@@ -39,4 +44,9 @@ class Interpreter:
 
         self.__quads.append((op, r_op, l_op, None))
         self.__operands.push("t")
-        print(self.__quads)
+
+    def open_par(self):
+        self.__operators.push(Operations.FAKE_BOTTOM)
+
+    def close_par(self):
+        self.__operators.pop()
