@@ -79,7 +79,8 @@ WS: [ \t\r\n\u000C]+ -> skip;
 program: (classDeclaration | declaration)*;
 
 classDeclaration:
-    CLASS ID (INHERITS ID)? OPEN_CURLY classBlock CLOSE_CURLY;
+    CLASS class_id = ID (INHERITS inherit_id = ID)? {Compiler.add_class($class_id.text, $inherit_id.text)
+        } OPEN_CURLY classBlock CLOSE_CURLY;
 
 classBlock: (
         classAttributes
@@ -88,13 +89,14 @@ classBlock: (
     )*;
 
 classAttributes:
-    accessModifiers LET ID COLON otterType SEMICOLON;
+    access_modifier=accessModifiers LET var_name=ID COLON var_type=otterType SEMICOLON {Compiler.add_instance_variable($var_name.text, $var_type.text, $access_modifier.text)
+        };
 
 classConstructor:
-    accessModifiers ID OPEN_PAR arguments? CLOSE_PAR block;
+    access_modifier=accessModifiers const_name=ID {Compiler.add_constructor($const_name.text, $access_modifier.text)} OPEN_PAR arguments? CLOSE_PAR block;
 
 declaration:
-    LET ID COLON otterType ASSIGN term SEMICOLON
+    LET var_name=ID COLON var_type=otterType ASSIGN value=term {Compiler.add_variable($var_name.text, $var_type.text, $value.text)} SEMICOLON
     | listAssigment;
 
 assignment: (AT)? ID ASSIGN term SEMICOLON;
@@ -104,10 +106,9 @@ methodCall: ID DOT ID OPEN_PAR parameters? CLOSE_PAR;
 constructorCall: ID OPEN_PAR parameters? CLOSE_PAR;
 
 methodDeclaration:
-    accessModifiers DEF ID OPEN_PAR arguments? CLOSE_PAR COLON (
-        otterType
-        | VOID
-    ) block;
+    access_modifier=accessModifiers DEF method_name=ID {Compiler.add_method($method_name.text, $access_modifier.text)
+        } OPEN_PAR arguments? CLOSE_PAR COLON return_type=returnType {Compiler.add_return_type($return_type.text)
+        } block;
 
 block: OPEN_CURLY statements* CLOSE_CURLY;
 
@@ -155,27 +156,39 @@ expression: NOT? relationalExpr;
 
 relationalExpr: comparisonExpr ((AND | OR) relationalExpr)?;
 
-comparisonExpr: expr ((GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | EQUAL) expr)?;
+comparisonExpr:
+    expr (
+        (GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | EQUAL) expr
+    )?;
 
 expr: termino ((ADD | SUBS) expr)?;
 
 termino: factor ((MULT | DIV) termino)?;
 
-factor: (ID | constant | AT ID) | OPEN_PAR relationalExpr CLOSE_PAR;
+factor: (ID | constant | AT ID)
+    | OPEN_PAR relationalExpr CLOSE_PAR;
 
-term: ID | constant | arithmeticExpr | AT ID | methodCall | constructorCall;
+term:
+    ID
+    | constant
+    | arithmeticExpr
+    | AT ID
+    | methodCall
+    | constructorCall;
 
 arithmeticExpr: (ID | constant | AT ID) (ADD | SUBS | MULT | DIV) term;
 
 arguments: argument (COMMA argument)*;
 
-argument: ID COLON otterType;
+argument: arg_name=ID COLON arg_type=otterType {Compiler.add_method_argument($arg_name.text, $arg_type.text)};
 
 parameters: term (COMMA term)*;
 
 accessModifiers: PUBLIC | PRIVATE;
 
 otterType: INT | FLOAT | STRING | BOOLEAN | ID;
+
+returnType: otterType | VOID;
 
 constant:
     BOOLEAN_PRIMITIVE
