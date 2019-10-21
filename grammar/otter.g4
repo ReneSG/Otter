@@ -153,9 +153,9 @@ listElements: term (COMMA term)*;
 
 expression: NOT? relationalExpr;
 
-relationalExpr: comparisonExpr (op=(AND | OR) {self.otterComp.push_op($op.text)} relationalExpr)?;
+relationalExpr: {self.otterComp.check_pending_and_or()} comparisonExpr (op=(AND | OR) {self.otterComp.push_op($op.text)} relationalExpr {self.otterComp.check_pending_and_or()})?;
 
-comparisonExpr: expr (op=(GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | EQUAL) {self.otterComp.push_op($op.text)} expr)?;
+comparisonExpr: expr {self.otterComp.check_pending_rel_op()} (op=(GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | EQUAL) {self.otterComp.push_op($op.text)} expr {self.otterComp.check_pending_rel_op()})?;
 
 expr: termino {self.otterComp.check_pending_sum_sub()} (op=(ADD | SUBS) {self.otterComp.push_op($op.text)} expr {self.otterComp.check_pending_sum_sub()})?;
 
@@ -176,10 +176,10 @@ accessModifiers: PUBLIC | PRIVATE;
 otterType: INT | FLOAT | STRING | BOOLEAN | ID;
 
 constant:
-    BOOLEAN_PRIMITIVE
-    | FLOAT_PRIMITIVE
+    BOOLEAN_PRIMITIVE {self.otterComp.push_constant('bool', $BOOLEAN_PRIMITIVE.text)}
+    | FLOAT_PRIMITIVE {self.otterComp.push_constant('float', $FLOAT_PRIMITIVE.text)}
     | INT_PRIMITIVE {self.otterComp.push_constant('int', $INT_PRIMITIVE.text)}
-    | STRING_PRIMITIVE
+    | STRING_PRIMITIVE {self.otterComp.push_constant('string', $STRING_PRIMITIVE.text)}
     | ID;
 
 /* END GRAMMAR */

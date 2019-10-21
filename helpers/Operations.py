@@ -30,5 +30,9 @@ class Operations(Enum):
         return op == Operations.DIV or op == Operations.PROD
 
     @staticmethod
-    def is_add_or_sub_op_(op) -> bool:
-        return op == Operations.ADD or op == Operations.SUBS
+    def is_rel_op(op) -> bool:
+        return op in [Operations.EQUAL, Operations.GREATER, Operations.GREATER_EQUAL_THAN, Operations.LESS, Operations.LESS_EQUAL_THAN]
+
+    @staticmethod
+    def is_and_or_op(op) -> bool:
+        return op == Operations.AND or op == Operations.OR

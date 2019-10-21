@@ -37,6 +37,14 @@ class Interpreter:
         if not self.__operators.isEmpty() and Operations.is_div_or_prod_op_(self.__operators.top()):
             self.gen_quad_for_next_op()
 
+    def check_pending_rel_op(self) -> bool:
+        if not self.__operators.isEmpty() and Operations.is_rel_op(self.__operators.top()):
+            self.gen_quad_for_next_op()
+
+    def check_pending_and_or(self) -> bool:
+        if not self.__operators.isEmpty() and Operations.is_and_or_op(self.__operators.top()):
+            self.gen_quad_for_next_op()
+
     def gen_quad_for_next_op(self) -> bool:
         r_op = self.__operands.pop()
         l_op = self.__operands.pop()

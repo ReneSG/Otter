@@ -37,4 +37,10 @@ class Compiler:
     def check_pending_div_prod(self):
         self.__interpreter.check_pending_div_prod()
 
+    def check_pending_rel_op(self):
+        self.__interpreter.check_pending_rel_op()
+
+    def check_pending_and_or(self):
+        self.__interpreter.check_pending_and_or()
+
 
