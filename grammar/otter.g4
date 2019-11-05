@@ -151,7 +151,7 @@ listAssigment:
 
 listElements: term (COMMA term)*;
 
-expression: NOT? relationalExpr;
+expression: (NOT {self.otterComp.push_op($NOT.text)})? relationalExpr {self.otterComp.maybe_gen_not_quad()};
 
 relationalExpr:comparisonExpr {self.otterComp.check_pending_and_or()} (op=(AND | OR) {self.otterComp.push_op($op.text)} relationalExpr {self.otterComp.check_pending_and_or()})?;
 

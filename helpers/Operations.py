@@ -20,6 +20,7 @@ class Operations(Enum):
     LESS_EQUAL_THAN = ">="
 
     ASSIGN = "="
+    NOT = "not"
 
     @staticmethod
     def is_add_or_sub_op_(op) -> bool:
@@ -36,3 +37,7 @@ class Operations(Enum):
     @staticmethod
     def is_and_or_op(op) -> bool:
         return op == Operations.AND or op == Operations.OR
+
+    @staticmethod
+    def is_not_op(op) -> bool:
+        return op == Operations.NOT

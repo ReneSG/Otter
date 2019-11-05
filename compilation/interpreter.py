@@ -3,6 +3,7 @@ from helpers.Types import Types
 from helpers.OperationsCube import OperationsCube
 from helpers.CustomStack import Stack
 import logging
+import pprint
 
 class Interpreter:
     def __init__(self):
@@ -44,6 +45,11 @@ class Interpreter:
     def check_pending_and_or(self) -> bool:
         if not self.__operators.isEmpty() and Operations.is_and_or_op(self.__operators.top()):
             self.gen_quad_for_next_op()
+
+    def maybe_gen_not_quad(self) -> bool:
+        if not self.__operators.isEmpty() and Operations.is_not_op(self.__operators.top()):
+            self.gen_quad_for_next_op()
+
 
     def gen_quad_for_next_op(self) -> bool:
         r_op = self.__operands.pop()

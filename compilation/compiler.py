@@ -43,4 +43,6 @@ class Compiler:
     def check_pending_and_or(self):
         self.__interpreter.check_pending_and_or()
 
+    def maybe_gen_not_quad(self):
+        self.__interpreter.maybe_gen_not_quad()
 
