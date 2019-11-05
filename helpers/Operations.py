@@ -17,7 +17,7 @@ class Operations(Enum):
     GREATER = ">"
     GREATER_EQUAL_THAN = ">="
     LESS = ">"
-    LESS_EQUAL_THAN = ">="
+    LESS_EQUAL_THAN = "<="
 
     ASSIGN = "="
     NOT = "not"
