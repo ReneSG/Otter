@@ -153,7 +153,7 @@ listElements: term (COMMA term)*;
 
 expression: NOT? relationalExpr;
 
-relationalExpr: {self.otterComp.check_pending_and_or()} comparisonExpr (op=(AND | OR) {self.otterComp.push_op($op.text)} relationalExpr {self.otterComp.check_pending_and_or()})?;
+relationalExpr:comparisonExpr {self.otterComp.check_pending_and_or()} (op=(AND | OR) {self.otterComp.push_op($op.text)} relationalExpr {self.otterComp.check_pending_and_or()})?;
 
 comparisonExpr: expr {self.otterComp.check_pending_rel_op()} (op=(GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | EQUAL) {self.otterComp.push_op($op.text)} expr {self.otterComp.check_pending_rel_op()})?;
 
