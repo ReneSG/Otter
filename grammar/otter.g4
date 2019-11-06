@@ -121,9 +121,9 @@ statements:
     | returnStatement;
 
 conditional:
-    IF OPEN_PAR expression CLOSE_PAR block (
+    IF OPEN_PAR expression CLOSE_PAR {self.otterComp.start_condition_quad()} block (
         ELSEIF OPEN_PAR expression CLOSE_PAR block
-    )* (ELSE block)?;
+    )* (ELSE block)? {self.otterComp.end_condition_quad()};
 
 unless: UNLESS OPEN_PAR expression CLOSE_PAR block;
 

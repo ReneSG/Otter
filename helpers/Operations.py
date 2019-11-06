@@ -21,6 +21,7 @@ class Operations(Enum):
 
     ASSIGN = "="
     NOT = "not"
+    GOTOF = "GOTOF"
 
     @staticmethod
     def is_add_or_sub_op_(op) -> bool:

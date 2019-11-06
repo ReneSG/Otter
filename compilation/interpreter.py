@@ -8,6 +8,7 @@ class Interpreter:
     def __init__(self):
         self.__operands = Stack()
         self.__operators = Stack()
+        self.__jumps = Stack()
         self.__quads = []
 
     @property
@@ -61,3 +62,19 @@ class Interpreter:
 
     def close_par(self):
         self.__operators.pop()
+
+    def start_condition_quad(self):
+        # TODO: Get last temporal.
+        condVar = "cond"
+        condJumpAddr = len(self.__quads)
+        self.__jumps.push(condJumpAddr)
+        self.__quads.append((Operations.GOTOF, condVar, None))
+
+    def end_condition_quad(self):
+        condJumpAddr = self.__jumps.pop()
+        goToFQuad = self.__quads[condJumpAddr]
+        self.__quads[condJumpAddr] = (goToFQuad[0], goToFQuad[1], self.getNextInstructionAddr())
+
+    def getNextInstructionAddr(self):
+        return len(self.__quads)
+
