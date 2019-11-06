@@ -16,7 +16,7 @@ class Operations(Enum):
     EQUAL = "=="
     GREATER = ">"
     GREATER_EQUAL_THAN = ">="
-    LESS = ">"
+    LESS = "<"
     LESS_EQUAL_THAN = "<="
 
     ASSIGN = "="
