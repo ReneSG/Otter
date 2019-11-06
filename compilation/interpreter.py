@@ -69,8 +69,7 @@ class Interpreter:
     def start_condition_quad(self):
         # TODO: Get last temporal.
         condVar = "cond"
-        condJumpAddr = self.getNextInstructionAddr()
-        self.__jumps.push(condJumpAddr)
+        self.__jumps.push(self.getNextInstructionAddr())
         self.__quads.append((Operations.GOTOF, condVar, None))
 
     def end_condition_quad(self):
@@ -78,18 +77,6 @@ class Interpreter:
         condJumpAddr = self.__jumps.pop()
         goToFQuad = self.__quads[condJumpAddr]
         self.__quads[condJumpAddr] = (goToFQuad[0], goToFQuad[1], self.getNextInstructionAddr())
-
-    def start_else_if_quad(self):
-        condVar = "cond"
-        self.__quads.append((Operations.GOTOF, condVar, None))
-
-        self.end_condition_quad()
-
-        self.__jumps.push(self.getNextInstructionAddr())
-    def end_else_if_quad(self):
-        self.end_condition_quad()
-        # for i, c in enumerate(self.__quads):
-            # print(i, c)
 
     def gen_goto_quad(self):
         condVar = "cond"

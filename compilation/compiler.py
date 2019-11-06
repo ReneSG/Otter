@@ -52,17 +52,5 @@ class Compiler:
     def end_condition_quad(self):
         self.__interpreter.end_condition_quad()
 
-    def start_else_if_quad(self):
-        self.__interpreter.start_else_if_quad()
-
-    def end_else_if_quad(self):
-        self.__interpreter.end_else_if_quad()
-
-    def start_else_if_quad(self):
-        self.__interpreter.start_else_if_quad()
-
-    def end_else_if_quad(self):
-        self.__interpreter.end_else_if_quad()
-
     def gen_goto_quad(self):
         self.__interpreter.gen_goto_quad()

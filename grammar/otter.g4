@@ -122,7 +122,7 @@ statements:
 
 conditional:
     IF OPEN_PAR expression CLOSE_PAR {self.otterComp.start_condition_quad()} block (
-        ELSEIF OPEN_PAR {self.otterComp.gen_goto_quad()} expression CLOSE_PAR {self.otterComp.start_else_if_quad()} block {self.otterComp.end_else_if_quad()}
+        ELSEIF {self.otterComp.gen_goto_quad()} OPEN_PAR expression CLOSE_PAR {self.otterComp.start_condition_quad()} block
     )* (ELSE {self.otterComp.gen_goto_quad()} block)? {self.otterComp.end_condition_quad()};
 
 unless: UNLESS OPEN_PAR expression CLOSE_PAR block;
