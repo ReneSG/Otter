@@ -46,8 +46,8 @@ class Compiler:
     def maybe_gen_not_quad(self):
         self.__interpreter.maybe_gen_not_quad()
 
-    def start_condition_quad(self):
-        self.__interpreter.start_condition_quad()
+    def start_condition_quad(self, isUnless=False):
+        self.__interpreter.start_condition_quad(isUnless)
 
     def end_condition_quad(self):
         self.__interpreter.end_condition_quad()

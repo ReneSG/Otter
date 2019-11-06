@@ -26,9 +26,6 @@ class Interpreter:
         op = self.__operators.pop()
         l_op = self.__operands.pop()
         self.__quads.append((Operations.ASSIGN, op, l_op, None))
-        print("=====")
-        for i, c in enumerate(self.__quads):
-            print(i, c)
 
     def check_pending_sum_sub(self) -> bool:
         if not self.__operands.isEmpty() and Operations.is_add_or_sub_op_(self.__operators.top()):
@@ -66,14 +63,13 @@ class Interpreter:
     def close_par(self):
         self.__operators.pop()
 
-    def start_condition_quad(self):
+    def start_condition_quad(self, isUnless=False):
         # TODO: Get last temporal.
         condVar = "cond"
         self.__jumps.push(self.getNextInstructionAddr())
-        self.__quads.append((Operations.GOTOF, condVar, None))
+        self.__quads.append((Operations.GOTOT if isUnless else Operations.GOTOF , condVar, None))
 
     def end_condition_quad(self):
-        print(vars(self.__jumps))
         condJumpAddr = self.__jumps.pop()
         goToFQuad = self.__quads[condJumpAddr]
         self.__quads[condJumpAddr] = (goToFQuad[0], goToFQuad[1], self.getNextInstructionAddr())

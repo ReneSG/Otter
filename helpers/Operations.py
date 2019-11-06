@@ -22,6 +22,7 @@ class Operations(Enum):
     ASSIGN = "="
     NOT = "not"
     GOTOF = "GOTOF"
+    GOTOT = "GOTOT"
     GOTO = "GOTO"
 
     @staticmethod

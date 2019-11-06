@@ -125,7 +125,7 @@ conditional:
         ELSEIF {self.otterComp.gen_goto_quad()} OPEN_PAR expression CLOSE_PAR {self.otterComp.start_condition_quad()} block
     )* (ELSE {self.otterComp.gen_goto_quad()} block)? {self.otterComp.end_condition_quad()};
 
-unless: UNLESS OPEN_PAR expression CLOSE_PAR block;
+unless: UNLESS OPEN_PAR expression CLOSE_PAR {self.otterComp.start_condition_quad(True)} block {self.otterComp.end_condition_quad()};
 
 whileLoop: WHILE OPEN_PAR expression CLOSE_PAR block;
 
