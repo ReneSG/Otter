@@ -3,7 +3,6 @@ from helpers.Types import Types
 from helpers.OperationsCube import OperationsCube
 from helpers.CustomStack import Stack
 import logging
-import pprint
 
 class Interpreter:
     def __init__(self):
@@ -26,9 +25,6 @@ class Interpreter:
         op = self.__operators.pop()
         l_op = self.__operands.pop()
         self.__quads.append((Operations.ASSIGN, op, l_op, None))
-        print(self.__operands)
-        print(self.__operators)
-        print(self.__quads)
 
     def check_pending_sum_sub(self) -> bool:
         if not self.__operands.isEmpty() and Operations.is_add_or_sub_op_(self.__operators.top()):
@@ -48,7 +44,9 @@ class Interpreter:
 
     def maybe_gen_not_quad(self) -> bool:
         if not self.__operators.isEmpty() and Operations.is_not_op(self.__operators.top()):
-            self.gen_quad_for_next_op()
+            op = self.__operators.pop()
+            l_op = self.__operands.pop()
+            self.__quads.append((Operations.NOT, op, l_op, None))
 
     def gen_quad_for_next_op(self) -> bool:
         r_op = self.__operands.pop()
