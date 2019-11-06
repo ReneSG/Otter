@@ -26,6 +26,9 @@ class Interpreter:
         op = self.__operators.pop()
         l_op = self.__operands.pop()
         self.__quads.append((Operations.ASSIGN, op, l_op, None))
+        print("=====")
+        for i, c in enumerate(self.__quads):
+            print(i, c)
 
     def check_pending_sum_sub(self) -> bool:
         if not self.__operands.isEmpty() and Operations.is_add_or_sub_op_(self.__operators.top()):
@@ -66,15 +69,37 @@ class Interpreter:
     def start_condition_quad(self):
         # TODO: Get last temporal.
         condVar = "cond"
-        condJumpAddr = len(self.__quads)
+        condJumpAddr = self.getNextInstructionAddr()
         self.__jumps.push(condJumpAddr)
         self.__quads.append((Operations.GOTOF, condVar, None))
 
     def end_condition_quad(self):
+        print(vars(self.__jumps))
         condJumpAddr = self.__jumps.pop()
         goToFQuad = self.__quads[condJumpAddr]
         self.__quads[condJumpAddr] = (goToFQuad[0], goToFQuad[1], self.getNextInstructionAddr())
 
+    def start_else_if_quad(self):
+        condVar = "cond"
+        self.__quads.append((Operations.GOTOF, condVar, None))
+
+        self.end_condition_quad()
+
+        self.__jumps.push(self.getNextInstructionAddr())
+    def end_else_if_quad(self):
+        self.end_condition_quad()
+        # for i, c in enumerate(self.__quads):
+            # print(i, c)
+
+    def gen_goto_quad(self):
+        condVar = "cond"
+        self.__quads.append((Operations.GOTO, condVar, None))
+        self.end_condition_quad()
+        self.__jumps.push(self.getCurrentInstructionAddr())
+
     def getNextInstructionAddr(self):
         return len(self.__quads)
+
+    def getCurrentInstructionAddr(self):
+        return len(self.__quads) - 1
 
