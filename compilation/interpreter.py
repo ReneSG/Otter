@@ -26,6 +26,10 @@ class Interpreter:
         op = self.__operators.pop()
         l_op = self.__operands.pop()
         self.__quads.append((Operations.ASSIGN, op, l_op, None))
+        print("=====")
+        for i, c in enumerate(self.__quads):
+            print(i, c)
+        print(vars(self.__jumps))
 
     def check_pending_sum_sub(self) -> bool:
         if not self.__operands.isEmpty() and Operations.is_add_or_sub_op_(self.__operators.top()):
@@ -75,10 +79,24 @@ class Interpreter:
         self.__quads[condJumpAddr] = (goToFQuad[0], goToFQuad[1], self.getNextInstructionAddr())
 
     def gen_goto_quad(self):
-        condVar = "cond"
-        self.__quads.append((Operations.GOTO, condVar, None))
+        self.__quads.append((Operations.GOTO, None))
         self.end_condition_quad()
         self.__jumps.push(self.getCurrentInstructionAddr())
+
+
+
+    def end_while_quad(self):
+        goToFAddress = self.__jumps.pop()
+        goToFQuad = self.__quads[goToFAddress]
+        self.__quads[goToFAddress] = (goToFQuad[0], goToFQuad[1], self.getNextInstructionAddr())
+
+        self.gen_goto_quad_to(self.__jumps.pop())
+
+    def gen_goto_quad_to(self, address):
+        self.__quads.append((Operations.GOTO, address))
+
+    def push_instruction_address(self):
+        self.__jumps.push(self.getNextInstructionAddr())
 
     def getNextInstructionAddr(self):
         return len(self.__quads)

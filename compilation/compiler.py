@@ -54,3 +54,9 @@ class Compiler:
 
     def gen_goto_quad(self):
         self.__interpreter.gen_goto_quad()
+
+    def push_instruction_address(self):
+        self.__interpreter.push_instruction_address()
+
+    def end_while_quad(self):
+        self.__interpreter.end_while_quad()

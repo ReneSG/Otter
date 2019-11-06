@@ -127,7 +127,7 @@ conditional:
 
 unless: UNLESS OPEN_PAR expression CLOSE_PAR {self.otterComp.start_condition_quad(True)} block {self.otterComp.end_condition_quad()};
 
-whileLoop: WHILE OPEN_PAR expression CLOSE_PAR block;
+whileLoop: WHILE OPEN_PAR {self.otterComp.push_instruction_address()} expression CLOSE_PAR {self.otterComp.start_condition_quad()} block {self.otterComp.end_while_quad()};
 
 forLoop:
     FOR OPEN_PAR ID UNTIL ID (
