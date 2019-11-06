@@ -155,11 +155,11 @@ expression: (NOT {self.otterComp.push_op($NOT.text)})? relationalExpr {self.otte
 
 relationalExpr:comparisonExpr {self.otterComp.check_pending_and_or()} (op=(AND | OR) {self.otterComp.push_op($op.text)} relationalExpr {self.otterComp.check_pending_and_or()})?;
 
-comparisonExpr: expr {self.otterComp.check_pending_rel_op()} (op=(GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | EQUAL) {self.otterComp.push_op($op.text)} expr {self.otterComp.check_pending_rel_op()})?;
+comparisonExpr: expr (op=(GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | EQUAL) {self.otterComp.push_op($op.text)} expr {self.otterComp.check_pending_rel_op()})?;
 
-expr: termino {self.otterComp.check_pending_sum_sub()} (op=(ADD | SUBS) {self.otterComp.push_op($op.text)} expr {self.otterComp.check_pending_sum_sub()})?;
+expr: termino (op=(ADD | SUBS) {self.otterComp.push_op($op.text)} expr {self.otterComp.check_pending_sum_sub()})?;
 
-termino: factor {self.otterComp.check_pending_div_prod()} (op=(MULT | DIV) {self.otterComp.push_op($op.text)} termino {self.otterComp.check_pending_div_prod()})?;
+termino: factor (op=(MULT | DIV) {self.otterComp.push_op($op.text)} termino {self.otterComp.check_pending_div_prod()})?;
 
 factor: (ID | constant | AT ID) | OPEN_PAR {self.otterComp.open_par()} relationalExpr CLOSE_PAR {self.otterComp.close_par()};
 

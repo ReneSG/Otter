@@ -50,7 +50,6 @@ class Interpreter:
         if not self.__operators.isEmpty() and Operations.is_not_op(self.__operators.top()):
             self.gen_quad_for_next_op()
 
-
     def gen_quad_for_next_op(self) -> bool:
         r_op = self.__operands.pop()
         l_op = self.__operands.pop()
