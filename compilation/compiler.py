@@ -66,3 +66,6 @@ class Compiler:
 
     def write_quad(self):
         self.__interpreter.write_quad()
+
+    def return_quad(self):
+        self.__interpreter.return_quad()

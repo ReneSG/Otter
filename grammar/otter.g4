@@ -140,7 +140,7 @@ forLoop:
         | EQUAL
     ) term BY term CLOSE_PAR block;
 
-returnStatement: RETURN term SEMICOLON;
+returnStatement: RETURN term {self.otterComp.return_quad()} SEMICOLON;
 
 writeIO:
     WRITE OPEN_PAR (STRING_PRIMITIVE | ID) {self.otterComp.write_quad()} CLOSE_PAR SEMICOLON;

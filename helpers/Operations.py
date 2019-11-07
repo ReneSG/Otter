@@ -26,6 +26,7 @@ class Operations(Enum):
     GOTO = "GOTO"
     READ = "READ"
     WRITE = "WRITE"
+    RETURN = "RETURN"
 
     @staticmethod
     def is_add_or_sub_op_(op) -> bool:
