@@ -63,3 +63,6 @@ class Compiler:
 
     def read_quad(self):
         self.__interpreter.read_quad()
+
+    def write_quad(self):
+        self.__interpreter.write_quad()

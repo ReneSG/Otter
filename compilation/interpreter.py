@@ -107,3 +107,6 @@ class Interpreter:
     def read_quad(self):
         self.__quads.append((Operations.READ))
 
+    def write_quad(self):
+        self.__quads.append((Operations.WRITE))
+        print(self.__quads)
