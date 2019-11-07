@@ -118,7 +118,8 @@ statements:
     | declaration
     | assignment
     | unless
-    | returnStatement;
+    | returnStatement
+    | readIO;
 
 conditional:
     IF OPEN_PAR expression CLOSE_PAR {self.otterComp.start_condition_quad()} block (
@@ -143,7 +144,7 @@ returnStatement: RETURN term SEMICOLON;
 writeIO:
     WRITE OPEN_PAR (STRING_PRIMITIVE | ID) CLOSE_PAR SEMICOLON;
 
-readIO: READ OPEN_PAR CLOSE_PAR SEMICOLON;
+readIO: READ OPEN_PAR CLOSE_PAR {self.otterComp.read_quad()} SEMICOLON;
 
 listAssigment:
     LET ID COLON LIST LESS otterType GREATER ASSIGN OPEN_SQUARE listElements? CLOSE_SQUARE SEMICOLON

@@ -60,3 +60,6 @@ class Compiler:
 
     def end_while_quad(self):
         self.__interpreter.end_while_quad()
+
+    def read_quad(self):
+        self.__interpreter.read_quad()

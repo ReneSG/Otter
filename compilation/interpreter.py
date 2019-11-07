@@ -104,3 +104,6 @@ class Interpreter:
     def getCurrentInstructionAddr(self):
         return len(self.__quads) - 1
 
+    def read_quad(self):
+        self.__quads.append((Operations.READ))
+

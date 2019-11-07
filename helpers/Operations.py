@@ -24,6 +24,7 @@ class Operations(Enum):
     GOTOF = "GOTOF"
     GOTOT = "GOTOT"
     GOTO = "GOTO"
+    READ = "READ"
 
     @staticmethod
     def is_add_or_sub_op_(op) -> bool:
