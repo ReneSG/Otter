@@ -129,16 +129,10 @@ conditional:
 
 unless: UNLESS OPEN_PAR expression CLOSE_PAR {self.otterComp.start_condition_quad(True)} block {self.otterComp.end_condition_quad()};
 
-whileLoop: WHILE OPEN_PAR {self.otterComp.push_instruction_address()} expression CLOSE_PAR {self.otterComp.start_condition_quad()} block {self.otterComp.end_while_quad()};
+whileLoop: WHILE OPEN_PAR {self.otterComp.push_instruction_address()} expression CLOSE_PAR {self.otterComp.start_for_quad()} block {self.otterComp.end_while_quad()};
 
 forLoop:
-    FOR OPEN_PAR ID UNTIL ID (
-        GREATER
-        | GREATER_EQUAL
-        | LESS
-        | LESS_EQUAL
-        | EQUAL
-    ) term BY term CLOSE_PAR block;
+    FOR OPEN_PAR ID UNTIL {self.otterComp.push_instruction_address()} expression {self.otterComp.start_condition_quad()} BY expr CLOSE_PAR {self.otterComp.push_instruction_address()} block {self.otterComp.end_for_quad()};
 
 returnStatement: RETURN term {self.otterComp.return_quad()} SEMICOLON;
 
@@ -163,9 +157,9 @@ expr: termino (op=(ADD | SUBS) {self.otterComp.push_op($op.text)} expr {self.ott
 
 termino: factor (op=(MULT | DIV) {self.otterComp.push_op($op.text)} termino {self.otterComp.check_pending_div_prod()})?;
 
-factor: (ID | constant | AT ID) | OPEN_PAR {self.otterComp.open_par()} relationalExpr CLOSE_PAR {self.otterComp.close_par()};
+factor: (constant | reference) | OPEN_PAR {self.otterComp.open_par()} relationalExpr CLOSE_PAR {self.otterComp.close_par()};
 
-term: ID | constant | expression | AT ID | methodCall | constructorCall;
+term: constant | reference | expression | methodCall | constructorCall;
 
 arguments: argument (COMMA argument)*;
 
@@ -181,7 +175,10 @@ constant:
     BOOLEAN_PRIMITIVE {self.otterComp.push_constant('bool', $BOOLEAN_PRIMITIVE.text)}
     | FLOAT_PRIMITIVE {self.otterComp.push_constant('float', $FLOAT_PRIMITIVE.text)}
     | INT_PRIMITIVE {self.otterComp.push_constant('int', $INT_PRIMITIVE.text)}
-    | STRING_PRIMITIVE {self.otterComp.push_constant('string', $STRING_PRIMITIVE.text)}
-    | ID;
+    | STRING_PRIMITIVE {self.otterComp.push_constant('string', $STRING_PRIMITIVE.text)};
+
+reference:
+  ID {self.otterComp.push_constant('id', $ID.text)}
+  | AT ID;
 
 /* END GRAMMAR */

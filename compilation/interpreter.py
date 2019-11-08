@@ -26,10 +26,6 @@ class Interpreter:
         op = self.__operators.pop()
         l_op = self.__operands.pop()
         self.__quads.append((Operations.ASSIGN, op, l_op, None))
-        print("=====")
-        for i, c in enumerate(self.__quads):
-            print(i, c)
-        print(vars(self.__jumps))
 
     def check_pending_sum_sub(self) -> bool:
         if not self.__operands.isEmpty() and Operations.is_add_or_sub_op_(self.__operators.top()):
@@ -83,8 +79,6 @@ class Interpreter:
         self.end_condition_quad()
         self.__jumps.push(self.getCurrentInstructionAddr())
 
-
-
     def end_while_quad(self):
         goToFAddress = self.__jumps.pop()
         goToFQuad = self.__quads[goToFAddress]
@@ -105,11 +99,26 @@ class Interpreter:
         return len(self.__quads) - 1
 
     def read_quad(self):
-        self.__quads.append((Operations.READ))
+        self.__quads.append((Operations.READ, "t"))
 
     def write_quad(self):
-        self.__quads.append((Operations.WRITE))
+        self.__quads.append((Operations.WRITE, "t"))
 
     def return_quad(self):
-        self.__quads.append((Operations.RETURN))
-        print(self.__quads)
+        self.__quads.append((Operations.RETURN, "t"))
+
+    def start_for_quad(self):
+        self.push_instruction_address()
+        self.start_condition_quad()
+
+    def end_for_quad(self):
+        upperBoundBy = self.__jumps.pop()
+        lowerBoundBy = self.__jumps.pop()
+
+        for i in range(lowerBoundBy + 1, upperBoundBy):
+            self.__quads.append(self.__quads.pop(lowerBoundBy + 1))
+
+        self.gen_goto_quad_to(self.__jumps.pop())
+        goToFAddress = lowerBoundBy
+        goToFQuad = self.__quads[goToFAddress]
+        self.__quads[goToFAddress] = (goToFQuad[0], goToFQuad[1], self.getNextInstructionAddr())

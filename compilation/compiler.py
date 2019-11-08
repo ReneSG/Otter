@@ -69,3 +69,9 @@ class Compiler:
 
     def return_quad(self):
         self.__interpreter.return_quad()
+
+    def start_for_quad(self):
+        self.__interpreter.start_for_quad()
+
+    def end_for_quad(self):
+        self.__interpreter.end_for_quad()
