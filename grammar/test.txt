@@ -1,10 +1,4 @@
-let global: int = 0;
-
-Class Child inherits Main {
-  public Child() {
-    let main: Main = Main(param1, param2);
-  }
-}
+let myglobal: int = 0;
 
 Class Main {
   public let a: string;
@@ -42,7 +36,6 @@ Class Main {
       }
     }
 
-    let i: int = 0;
     for(i until i < 10 by 1) {
       return "test";
     }
@@ -55,3 +48,14 @@ Class Main {
   }
 }
 
+Class Child inherits Main {
+  public Child() {
+    let main: Main = Main(param1, param2);
+  }
+}
+
+Class GrandChild inherits Child {
+  public GrandChild() {
+    let main: Main = Main(param1, param2);
+  }
+}
