@@ -1,7 +1,7 @@
-from helpers.Operations import Operations
-from helpers.Types import Types
-from helpers.OperationsCube import OperationsCube
-from helpers.CustomStack import Stack
+from helpers.operations import Operations
+from helpers.types import Types
+from helpers.operations_cube import OperationsCube
+from helpers.custom_stack import Stack
 import logging
 
 class Interpreter:
