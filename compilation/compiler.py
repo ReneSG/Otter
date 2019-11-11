@@ -1,3 +1,4 @@
+from .interpreter import Interpreter
 from scope.class_scope import ClassScope
 from scope.method_scope import MethodScope
 from scope.symbol_table import SymbolTable
@@ -11,6 +12,7 @@ class Compiler:
     _current_method: MethodScope = None
     _current_class: ClassScope = ClassScope("Global Scope")
     _class_directory: SymbolTable = SymbolTable("Global Scope")
+    _interpreter = Interpreter()
 
     errors: List[str] = []
 
@@ -97,3 +99,63 @@ class Compiler:
         except Exception as error:
             logging.debug(f"Error adding var: {name} {var_type} = {value}, in method ")
             Compiler.errors.append(error)
+
+    @staticmethod
+    def gen_quad_assign():
+        Compiler._interpreter.assign()
+
+    @staticmethod
+    def push_op(op):
+        Compiler._interpreter.push_operator(op)
+
+    @staticmethod
+    def open_par():
+        Compiler._interpreter.open_par()
+
+    @staticmethod
+    def close_par():
+        Compiler._interpreter.close_par()
+
+    @staticmethod
+    def push_constant(type_, value):
+        Compiler._interpreter.push_constant(type_, value)
+
+    @staticmethod
+    def check_pending_sum_sub():
+        Compiler._interpreter.check_pending_sum_sub()
+
+    @staticmethod
+    def check_pending_div_prod():
+        Compiler._interpreter.check_pending_div_prod()
+
+    @staticmethod
+    def check_pending_rel_op():
+        Compiler._interpreter.check_pending_rel_op()
+
+    @staticmethod
+    def check_pending_and_or():
+        Compiler._interpreter.check_pending_and_or()
+
+    @staticmethod
+    def maybe_gen_not_quad():
+        Compiler._interpreter.maybe_gen_not_quad()
+
+    @staticmethod
+    def start_condition_quad(isUnless=False):
+        Compiler._interpreter.start_condition_quad(isUnless)
+
+    @staticmethod
+    def end_condition_quad():
+        Compiler._interpreter.end_condition_quad()
+
+    @staticmethod
+    def gen_goto_quad():
+        Compiler._interpreter.gen_goto_quad()
+
+    @staticmethod
+    def push_instruction_address():
+        Compiler._interpreter.push_instruction_address()
+
+    @staticmethod
+    def end_while_quad():
+        Compiler._interpreter.end_while_quad()

@@ -99,7 +99,7 @@ declaration:
     LET var_name=ID COLON var_type=otterType ASSIGN value=term {Compiler.add_variable($var_name.text, $var_type.text, $value.text)} SEMICOLON
     | listAssigment;
 
-assignment: (AT)? ID ASSIGN term SEMICOLON;
+assignment: <assoc=right> (AT)? ID ASSIGN {Compiler.push_op($ASSIGN.text)} expression {Compiler.gen_quad_assign()} SEMICOLON;
 
 methodCall: ID DOT ID OPEN_PAR parameters? CLOSE_PAR;
 
@@ -122,13 +122,13 @@ statements:
     | returnStatement;
 
 conditional:
-    IF OPEN_PAR expression CLOSE_PAR block (
-        ELSEIF OPEN_PAR expression CLOSE_PAR block
-    )* (ELSE block)?;
+    IF OPEN_PAR expression CLOSE_PAR {Compiler.start_condition_quad()} block (
+        ELSEIF {Compiler.gen_goto_quad()} OPEN_PAR expression CLOSE_PAR {Compiler.start_condition_quad()} block
+    )* (ELSE {Compiler.gen_goto_quad()} block)? {Compiler.end_condition_quad()};
 
-unless: UNLESS OPEN_PAR expression CLOSE_PAR block;
+unless: UNLESS OPEN_PAR expression CLOSE_PAR {Compiler.start_condition_quad(True)} block {Compiler.end_condition_quad()};
 
-whileLoop: WHILE OPEN_PAR expression CLOSE_PAR block;
+whileLoop: WHILE OPEN_PAR {Compiler.push_instruction_address()} expression CLOSE_PAR {Compiler.start_condition_quad()} block {Compiler.end_while_quad()};
 
 forLoop:
     FOR OPEN_PAR ID UNTIL ID (
@@ -152,21 +152,17 @@ listAssigment:
 
 listElements: term (COMMA term)*;
 
-expression: NOT? relationalExpr;
+expression: (NOT {Compiler.push_op($NOT.text)})? relationalExpr {Compiler.maybe_gen_not_quad()};
 
-relationalExpr: comparisonExpr ((AND | OR) relationalExpr)?;
+relationalExpr:comparisonExpr {Compiler.check_pending_and_or()} (op=(AND | OR) {Compiler.push_op($op.text)} relationalExpr {Compiler.check_pending_and_or()})?;
 
-comparisonExpr:
-    expr (
-        (GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | EQUAL) expr
-    )?;
+comparisonExpr: expr (op=(GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | EQUAL) {Compiler.push_op($op.text)} expr {Compiler.check_pending_rel_op()})?;
 
-expr: termino ((ADD | SUBS) expr)?;
+expr: termino (op=(ADD | SUBS) {Compiler.push_op($op.text)} expr {Compiler.check_pending_sum_sub()})?;
 
-termino: factor ((MULT | DIV) termino)?;
+termino: factor (op=(MULT | DIV) {Compiler.push_op($op.text)} termino {Compiler.check_pending_div_prod()})?;
 
-factor: (ID | constant | AT ID)
-    | OPEN_PAR relationalExpr CLOSE_PAR;
+factor: (ID | constant | AT ID) | OPEN_PAR {Compiler.open_par()} relationalExpr CLOSE_PAR {Compiler.close_par()};
 
 term:
     ID
@@ -191,10 +187,10 @@ otterType: INT | FLOAT | STRING | BOOLEAN | ID;
 returnType: otterType | VOID;
 
 constant:
-    BOOLEAN_PRIMITIVE
-    | FLOAT_PRIMITIVE
-    | INT_PRIMITIVE
-    | STRING_PRIMITIVE
+    BOOLEAN_PRIMITIVE {Compiler.push_constant('bool', $BOOLEAN_PRIMITIVE.text)}
+    | FLOAT_PRIMITIVE {Compiler.push_constant('float', $FLOAT_PRIMITIVE.text)}
+    | INT_PRIMITIVE {Compiler.push_constant('int', $INT_PRIMITIVE.text)}
+    | STRING_PRIMITIVE {Compiler.push_constant('string', $STRING_PRIMITIVE.text)}
     | ID;
 
 /* END GRAMMAR */
