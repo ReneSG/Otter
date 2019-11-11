@@ -22,7 +22,7 @@ class Interpreter:
         self.__operands.push(value)
 
     def assign(self) -> bool:
-        logging.info("Current quads at assign", self.quads)
+        logging.debug(f"Current quads at assign: {self.quads}")
         op = self.__operators.pop()
         l_op = self.__operands.pop()
         self.__quads.append((Operations.ASSIGN, op, l_op, None))
