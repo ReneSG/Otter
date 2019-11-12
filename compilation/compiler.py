@@ -179,3 +179,7 @@ class Compiler:
     @staticmethod
     def end_for_quad():
         Compiler._interpreter.end_for_quad()
+
+    @staticmethod
+    def debug_quads():
+        Compiler._interpreter.debug_quads()

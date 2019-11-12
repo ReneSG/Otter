@@ -27,9 +27,6 @@ class Interpreter:
         l_op = self.__operands.pop()
         self.__quads.append((Operations.ASSIGN, op, l_op, None))
 
-        for i in range(0, len(self.__quads)):
-            print(i, self.__quads[i])
-
     def check_pending_sum_sub(self) -> bool:
         if not self.__operands.isEmpty() and Operations.is_add_or_sub_op_(self.__operators.top()):
             self.gen_quad_for_next_op()
@@ -125,3 +122,7 @@ class Interpreter:
         goToFAddress = lowerBoundBy
         goToFQuad = self.__quads[goToFAddress]
         self.__quads[goToFAddress] = (goToFQuad[0], goToFQuad[1], self.getNextInstructionAddr())
+
+    def debug_quads(self):
+        for i in range(0, len(self.__quads)):
+            logging.debug(f"{i}, {self.__quads[i]}")
