@@ -76,10 +76,11 @@ WS: [ \t\r\n\u000C]+ -> skip;
 
 /* START GRAMMAR */
 
-program: {self.otterComp = Compiler()} (classDeclaration | declaration)*;
+program: (classDeclaration | declaration)*;
 
 classDeclaration:
-    CLASS ID (INHERITS ID)? OPEN_CURLY classBlock CLOSE_CURLY;
+    CLASS class_id = ID (INHERITS inherit_id = ID)? {Compiler.add_class($class_id.text, $inherit_id.text)
+        } OPEN_CURLY classBlock CLOSE_CURLY;
 
 classBlock: (
         classAttributes
@@ -88,26 +89,26 @@ classBlock: (
     )*;
 
 classAttributes:
-    accessModifiers LET ID COLON otterType SEMICOLON;
+    access_modifier=accessModifiers LET var_name=ID COLON var_type=otterType SEMICOLON {Compiler.add_instance_variable($var_name.text, $var_type.text, $access_modifier.text)
+        };
 
 classConstructor:
-    accessModifiers ID OPEN_PAR arguments? CLOSE_PAR block;
+    access_modifier=accessModifiers const_name=ID {Compiler.add_constructor($const_name.text, $access_modifier.text)} OPEN_PAR arguments? CLOSE_PAR block;
 
 declaration:
-    LET ID COLON otterType ASSIGN expression SEMICOLON
+    LET var_name=ID COLON var_type=otterType ASSIGN value=term {Compiler.add_variable($var_name.text, $var_type.text, $value.text)} SEMICOLON
     | listAssigment;
 
-assignment: <assoc=right> (AT)? ID ASSIGN {self.otterComp.push_op($ASSIGN.text)} expression {self.otterComp.gen_quad_assign()} SEMICOLON;
+assignment: <assoc=right> (AT)? ID ASSIGN {Compiler.push_op($ASSIGN.text)} expression {Compiler.gen_quad_assign()} SEMICOLON;
 
 methodCall: ID DOT ID OPEN_PAR parameters? CLOSE_PAR;
 
 constructorCall: ID OPEN_PAR parameters? CLOSE_PAR;
 
 methodDeclaration:
-    accessModifiers DEF ID OPEN_PAR arguments? CLOSE_PAR COLON (
-        otterType
-        | VOID
-    ) block;
+    access_modifier=accessModifiers DEF method_name=ID {Compiler.add_method($method_name.text, $access_modifier.text)
+        } OPEN_PAR arguments? CLOSE_PAR COLON return_type=returnType {Compiler.add_return_type($return_type.text)
+        } block;
 
 block: OPEN_CURLY statements* CLOSE_CURLY;
 
@@ -123,23 +124,23 @@ statements:
     | writeIO;
 
 conditional:
-    IF OPEN_PAR expression CLOSE_PAR {self.otterComp.start_condition_quad()} block (
-        ELSEIF {self.otterComp.gen_goto_quad()} OPEN_PAR expression CLOSE_PAR {self.otterComp.start_condition_quad()} block
-    )* (ELSE {self.otterComp.gen_goto_quad()} block)? {self.otterComp.end_condition_quad()};
+    IF OPEN_PAR expression CLOSE_PAR {Compiler.start_condition_quad()} block (
+        ELSEIF {Compiler.gen_goto_quad()} OPEN_PAR expression CLOSE_PAR {Compiler.start_condition_quad()} block
+    )* (ELSE {Compiler.gen_goto_quad()} block)? {Compiler.end_condition_quad()};
 
-unless: UNLESS OPEN_PAR expression CLOSE_PAR {self.otterComp.start_condition_quad(True)} block {self.otterComp.end_condition_quad()};
+unless: UNLESS OPEN_PAR expression CLOSE_PAR {Compiler.start_condition_quad(True)} block {Compiler.end_condition_quad()};
 
-whileLoop: WHILE OPEN_PAR {self.otterComp.push_instruction_address()} expression CLOSE_PAR {self.otterComp.start_for_quad()} block {self.otterComp.end_while_quad()};
+whileLoop: WHILE OPEN_PAR {Compiler.push_instruction_address()} expression CLOSE_PAR {Compiler.start_for_quad()} block {Compiler.end_while_quad()};
 
 forLoop:
-    FOR OPEN_PAR ID UNTIL {self.otterComp.push_instruction_address()} expression {self.otterComp.start_condition_quad()} BY expr CLOSE_PAR {self.otterComp.push_instruction_address()} block {self.otterComp.end_for_quad()};
+    FOR OPEN_PAR ID UNTIL {Compiler.push_instruction_address()} expression {Compiler.start_condition_quad()} BY expr CLOSE_PAR {Compiler.push_instruction_address()} block {Compiler.end_for_quad()};
 
-returnStatement: RETURN term {self.otterComp.return_quad()} SEMICOLON;
+returnStatement: RETURN term {Compiler.return_quad()} SEMICOLON;
 
 writeIO:
-    WRITE OPEN_PAR (STRING_PRIMITIVE | ID) {self.otterComp.write_quad()} CLOSE_PAR SEMICOLON;
+    WRITE OPEN_PAR (STRING_PRIMITIVE | ID) {Compiler.write_quad()} CLOSE_PAR SEMICOLON;
 
-readIO: READ OPEN_PAR CLOSE_PAR {self.otterComp.read_quad()} SEMICOLON;
+readIO: READ OPEN_PAR CLOSE_PAR {Compiler.read_quad()} SEMICOLON;
 
 listAssigment:
     LET ID COLON LIST LESS otterType GREATER ASSIGN OPEN_SQUARE listElements? CLOSE_SQUARE SEMICOLON
@@ -147,23 +148,23 @@ listAssigment:
 
 listElements: term (COMMA term)*;
 
-expression: (NOT {self.otterComp.push_op($NOT.text)})? relationalExpr {self.otterComp.maybe_gen_not_quad()};
+expression: (NOT {Compiler.push_op($NOT.text)})? relationalExpr {Compiler.maybe_gen_not_quad()};
 
-relationalExpr:comparisonExpr {self.otterComp.check_pending_and_or()} (op=(AND | OR) {self.otterComp.push_op($op.text)} relationalExpr {self.otterComp.check_pending_and_or()})?;
+relationalExpr:comparisonExpr {Compiler.check_pending_and_or()} (op=(AND | OR) {Compiler.push_op($op.text)} relationalExpr {Compiler.check_pending_and_or()})?;
 
-comparisonExpr: expr {self.otterComp.check_pending_rel_op()} (op=(GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | EQUAL) {self.otterComp.push_op($op.text)} expr {self.otterComp.check_pending_rel_op()})?;
+comparisonExpr: expr {Compiler.check_pending_rel_op()} (op=(GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | EQUAL) {Compiler.push_op($op.text)} expr {Compiler.check_pending_rel_op()})?;
 
-expr: termino {self.otterComp.check_pending_sum_sub()} (op=(ADD | SUBS) {self.otterComp.push_op($op.text)} expr {self.otterComp.check_pending_sum_sub()})?;
+expr: termino {Compiler.check_pending_sum_sub()} (op=(ADD | SUBS) {Compiler.push_op($op.text)} expr {Compiler.check_pending_sum_sub()})?;
 
-termino: factor {self.otterComp.check_pending_div_prod()} (op=(MULT | DIV) {self.otterComp.push_op($op.text)} termino {self.otterComp.check_pending_div_prod()})?;
+termino: factor {Compiler.check_pending_div_prod()} (op=(MULT | DIV) {Compiler.push_op($op.text)} termino {Compiler.check_pending_div_prod()})?;
 
-factor: (constant | reference) | OPEN_PAR {self.otterComp.open_par()} relationalExpr CLOSE_PAR {self.otterComp.close_par()};
+factor: (constant | reference) | OPEN_PAR {Compiler.open_par()} relationalExpr CLOSE_PAR {Compiler.close_par()};
 
 term: constant | reference | expression | methodCall | constructorCall;
 
 arguments: argument (COMMA argument)*;
 
-argument: ID COLON otterType;
+argument: arg_name=ID COLON arg_type=otterType {Compiler.add_method_argument($arg_name.text, $arg_type.text)};
 
 parameters: term (COMMA term)*;
 
@@ -171,14 +172,16 @@ accessModifiers: PUBLIC | PRIVATE;
 
 otterType: INT | FLOAT | STRING | BOOLEAN | ID;
 
+returnType: otterType | VOID;
+
 constant:
-    BOOLEAN_PRIMITIVE {self.otterComp.push_constant('bool', $BOOLEAN_PRIMITIVE.text)}
-    | FLOAT_PRIMITIVE {self.otterComp.push_constant('float', $FLOAT_PRIMITIVE.text)}
-    | INT_PRIMITIVE {self.otterComp.push_constant('int', $INT_PRIMITIVE.text)}
-    | STRING_PRIMITIVE {self.otterComp.push_constant('string', $STRING_PRIMITIVE.text)};
+    BOOLEAN_PRIMITIVE {Compiler.push_constant('bool', $BOOLEAN_PRIMITIVE.text)}
+    | FLOAT_PRIMITIVE {Compiler.push_constant('float', $FLOAT_PRIMITIVE.text)}
+    | INT_PRIMITIVE {Compiler.push_constant('int', $INT_PRIMITIVE.text)}
+    | STRING_PRIMITIVE {Compiler.push_constant('string', $STRING_PRIMITIVE.text)};
 
 reference:
-  ID {self.otterComp.push_constant('id', $ID.text)}
+  ID {Compiler.push_constant('id', $ID.text)}
   | AT ID;
 
 /* END GRAMMAR */

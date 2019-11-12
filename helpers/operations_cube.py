@@ -1,5 +1,5 @@
-from .Types import Types
-from .Operations import Operations
+from .types import Types
+from .operations import Operations
 
 class OperationsCube:
 
@@ -91,4 +91,4 @@ class OperationsCube:
 
     @staticmethod
     def verify(left_op: Types, right_op: Types, op: Operations) -> Types:
-        return cube.get((left_op, right_op, op), DataType.ERROR)
+        return OperationsCube.cube.get((left_op, right_op, op), Types.ERROR)

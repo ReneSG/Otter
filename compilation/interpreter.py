@@ -1,7 +1,7 @@
-from helpers.Operations import Operations
-from helpers.Types import Types
-from helpers.OperationsCube import OperationsCube
-from helpers.CustomStack import Stack
+from helpers.operations import Operations
+from helpers.types import Types
+from helpers.operations_cube import OperationsCube
+from helpers.custom_stack import Stack
 import logging
 
 class Interpreter:
@@ -22,7 +22,7 @@ class Interpreter:
         self.__operands.push(value)
 
     def assign(self) -> bool:
-        logging.info("Current quads at assign", self.quads)
+        logging.debug(f"Current quads at assign: {self.quads}")
         op = self.__operators.pop()
         l_op = self.__operands.pop()
         self.__quads.append((Operations.ASSIGN, op, l_op, None))
