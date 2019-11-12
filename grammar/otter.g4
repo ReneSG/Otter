@@ -119,7 +119,9 @@ statements:
     | declaration
     | assignment
     | unless
-    | returnStatement;
+    | returnStatement
+    | readIO
+    | writeIO;
 
 conditional:
     IF OPEN_PAR expression CLOSE_PAR {Compiler.start_condition_quad()} block (
@@ -128,23 +130,17 @@ conditional:
 
 unless: UNLESS OPEN_PAR expression CLOSE_PAR {Compiler.start_condition_quad(True)} block {Compiler.end_condition_quad()};
 
-whileLoop: WHILE OPEN_PAR {Compiler.push_instruction_address()} expression CLOSE_PAR {Compiler.start_condition_quad()} block {Compiler.end_while_quad()};
+whileLoop: WHILE OPEN_PAR {Compiler.push_instruction_address()} expression CLOSE_PAR {Compiler.start_for_quad()} block {Compiler.end_while_quad()};
 
 forLoop:
-    FOR OPEN_PAR ID UNTIL ID (
-        GREATER
-        | GREATER_EQUAL
-        | LESS
-        | LESS_EQUAL
-        | EQUAL
-    ) term BY term CLOSE_PAR block;
+    FOR OPEN_PAR ID UNTIL {Compiler.push_instruction_address()} expression {Compiler.start_condition_quad()} BY expr CLOSE_PAR {Compiler.push_instruction_address()} block {Compiler.end_for_quad()};
 
-returnStatement: RETURN term SEMICOLON;
+returnStatement: RETURN term {Compiler.return_quad()} SEMICOLON;
 
 writeIO:
-    WRITE OPEN_PAR (STRING_PRIMITIVE | ID) CLOSE_PAR SEMICOLON;
+    WRITE OPEN_PAR (STRING_PRIMITIVE | ID) {Compiler.write_quad()} CLOSE_PAR SEMICOLON;
 
-readIO: READ OPEN_PAR CLOSE_PAR SEMICOLON;
+readIO: READ OPEN_PAR CLOSE_PAR {Compiler.read_quad()} SEMICOLON;
 
 listAssigment:
     LET ID COLON LIST LESS otterType GREATER ASSIGN OPEN_SQUARE listElements? CLOSE_SQUARE SEMICOLON
@@ -156,23 +152,15 @@ expression: (NOT {Compiler.push_op($NOT.text)})? relationalExpr {Compiler.maybe_
 
 relationalExpr:comparisonExpr {Compiler.check_pending_and_or()} (op=(AND | OR) {Compiler.push_op($op.text)} relationalExpr {Compiler.check_pending_and_or()})?;
 
-comparisonExpr: expr (op=(GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | EQUAL) {Compiler.push_op($op.text)} expr {Compiler.check_pending_rel_op()})?;
+comparisonExpr: expr {Compiler.check_pending_rel_op()} (op=(GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | EQUAL) {Compiler.push_op($op.text)} expr {Compiler.check_pending_rel_op()})?;
 
-expr: termino (op=(ADD | SUBS) {Compiler.push_op($op.text)} expr {Compiler.check_pending_sum_sub()})?;
+expr: termino {Compiler.check_pending_sum_sub()} (op=(ADD | SUBS) {Compiler.push_op($op.text)} expr {Compiler.check_pending_sum_sub()})?;
 
-termino: factor (op=(MULT | DIV) {Compiler.push_op($op.text)} termino {Compiler.check_pending_div_prod()})?;
+termino: factor {Compiler.check_pending_div_prod()} (op=(MULT | DIV) {Compiler.push_op($op.text)} termino {Compiler.check_pending_div_prod()})?;
 
-factor: (ID | constant | AT ID) | OPEN_PAR {Compiler.open_par()} relationalExpr CLOSE_PAR {Compiler.close_par()};
+factor: (constant | reference) | OPEN_PAR {Compiler.open_par()} relationalExpr CLOSE_PAR {Compiler.close_par()};
 
-term:
-    ID
-    | constant
-    | arithmeticExpr
-    | AT ID
-    | methodCall
-    | constructorCall;
-
-arithmeticExpr: (ID | constant | AT ID) (ADD | SUBS | MULT | DIV) term;
+term: constant | reference | expression | methodCall | constructorCall;
 
 arguments: argument (COMMA argument)*;
 
@@ -190,7 +178,10 @@ constant:
     BOOLEAN_PRIMITIVE {Compiler.push_constant('bool', $BOOLEAN_PRIMITIVE.text)}
     | FLOAT_PRIMITIVE {Compiler.push_constant('float', $FLOAT_PRIMITIVE.text)}
     | INT_PRIMITIVE {Compiler.push_constant('int', $INT_PRIMITIVE.text)}
-    | STRING_PRIMITIVE {Compiler.push_constant('string', $STRING_PRIMITIVE.text)}
-    | ID;
+    | STRING_PRIMITIVE {Compiler.push_constant('string', $STRING_PRIMITIVE.text)};
+
+reference:
+  ID {Compiler.push_constant('id', $ID.text)}
+  | AT ID;
 
 /* END GRAMMAR */

@@ -159,3 +159,27 @@ class Compiler:
     @staticmethod
     def end_while_quad():
         Compiler._interpreter.end_while_quad()
+
+    @staticmethod
+    def read_quad():
+        Compiler._interpreter.read_quad()
+
+    @staticmethod
+    def write_quad():
+        Compiler._interpreter.write_quad()
+
+    @staticmethod
+    def return_quad():
+        Compiler._interpreter.return_quad()
+
+    @staticmethod
+    def start_for_quad():
+        Compiler._interpreter.start_for_quad()
+
+    @staticmethod
+    def end_for_quad():
+        Compiler._interpreter.end_for_quad()
+
+    @staticmethod
+    def debug_quads():
+        Compiler._interpreter.debug_quads()
