@@ -148,6 +148,19 @@ class Interpreter:
         index = self.__operands.pop()
         self.__quads.append((Operations.ADD, index, self.getAddressFor(dim_variable), "t"))
 
+    def allocate_mem_quad(self, instance, method):
+        self.__quads.append((Operations.ERA, instance, method))
+
+    def add_method_parameter(self):
+        #TODO: Get param address once memory is implemented.
+        self.__quads.append((Operations.PARAM, self.__operands.pop()))
+
+    def complete_method_call(self, method):
+        self.__quads.append((Operations.GOSUB, method))
+
+        #TODO: If method has return assign to temp.
+        self.__operands.push("return temp")
+
 
     def getLowerBound(self, dim_variable):
         # TODO: Get real value once memory is implemented.

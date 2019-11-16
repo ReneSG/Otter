@@ -95,7 +95,7 @@ class Compiler:
                 Compiler._current_class.add_attribute(name, var_type, "private", value)
                 logging.debug(
                     f"Added global var: {name} {var_type} = {value}, in {Compiler._current_class.name}")
-                
+
         except Exception as error:
             logging.debug(f"Error adding var: {name} {var_type} = {value}, in method ")
             Compiler.errors.append(error)
@@ -191,3 +191,15 @@ class Compiler:
     @staticmethod
     def complete_dimension_access():
         Compiler._interpreter.complete_dimension_access()
+
+    @staticmethod
+    def allocate_mem_quad(instance, method):
+        Compiler._interpreter.allocate_mem_quad(instance, method)
+
+    @staticmethod
+    def add_method_parameter():
+        Compiler._interpreter.add_method_parameter()
+
+    @staticmethod
+    def complete_method_call(method):
+        Compiler._interpreter.complete_method_call(method)

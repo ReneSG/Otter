@@ -28,6 +28,9 @@ class Operations(Enum):
     WRITE = "WRITE"
     RETURN = "RETURN"
     VER_ACCS = "VER_ACCS"
+    ERA = "ERA"
+    PARAM = "PARAM"
+    GOSUB = "GOSUB"
 
     @staticmethod
     def is_add_or_sub_op_(op) -> bool:
