@@ -5,6 +5,10 @@ from helpers.custom_stack import Stack
 from scope.variable import Variable
 import logging
 
+
+logger = logging.getLogger(__name__)
+
+
 class Interpreter:
     def __init__(self):
         self.__operands = Stack()
@@ -35,7 +39,7 @@ class Interpreter:
         self.__operands.push(variable)
 
     def assign(self) -> bool:
-        logging.debug(f"Current quads at assign: {self.quads}")
+        logger.debug(f"Current quads at assign: {self.quads}")
         op = self.__operators.pop()
         l_op = self.__operands.pop()
         self.__quads.append((Operations.ASSIGN, op, l_op, None))
@@ -198,4 +202,4 @@ class Interpreter:
 
     def debug_quads(self):
         for i in range(0, len(self.__quads)):
-            logging.debug(f"{i}, {self.__quads[i]}")
+            logger.debug(f"{i}, {self.__quads[i]}")

@@ -4,7 +4,7 @@ from collections import namedtuple
 range_tuple = namedtuple('range_tuple', 'inf max')
 
 
-class ScopeRanges(Enum):
+class ScopeRanges():
     GLOBAL = range_tuple(0, 9999)
     LOCAL = range_tuple(10000, 19999)
     CONSTANTS = range_tuple(20000, 29999)
@@ -27,7 +27,7 @@ class ScopeRanges(Enum):
         return ScopeRanges.CONSTANTS.inf <= value <= ScopeRanges.CONSTANTS.max
 
 
-class TypeRanges(Enum):
+class TypeRanges():
     INT = range_tuple(0, 1999)
     FLOAT = range_tuple(2000, 3999)
     BOOL = range_tuple(4000, 5999)
