@@ -76,11 +76,11 @@ WS: [ \t\r\n\u000C]+ -> skip;
 
 /* START GRAMMAR */
 
-program: (classDeclaration | declaration)*;
+program: (classDeclaration | declaration)* {Compiler.debug_quads()};
 
 classDeclaration:
     CLASS class_id = ID (INHERITS inherit_id = ID)? {Compiler.add_class($class_id.text, $inherit_id.text)
-        } OPEN_CURLY classBlock CLOSE_CURLY;
+        } OPEN_CURLY classBlock CLOSE_CURLY {Compiler.end_class_scope()};
 
 classBlock: (
         classAttributes
@@ -108,7 +108,7 @@ constructorCall: ID OPEN_PAR parameters? CLOSE_PAR;
 methodDeclaration:
     access_modifier=accessModifiers DEF method_name=ID {Compiler.add_method($method_name.text, $access_modifier.text)
         } OPEN_PAR arguments? CLOSE_PAR COLON return_type=returnType {Compiler.add_return_type($return_type.text)
-        } block;
+        } block {Compiler.end_method_scope()};
 
 block: OPEN_CURLY statements* CLOSE_CURLY;
 
