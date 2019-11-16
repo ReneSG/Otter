@@ -1,0 +1,6 @@
+Class Main {
+  public Main(param1: string, param2: int) {
+    let a: int = 1 + 2.0 * 3 / 2.0 - 10.8;
+  }
+}
+

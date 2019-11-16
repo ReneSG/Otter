@@ -2,5 +2,5 @@
 !.gitignore
 !otter.g4
 !_init_.py
-!test.txt
 !main.py
+!*.txt
