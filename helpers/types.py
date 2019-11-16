@@ -10,6 +10,7 @@ class Types(Enum):
     BOOL = "bool"
     ARRAY_POINTER = "array_pointer"
     OBJECT = "object"
+    ID = "id"
 
     ERROR = "error"
 

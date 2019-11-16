@@ -182,11 +182,11 @@ constant:
     | STRING_PRIMITIVE {Compiler.push_constant('string', $STRING_PRIMITIVE.text)};
 
 reference:
-  ID {Compiler.push_constant('id', $ID.text)}
-  | AT ID {Compiler.push_constant('@id', $ID.text)}
+  ID {Compiler.push_variable($ID.text)}
+  | AT ID {Compiler.push_variable($ID.text)}
   | listReference;
 
 listReference:
-  ID {Compiler.push_constant('id', $ID.text)} (OPEN_SQUARE (constant | reference) {Compiler.resolve_dimension_access()} CLOSE_SQUARE)* {Compiler.complete_dimension_access()};
+  ID {Compiler.push_variable($ID.text)} (OPEN_SQUARE (constant | reference) {Compiler.resolve_dimension_access()} CLOSE_SQUARE)* {Compiler.complete_dimension_access()};
 
 /* END GRAMMAR */
