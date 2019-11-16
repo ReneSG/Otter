@@ -135,6 +135,9 @@ class Compiler:
     def push_constant(type_, value):
         Compiler._interpreter.push_constant(type_, value)
 
+    def push_variable(name):
+        Compiler._interpreter.push_variable(Compiler._current_method, name)
+
     @staticmethod
     def check_pending_sum_sub():
         Compiler._interpreter.check_pending_sum_sub()

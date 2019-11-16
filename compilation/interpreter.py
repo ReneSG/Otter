@@ -27,6 +27,13 @@ class Interpreter:
             new_variable = Variable(value, Types(type_))
             self.__operands.push(new_variable)
 
+    def push_variable(self, current_method, name):
+        variable = current_method.variables_directory.search(name)
+        if variable == None:
+            raise ValueError(f'Variable {name} is not defined in program.')
+
+        self.__operands.push(variable)
+
     def assign(self) -> bool:
         logging.debug(f"Current quads at assign: {self.quads}")
         op = self.__operators.pop()
