@@ -1,0 +1,20 @@
+let global_a: int = 10;
+let global_b: int = global_b;
+
+let global_c: string = "abc";
+let global_d: string = global_c;
+
+let global_e: bool = truthy;
+let global_f: bool = global_e;
+
+let global_g: float = 1.234;
+let global_h: float = global_g;
+
+Class Main {
+  public Main() {
+
+  }
+
+  public def testPublic(): void {
+  }
+}

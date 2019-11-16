@@ -109,8 +109,10 @@ class Compiler:
             else:
                 # This is a global variable, it will be added as a private attribute
                 # To not be used as a public instance variable.
+                memory_space = CompilationMemory.next_global_memory_space(
+                    var_type)
                 Compiler._current_class.add_attribute(
-                    name, var_type, "private", value)
+                    name, var_type, "private", memory_space)
                 logger.debug(
                     f"Added global var: {name} {var_type} = {value}, in {Compiler._current_class.name}")
 

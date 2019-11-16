@@ -65,7 +65,7 @@ FLOAT_PRIMITIVE: [0-9]+ . [0-9]+?;
 INT_PRIMITIVE: [0-9]+;
 STRING_PRIMITIVE: '"' .*? '"';
 VOID: 'void';
-ID: [A-Za-z]([A-Za-z0-9])*;
+ID: [_A-Za-z]([_A-Za-z0-9])*;
 
 // Whitespace and comments
 COMMENT: '/*' .*? '*/' -> skip;
