@@ -4,6 +4,7 @@ from helpers.types import Types
 from scope.variable import Variable
 import logging
 
+
 class ConstMemory:
     def __init__(self, scope_name: str, limits: (int, int)):
         self.__inf_limit, self.__max_limit = limits
@@ -21,7 +22,8 @@ class ConstMemory:
         # If value is already in memory return the existing memory space
         if (value, var_type) in self.__const_dict:
             memory_space = self.__const_dict[(value, var_type)]
-            logging.debug(f"Retrieving already created const {value}: {var_type} in memory space {memory_space}.")
+            logging.debug(
+                f"Retrieving already created const {value}: {var_type} in memory space {memory_space}.")
             return memory_space
 
         memory_space = 0
@@ -35,8 +37,6 @@ class ConstMemory:
             memory_space = self.__string_memory.next_available()
 
         self.__const_dict[(value, var_type)] = memory_space
-        logging.debug(f"Store const {value}: {var_type} in memory space {memory_space}.")
+        logging.debug(
+            f"Store const {value}: {var_type} in memory space {memory_space}.")
         return memory_space
-
-
-

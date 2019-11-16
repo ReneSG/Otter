@@ -13,11 +13,11 @@ class CompilationMemory:
     @staticmethod
     def next_memory_space(value: str, var_type: str):
         CompilationMemory.__const_memory.next_memory_space(value, var_type)
-    
+
     @staticmethod
     def next_global_memory_space(var_type: str):
         CompilationMemory.__global_memory.next_memory_space(var_type)
-    
+
     @staticmethod
     def next_temp_memory_space(var_type: str):
         CompilationMemory.__temp_memory.next_memory_space(var_type)

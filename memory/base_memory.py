@@ -18,5 +18,6 @@ class BaseMemory:
             exit(1)
 
         self.__variable_counter += 1
-        logging.debug(f"Added variable to {self.__scope_name} {self.__type_name} memory in space {next_available_space}.")
+        logging.debug(
+            f"Added variable to {self.__scope_name} {self.__type_name} memory in space {next_available_space}.")
         return next_available_space
