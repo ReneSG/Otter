@@ -101,7 +101,7 @@ declaration:
 
 assignment: <assoc=right> (AT)? reference ASSIGN {Compiler.push_op($ASSIGN.text)} expression {Compiler.gen_quad_assign()} SEMICOLON;
 
-methodCall: ID DOT ID OPEN_PAR parameters? CLOSE_PAR;
+methodCall: instance=ID DOT name=ID {Compiler.allocate_mem_quad($instance.text, $name.text)} OPEN_PAR parameters? CLOSE_PAR {Compiler.complete_method_call($name.text)} SEMICOLON?;
 
 constructorCall: ID OPEN_PAR parameters? CLOSE_PAR;
 
@@ -121,7 +121,8 @@ statements:
     | unless
     | returnStatement
     | readIO
-    | writeIO;
+    | writeIO
+    | methodCall;
 
 conditional:
     IF OPEN_PAR expression CLOSE_PAR {Compiler.start_condition_quad()} block (
@@ -166,7 +167,7 @@ arguments: argument (COMMA argument)*;
 
 argument: arg_name=ID COLON arg_type=otterType {Compiler.add_method_argument($arg_name.text, $arg_type.text)};
 
-parameters: term (COMMA term)*;
+parameters: term {Compiler.add_method_parameter()} (COMMA term {Compiler.add_method_parameter()})*;
 
 accessModifiers: PUBLIC | PRIVATE;
 

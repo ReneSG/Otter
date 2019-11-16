@@ -70,6 +70,7 @@ class Compiler:
     @staticmethod
     def end_method_scope() -> None:
         Compiler._current_method = None
+        Compiler._interpreter.add_end_function_quad()
 
     @staticmethod
     def add_constructor(name: str, access_modifier: str) -> None:
@@ -205,3 +206,16 @@ class Compiler:
     @staticmethod
     def complete_dimension_access():
         Compiler._interpreter.complete_dimension_access()
+
+    @staticmethod
+    def allocate_mem_quad(instance, method):
+        Compiler._interpreter.allocate_mem_quad(instance, method)
+
+    @staticmethod
+    def add_method_parameter():
+        Compiler._interpreter.add_method_parameter()
+
+    @staticmethod
+    def complete_method_call(method):
+        Compiler._interpreter.complete_method_call(method)
+
