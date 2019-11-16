@@ -7,6 +7,7 @@ import logging
 class Interpreter:
     def __init__(self):
         self.__operands = Stack()
+        self.__dim_operands = Stack()
         self.__operators = Stack()
         self.__jumps = Stack()
         self.__quads = []
@@ -19,13 +20,17 @@ class Interpreter:
         self.__operators.push(Operations(operator))
 
     def push_constant(self, type_, value):
-        self.__operands.push(value)
+        if self.hasMultipleDimensions(value):
+            self.__dim_operands.push(value)
+        else:
+            self.__operands.push(value)
 
     def assign(self) -> bool:
         logging.debug(f"Current quads at assign: {self.quads}")
         op = self.__operators.pop()
         l_op = self.__operands.pop()
         self.__quads.append((Operations.ASSIGN, op, l_op, None))
+        self.debug_quads()
 
     def check_pending_sum_sub(self) -> bool:
         if not self.__operands.isEmpty() and Operations.is_add_or_sub_op_(self.__operators.top()):
@@ -122,6 +127,29 @@ class Interpreter:
         goToFAddress = lowerBoundBy
         goToFQuad = self.__quads[goToFAddress]
         self.__quads[goToFAddress] = (goToFQuad[0], goToFQuad[1], self.getNextInstructionAddr())
+
+    def resolve_dimension_access(self):
+        index = self.__operands.pop()
+        dim_variable = self.__dim_operands.pop()
+        self.__quads.append((Operations.VER_ACCS, index, self.getLowerBound(dim_variable), self.getUpperBound(dim_variable)))
+        self.__quads.append((Operations.ADD, index, self.getAddressFor(dim_variable), "t"))
+        self.__operands.push("t")
+
+    def getLowerBound(self, dim_variable):
+        # TODO: Get real value once memory is implemented.
+        return "lower_bound"
+
+    def getUpperBound(self, dim_variable):
+        # TODO: Get real value once memory is implemented.
+        return "upper_bound"
+
+    def getAddressFor(self, dim_variable):
+        # TODO: Get real value once memory is implemented.
+        return "dummy_address"
+
+    def hasMultipleDimensions(self, operand):
+        # TODO: Check dimension once memory is implemented.
+        return operand == "A";
 
     def debug_quads(self):
         for i in range(0, len(self.__quads)):

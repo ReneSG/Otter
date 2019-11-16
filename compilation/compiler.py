@@ -183,3 +183,7 @@ class Compiler:
     @staticmethod
     def debug_quads():
         Compiler._interpreter.debug_quads()
+
+    @staticmethod
+    def resolve_dimension_access():
+        Compiler._interpreter.resolve_dimension_access()

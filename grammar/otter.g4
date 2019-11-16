@@ -99,7 +99,7 @@ declaration:
     LET var_name=ID COLON var_type=otterType ASSIGN value=term {Compiler.add_variable($var_name.text, $var_type.text, $value.text)} SEMICOLON
     | listAssigment;
 
-assignment: <assoc=right> (AT)? ID ASSIGN {Compiler.push_op($ASSIGN.text)} expression {Compiler.gen_quad_assign()} SEMICOLON;
+assignment: <assoc=right> (AT)? reference ASSIGN {Compiler.push_op($ASSIGN.text)} expression {Compiler.gen_quad_assign()} SEMICOLON;
 
 methodCall: ID DOT ID OPEN_PAR parameters? CLOSE_PAR;
 
@@ -182,6 +182,10 @@ constant:
 
 reference:
   ID {Compiler.push_constant('id', $ID.text)}
-  | AT ID;
+  | AT ID {Compiler.push_constant('@id', $ID.text)}
+  | listReference;
+
+listReference:
+  ID {Compiler.push_constant('id', $ID.text)} OPEN_SQUARE (constant | reference) {Compiler.resolve_dimension_access()} CLOSE_SQUARE;
 
 /* END GRAMMAR */
