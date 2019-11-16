@@ -7,6 +7,7 @@ import logging
 class Interpreter:
     def __init__(self):
         self.__operands = Stack()
+        self.__dim_operands = Stack()
         self.__operators = Stack()
         self.__jumps = Stack()
         self.__quads = []
@@ -19,7 +20,10 @@ class Interpreter:
         self.__operators.push(Operations(operator))
 
     def push_constant(self, type_, value):
-        self.__operands.push(value)
+        if self.hasMultipleDimensions(value):
+            self.__dim_operands.push((value, 1))
+        else:
+            self.__operands.push(value)
 
     def assign(self) -> bool:
         logging.debug(f"Current quads at assign: {self.quads}")
@@ -122,6 +126,48 @@ class Interpreter:
         goToFAddress = lowerBoundBy
         goToFQuad = self.__quads[goToFAddress]
         self.__quads[goToFAddress] = (goToFQuad[0], goToFQuad[1], self.getNextInstructionAddr())
+
+    def resolve_dimension_access(self):
+        dim_tuple = self.__dim_operands.top()
+        dim_variable = dim_tuple[0]
+        index = self.__operands.top()
+        self.__quads.append((Operations.VER_ACCS, index, self.getLowerBound(dim_variable), self.getUpperBound(dim_variable)))
+        self.maybe_multiply_for_m(dim_tuple)
+        self.__dim_operands.push((dim_tuple[0], dim_tuple[1] + 1))
+
+    def maybe_multiply_for_m(self, dim_tuple):
+        # Only compute mn*sn for second and higher dimensions.
+        if dim_tuple[1] == 1: return
+
+        index = self.__operands.pop()
+        self.__quads.append((Operations.PROD, index, self.getMFor(dim_tuple[0]), "t"))
+        self.__operands.push("t")
+
+    def complete_dimension_access(self):
+        dim_variable = self.__dim_operands.pop()[0]
+        index = self.__operands.pop()
+        self.__quads.append((Operations.ADD, index, self.getAddressFor(dim_variable), "t"))
+
+
+    def getLowerBound(self, dim_variable):
+        # TODO: Get real value once memory is implemented.
+        return "lower_bound"
+
+    def getMFor(self, dim_variable):
+        # TODO: Get real value once memory is implemented.
+        return "dummy_m"
+
+    def getUpperBound(self, dim_variable):
+        # TODO: Get real value once memory is implemented.
+        return "upper_bound"
+
+    def getAddressFor(self, dim_variable):
+        # TODO: Get real value once memory is implemented.
+        return "dummy_address"
+
+    def hasMultipleDimensions(self, operand):
+        # TODO: Check dimension once memory is implemented.
+        return operand == "A";
 
     def debug_quads(self):
         for i in range(0, len(self.__quads)):
