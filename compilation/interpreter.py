@@ -119,7 +119,7 @@ class Interpreter:
         upperBoundBy = self.__jumps.pop()
         lowerBoundBy = self.__jumps.pop()
 
-        for i in range(lowerBoundBy + 1, upperBoundBy):
+        for _ in range(lowerBoundBy + 1, upperBoundBy):
             self.__quads.append(self.__quads.pop(lowerBoundBy + 1))
 
         self.gen_goto_quad_to(self.__jumps.pop())

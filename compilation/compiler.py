@@ -12,6 +12,9 @@ class Compiler:
     _current_method: MethodScope = None
     _current_class: ClassScope = ClassScope("Global Scope")
     _class_directory: SymbolTable = SymbolTable("Global Scope")
+
+    # Add global scope to directory
+    _class_directory.add_symbol(_current_class)
     _interpreter = Interpreter()
 
     errors: List[str] = []
@@ -38,6 +41,11 @@ class Compiler:
             Compiler.errors.append(error)
 
     @staticmethod
+    def end_class_scope() -> None:
+        Compiler._current_class = Compiler._class_directory.search(
+            "Global Scope")
+
+    @staticmethod
     def add_instance_variable(name: str, var_type: str, access_modifier: str) -> None:
         try:
             Compiler._current_class.add_attribute(
@@ -58,6 +66,11 @@ class Compiler:
             Compiler._current_method = method_scope
         except Exception as error:
             Compiler.errors.append(error)
+
+    @staticmethod
+    def end_method_scope() -> None:
+        Compiler._current_method = None
+        Compiler._interpreter.add_end_function_quad()
 
     @staticmethod
     def add_constructor(name: str, access_modifier: str) -> None:
@@ -92,12 +105,14 @@ class Compiler:
             else:
                 # This is a global variable, it will be added as a private attribute
                 # To not be used as a public instance variable.
-                Compiler._current_class.add_attribute(name, var_type, "private", value)
+                Compiler._current_class.add_attribute(
+                    name, var_type, "private", value)
                 logging.debug(
                     f"Added global var: {name} {var_type} = {value}, in {Compiler._current_class.name}")
 
         except Exception as error:
-            logging.debug(f"Error adding var: {name} {var_type} = {value}, in method ")
+            logging.debug(
+                f"Error adding var: {name} {var_type} = {value}, in method ")
             Compiler.errors.append(error)
 
     @staticmethod
@@ -204,6 +219,3 @@ class Compiler:
     def complete_method_call(method):
         Compiler._interpreter.complete_method_call(method)
 
-    @staticmethod
-    def add_end_function_quad():
-        Compiler._interpreter.add_end_function_quad()
