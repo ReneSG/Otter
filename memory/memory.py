@@ -7,7 +7,8 @@ from scope.scopes import Scopes
 
 class Memory:
     def __init__(self, scope_name: str, limits: (int, int)):
-        self.__inf_limit, self.__max_limit = limits
+        self.__inf_limit = limits.inf
+        self.__max_limit = limits.max
         self.__scope_name = scope_name
         self.__int_memory = BaseMemory(scope_name, Types.INT, TypeRanges.INT)
         self.__float_memory = BaseMemory(

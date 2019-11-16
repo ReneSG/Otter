@@ -1,0 +1,12 @@
+Class Main {
+  public Main() {
+
+  }
+
+  public def testPublic(): void {
+    let myInt: int = 4;
+    let myInt2: int = 4;
+    let myInt3: int = 5;
+    let myInt4: int = 5;
+  }
+}

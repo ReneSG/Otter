@@ -3,9 +3,13 @@ from scope.class_scope import ClassScope
 from scope.method_scope import MethodScope
 from scope.symbol_table import SymbolTable
 from typing import List, Optional
+from memory.compilation_memory import CompilationMemory
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
+
+FORMAT = "%(name)s: %(message)s"
+logging.basicConfig(level=logging.DEBUG, format=FORMAT)
+logger = logging.getLogger('compiler.Compiler')
 
 
 class Compiler:
@@ -34,7 +38,7 @@ class Compiler:
         try:
             class_scope = ClassScope(class_name, inherits_scope)
             Compiler._class_directory.add_symbol(class_scope)
-            logging.debug(
+            logger.debug(
                 f"Added class: {class_name}, inherits: {inherit_name}")
             Compiler._current_class = class_scope
         except Exception as error:
@@ -50,7 +54,7 @@ class Compiler:
         try:
             Compiler._current_class.add_attribute(
                 name, var_type, access_modifier)
-            logging.debug(
+            logger.debug(
                 f"Added attribute: {access_modifier} {name} {var_type}, to class: {Compiler._current_class.name}")
         except Exception as error:
             Compiler.errors.append(error)
@@ -61,7 +65,7 @@ class Compiler:
             name, access_modifier, Compiler._current_class.attribute_directory)
         try:
             Compiler._current_class.add_method(method_scope)
-            logging.debug(
+            logger.debug(
                 f"Added method: {name}, to class: {Compiler._current_class.name}")
             Compiler._current_method = method_scope
         except Exception as error:
@@ -84,7 +88,7 @@ class Compiler:
     def add_method_argument(name: str, arg_type: str) -> None:
         try:
             Compiler._current_method.add_argument(name, arg_type)
-            logging.debug(
+            logger.debug(
                 f"Added argument: {name} {arg_type}, in method {Compiler._current_method.name}")
         except Exception as error:
             Compiler.errors.append(error)
@@ -92,7 +96,7 @@ class Compiler:
     @staticmethod
     def add_return_type(return_type: str) -> None:
         Compiler._current_method.add_return_type(return_type)
-        logging.debug(
+        logger.debug(
             f"Added return type: {return_type}, in method {Compiler._current_method.name}")
 
     @staticmethod
@@ -100,18 +104,18 @@ class Compiler:
         try:
             if Compiler._current_method is not None:
                 Compiler._current_method.add_variable(name, var_type, value)
-                logging.debug(
+                logger.debug(
                     f"Added var: {name} {var_type} = {value}, in method {Compiler._current_method.name}")
             else:
                 # This is a global variable, it will be added as a private attribute
                 # To not be used as a public instance variable.
                 Compiler._current_class.add_attribute(
                     name, var_type, "private", value)
-                logging.debug(
+                logger.debug(
                     f"Added global var: {name} {var_type} = {value}, in {Compiler._current_class.name}")
 
         except Exception as error:
-            logging.debug(
+            logger.debug(
                 f"Error adding var: {name} {var_type} = {value}, in method ")
             Compiler.errors.append(error)
 
@@ -133,7 +137,8 @@ class Compiler:
 
     @staticmethod
     def push_constant(type_, value):
-        Compiler._interpreter.push_constant(type_, value)
+        memory_space = CompilationMemory.next_const_memory_space(value, type_)
+        Compiler._interpreter.push_constant(type_, memory_space)
 
     @staticmethod
     def check_pending_sum_sub():
@@ -218,4 +223,3 @@ class Compiler:
     @staticmethod
     def complete_method_call(method):
         Compiler._interpreter.complete_method_call(method)
-

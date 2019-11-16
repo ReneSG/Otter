@@ -8,7 +8,6 @@ Class Main {
 
   public Main(param1: string, param2: int) {
     let falseExample: boolean = falsy;
-    @c = 2;
   }
 
   public def testPublic(i: int, j: float, k: string, f: boolean): string {
@@ -21,18 +20,11 @@ Class Main {
     } elseif (i > 10) {
       return 1;
     } else {
-      return @a;
     }
 
     while(i + 4 < 10 and 5 < 3) {
       if (i >= 10) {
         return "asd";
-      }
-    }
-
-    unless(@a + @b == @c) {
-      if (@a > @b) {
-        return 1;
       }
     }
 

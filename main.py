@@ -6,6 +6,7 @@ from antlr4.tree.Trees import Trees
 from compilation.compiler import Compiler
 import logging
 
+logger = logging.getLogger(__name__)
 
 def main(argv):
     input_stream = FileStream(argv[1])
@@ -18,7 +19,7 @@ def main(argv):
     if parser.getNumberOfSyntaxErrors() == 0 and len(Compiler.errors) == 0:
         print("PROGRAMA CORRECTO")
     else:
-        [logging.error(msg) for msg in Compiler.errors]
+        [logger.error(msg) for msg in Compiler.errors]
 
 
 if __name__ == '__main__':
