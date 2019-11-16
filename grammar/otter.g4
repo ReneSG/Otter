@@ -101,7 +101,7 @@ declaration:
 
 assignment: <assoc=right> (AT)? reference ASSIGN {Compiler.push_op($ASSIGN.text)} expression {Compiler.gen_quad_assign()} SEMICOLON;
 
-methodCall: instance=ID DOT name=ID {Compiler.allocate_mem_quad($instance.text, $name.text)} OPEN_PAR parameters? CLOSE_PAR {Compiler.complete_method_call($name.text)} SEMICOLON;
+methodCall: instance=ID DOT name=ID {Compiler.allocate_mem_quad($instance.text, $name.text)} OPEN_PAR parameters? CLOSE_PAR {Compiler.complete_method_call($name.text)} SEMICOLON?;
 
 constructorCall: ID OPEN_PAR parameters? CLOSE_PAR;
 
