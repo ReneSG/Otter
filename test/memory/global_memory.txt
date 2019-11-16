@@ -1,5 +1,5 @@
-let global_a: int = 10;
-let global_b: int = global_b;
+let global_a: int = 10 + 1;
+let global_b: int = global_a;
 
 let global_c: string = "abc";
 let global_d: string = global_c;

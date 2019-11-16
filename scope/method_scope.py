@@ -4,7 +4,7 @@ from typing import Optional
 
 
 class MethodScope:
-    def __init__(self, name: str, acesss_modifier: str, parent: SymbolTable):
+    def __init__(self, name: str, acesss_modifier: str, parent: Optional[SymbolTable] = None):
         self._name = name
         self._access_modifier = acesss_modifier
 

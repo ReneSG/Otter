@@ -61,7 +61,7 @@ DOT: '.';
 
 // Primitives data types
 BOOLEAN_PRIMITIVE: 'truthy' | 'falsy';
-FLOAT_PRIMITIVE: [0-9]+ . [0-9]+?;
+FLOAT_PRIMITIVE: [0-9]+ . [0-9]+;
 INT_PRIMITIVE: [0-9]+;
 STRING_PRIMITIVE: '"' .*? '"';
 VOID: 'void';

@@ -24,19 +24,18 @@ class Interpreter:
     def push_operator(self, operator):
         self.__operators.push(Operations(operator))
 
-    def push_constant(self, type_, value):
-        if self.hasMultipleDimensions(value):
-            self.__dim_operands.push((value, 1))
-        else:
-            new_variable = Variable(value, Types(type_))
-            self.__operands.push(new_variable)
+    def push_constant(self, type_, memory_space):
+        new_variable = Variable(memory_space, Types(type_), memory_space)
+        self.__operands.push(new_variable)
 
-    def push_variable(self, current_method, name):
-        variable = current_method.variables_directory.search(name)
+    def push_variable(self, current_scope, name):
+        variable = current_scope.variables_directory.search(name)
         if variable == None:
             raise ValueError(f'Variable {name} is not defined in program.')
-
-        self.__operands.push(variable)
+        if variable.has_multiple_dimensions():
+            self.__dim_operands.push((variable, 1))
+        else:
+            self.__operands.push(variable)
 
     def assign(self) -> bool:
         logger.debug(f"Current quads at assign: {self.quads}")
@@ -198,8 +197,9 @@ class Interpreter:
 
     def hasMultipleDimensions(self, operand):
         # TODO: Check dimension once memory is implemented.
-        return operand == "A";
+        return operand == "A"
 
     def debug_quads(self):
+        logger.debug("==============QUADS==============")
         for i in range(0, len(self.__quads)):
             logger.debug(f"{i}, {self.__quads[i]}")
