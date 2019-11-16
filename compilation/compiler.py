@@ -187,3 +187,7 @@ class Compiler:
     @staticmethod
     def resolve_dimension_access():
         Compiler._interpreter.resolve_dimension_access()
+
+    @staticmethod
+    def complete_dimension_access():
+        Compiler._interpreter.complete_dimension_access()

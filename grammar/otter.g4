@@ -186,6 +186,6 @@ reference:
   | listReference;
 
 listReference:
-  ID {Compiler.push_constant('id', $ID.text)} OPEN_SQUARE (constant | reference) {Compiler.resolve_dimension_access()} CLOSE_SQUARE;
+  ID {Compiler.push_constant('id', $ID.text)} (OPEN_SQUARE (constant | reference) {Compiler.resolve_dimension_access()} CLOSE_SQUARE)* {Compiler.complete_dimension_access()};
 
 /* END GRAMMAR */

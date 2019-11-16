@@ -21,7 +21,7 @@ class Interpreter:
 
     def push_constant(self, type_, value):
         if self.hasMultipleDimensions(value):
-            self.__dim_operands.push(value)
+            self.__dim_operands.push((value, 1))
         else:
             self.__operands.push(value)
 
@@ -30,7 +30,6 @@ class Interpreter:
         op = self.__operators.pop()
         l_op = self.__operands.pop()
         self.__quads.append((Operations.ASSIGN, op, l_op, None))
-        self.debug_quads()
 
     def check_pending_sum_sub(self) -> bool:
         if not self.__operands.isEmpty() and Operations.is_add_or_sub_op_(self.__operators.top()):
@@ -129,15 +128,34 @@ class Interpreter:
         self.__quads[goToFAddress] = (goToFQuad[0], goToFQuad[1], self.getNextInstructionAddr())
 
     def resolve_dimension_access(self):
-        index = self.__operands.pop()
-        dim_variable = self.__dim_operands.pop()
+        dim_tuple = self.__dim_operands.top()
+        dim_variable = dim_tuple[0]
+        index = self.__operands.top()
         self.__quads.append((Operations.VER_ACCS, index, self.getLowerBound(dim_variable), self.getUpperBound(dim_variable)))
-        self.__quads.append((Operations.ADD, index, self.getAddressFor(dim_variable), "t"))
+        self.maybe_multiply_for_m(dim_tuple)
+        self.__dim_operands.push((dim_tuple[0], dim_tuple[1] + 1))
+
+    def maybe_multiply_for_m(self, dim_tuple):
+        # Only compute mn*sn for second and higher dimensions.
+        if dim_tuple[1] == 1: return
+
+        index = self.__operands.pop()
+        self.__quads.append((Operations.PROD, index, self.getMFor(dim_tuple[0]), "t"))
         self.__operands.push("t")
+
+    def complete_dimension_access(self):
+        dim_variable = self.__dim_operands.pop()[0]
+        index = self.__operands.pop()
+        self.__quads.append((Operations.ADD, index, self.getAddressFor(dim_variable), "t"))
+
 
     def getLowerBound(self, dim_variable):
         # TODO: Get real value once memory is implemented.
         return "lower_bound"
+
+    def getMFor(self, dim_variable):
+        # TODO: Get real value once memory is implemented.
+        return "dummy_m"
 
     def getUpperBound(self, dim_variable):
         # TODO: Get real value once memory is implemented.
