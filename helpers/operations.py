@@ -31,6 +31,7 @@ class Operations(Enum):
     ERA = "ERA"
     PARAM = "PARAM"
     GOSUB = "GOSUB"
+    END_FUNC = "END_FUNC"
 
     @staticmethod
     def is_add_or_sub_op_(op) -> bool:

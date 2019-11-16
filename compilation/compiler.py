@@ -203,3 +203,7 @@ class Compiler:
     @staticmethod
     def complete_method_call(method):
         Compiler._interpreter.complete_method_call(method)
+
+    @staticmethod
+    def add_end_function_quad():
+        Compiler._interpreter.add_end_function_quad()

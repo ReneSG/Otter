@@ -161,6 +161,8 @@ class Interpreter:
         #TODO: If method has return assign to temp.
         self.__operands.push("return temp")
 
+    def add_end_function_quad(self):
+        self.__quads.append(Operations.END_FUNC)
 
     def getLowerBound(self, dim_variable):
         # TODO: Get real value once memory is implemented.

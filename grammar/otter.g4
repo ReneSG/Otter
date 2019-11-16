@@ -108,7 +108,7 @@ constructorCall: ID OPEN_PAR parameters? CLOSE_PAR;
 methodDeclaration:
     access_modifier=accessModifiers DEF method_name=ID {Compiler.add_method($method_name.text, $access_modifier.text)
         } OPEN_PAR arguments? CLOSE_PAR COLON return_type=returnType {Compiler.add_return_type($return_type.text)
-        } block;
+        } block {Compiler.add_end_function_quad()};
 
 block: OPEN_CURLY statements* CLOSE_CURLY;
 
