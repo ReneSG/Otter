@@ -2,6 +2,7 @@ from helpers.operations import Operations
 from helpers.types import Types
 from helpers.operations_cube import OperationsCube
 from helpers.custom_stack import Stack
+from scope.variable import Variable
 import logging
 
 
@@ -27,7 +28,15 @@ class Interpreter:
         if self.hasMultipleDimensions(value):
             self.__dim_operands.push((value, 1))
         else:
-            self.__operands.push(value)
+            new_variable = Variable(value, Types(type_))
+            self.__operands.push(new_variable)
+
+    def push_variable(self, current_method, name):
+        variable = current_method.variables_directory.search(name)
+        if variable == None:
+            raise ValueError(f'Variable {name} is not defined in program.')
+
+        self.__operands.push(variable)
 
     def assign(self) -> bool:
         logger.debug(f"Current quads at assign: {self.quads}")
@@ -62,6 +71,9 @@ class Interpreter:
         l_op = self.__operands.pop()
         op = self.__operators.pop()
 
+        #TODO: Add type to variables.
+        if OperationsCube.verify(r_op.var_type, l_op.var_type, op) == Types.ERROR:
+            raise ValueError(f'Cannot perform {op} operation with {r_op.var_type} {l_op.var_type} operands.')
         self.__quads.append((op, r_op, l_op, None))
         self.__operands.push("t")
 

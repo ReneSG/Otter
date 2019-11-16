@@ -20,6 +20,10 @@ class MethodScope:
     def name(self) -> str:
         return self._name
 
+    @property
+    def variables_directory(self) -> SymbolTable:
+        return self._variables_directory
+
     def add_return_type(self, return_type: str) -> None:
         self._return_type = return_type
 

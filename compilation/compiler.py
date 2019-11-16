@@ -142,6 +142,9 @@ class Compiler:
         memory_space = CompilationMemory.next_const_memory_space(value, type_)
         Compiler._interpreter.push_constant(type_, memory_space)
 
+    def push_variable(name):
+        Compiler._interpreter.push_variable(Compiler._current_method, name)
+
     @staticmethod
     def check_pending_sum_sub():
         Compiler._interpreter.check_pending_sum_sub()
