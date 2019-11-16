@@ -13,12 +13,10 @@ logger = logging.getLogger('compiler.Compiler')
 
 
 class Compiler:
-    _current_method: MethodScope = None
-    _current_class: ClassScope = ClassScope("Global Scope")
+    _global_scope: MethodScope = MethodScope("Global Scope", "private")
+    _current_method: MethodScope = _global_scope
+    _current_class: ClassScope = None
     _class_directory: SymbolTable = SymbolTable("Global Scope")
-
-    # Add global scope to directory
-    _class_directory.add_symbol(_current_class)
     _interpreter = Interpreter()
 
     errors: List[str] = []
@@ -46,8 +44,7 @@ class Compiler:
 
     @staticmethod
     def end_class_scope() -> None:
-        Compiler._current_class = Compiler._class_directory.search(
-            "Global Scope")
+        Compiler._current_class = None
 
     @staticmethod
     def add_instance_variable(name: str, var_type: str, access_modifier: str) -> None:
@@ -73,7 +70,7 @@ class Compiler:
 
     @staticmethod
     def end_method_scope() -> None:
-        Compiler._current_method = None
+        Compiler._current_method = Compiler._global_scope
         Compiler._interpreter.add_end_function_quad()
 
     @staticmethod
@@ -109,8 +106,10 @@ class Compiler:
             else:
                 # This is a global variable, it will be added as a private attribute
                 # To not be used as a public instance variable.
+                memory_space = CompilationMemory.next_global_memory_space(
+                    var_type)
                 Compiler._current_class.add_attribute(
-                    name, var_type, "private", value)
+                    name, var_type, "private", memory_space)
                 logger.debug(
                     f"Added global var: {name} {var_type} = {value}, in {Compiler._current_class.name}")
 
@@ -140,8 +139,14 @@ class Compiler:
         memory_space = CompilationMemory.next_const_memory_space(value, type_)
         Compiler._interpreter.push_constant(type_, memory_space)
 
+    @staticmethod
     def push_variable(name):
-        Compiler._interpreter.push_variable(Compiler._current_method, name)
+        if Compiler._current_method is not None:
+            current_scope = Compiler._current_method
+        else:
+            current_scope = Compiler._current_class
+
+        Compiler._interpreter.push_variable(current_scope, name)
 
     @staticmethod
     def check_pending_sum_sub():

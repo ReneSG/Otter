@@ -8,5 +8,20 @@ Class Main {
     let myInt2: int = 4;
     let myInt3: int = 5;
     let myInt4: int = 5;
+
+    let myStr: str = "123";
+    let myStr2: str = "123";
+    let myStr3: str = "456";
+    let myStr4: str = "456";
+
+    let myBool: bool = truthy;
+    let myBool2: bool = truthy;
+    let myBool3: bool = falsy;
+    let myBool4: bool = falsy;
+
+    let myFloat: float = 1.2;
+    let myFloat2: float = 1.2;
+    let myFloat3: float = 1.3;
+    let myFloat4: float = 1.3;
   }
 }

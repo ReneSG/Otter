@@ -32,6 +32,6 @@ class ClassScope:
     def add_method(self, method_scope: MethodScope) -> None:
         self._method_directory.add_symbol(method_scope)
 
-    def add_attribute(self, name: str, var_type: str, access_modifier: str, value: Optional[str] = None) -> None:
+    def add_attribute(self, name: str, var_type: str, access_modifier: str, memory_space: int) -> None:
         self._method_directory.add_symbol(
-            Variable(name, var_type, value, access_modifier))
+            Variable(name, var_type, memory_space, access_modifier))
