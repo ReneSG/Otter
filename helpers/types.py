@@ -9,6 +9,7 @@ class Types(Enum):
     STRING = "string"
     BOOL = "bool"
     ARRAY_POINTER = "array_pointer"
+    ID = "id"
 
     ERROR = "error"
 
