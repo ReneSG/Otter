@@ -97,7 +97,7 @@ class Compiler:
             f"Added return type: {return_type}, in method {Compiler._current_method.name}")
 
     @staticmethod
-    def add_variable(name: str, var_type: str, value: Optional[str]) -> None:
+    def add_variable(name: str, var_type: str, value: Optional[str] = None) -> None:
         try:
             if Compiler._current_method is not None:
                 Compiler._current_method.add_variable(name, var_type, value)
