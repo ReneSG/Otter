@@ -3,6 +3,7 @@ from helpers.types import Types
 from helpers.operations_cube import OperationsCube
 from helpers.custom_stack import Stack
 from scope.variable import Variable
+from memory.compilation_memory import CompilationMemory
 import logging
 
 
@@ -70,11 +71,15 @@ class Interpreter:
         l_op = self.__operands.pop()
         op = self.__operators.pop()
 
-        #TODO: Add type to variables.
-        if OperationsCube.verify(r_op.var_type, l_op.var_type, op) == Types.ERROR:
-            raise ValueError(f'Cannot perform {op} operation with {r_op.var_type} {l_op.var_type} operands.')
-        self.__quads.append((op, r_op, l_op, None))
-        self.__operands.push("t")
+        # TODO: Add type to variables.
+        result = OperationsCube.verify(r_op.var_type, l_op.var_type, op)
+        if result == Types.ERROR:
+            raise ValueError(
+                f'Cannot perform {op} operation with {r_op.var_type} {l_op.var_type} operands.')
+
+        memory_address = CompilationMemory.next_temp_memory_space(result.value)
+        self.__quads.append((op, r_op, l_op, memory_address))
+        self.__operands.push(Variable(memory_address, result, memory_address))
 
     def open_par(self):
         self.__operators.push(Operations.FAKE_BOTTOM)
@@ -86,12 +91,14 @@ class Interpreter:
         # TODO: Get last temporal.
         condVar = "cond"
         self.__jumps.push(self.getNextInstructionAddr())
-        self.__quads.append((Operations.GOTOT if isUnless else Operations.GOTOF , condVar, None))
+        self.__quads.append(
+            (Operations.GOTOT if isUnless else Operations.GOTOF, condVar, None))
 
     def end_condition_quad(self):
         condJumpAddr = self.__jumps.pop()
         goToFQuad = self.__quads[condJumpAddr]
-        self.__quads[condJumpAddr] = (goToFQuad[0], goToFQuad[1], self.getNextInstructionAddr())
+        self.__quads[condJumpAddr] = (
+            goToFQuad[0], goToFQuad[1], self.getNextInstructionAddr())
 
     def gen_goto_quad(self):
         self.__quads.append((Operations.GOTO, None))
@@ -101,7 +108,8 @@ class Interpreter:
     def end_while_quad(self):
         goToFAddress = self.__jumps.pop()
         goToFQuad = self.__quads[goToFAddress]
-        self.__quads[goToFAddress] = (goToFQuad[0], goToFQuad[1], self.getNextInstructionAddr())
+        self.__quads[goToFAddress] = (
+            goToFQuad[0], goToFQuad[1], self.getNextInstructionAddr())
 
         self.gen_goto_quad_to(self.__jumps.pop())
 
@@ -118,13 +126,18 @@ class Interpreter:
         return len(self.__quads) - 1
 
     def read_quad(self):
-        self.__quads.append((Operations.READ, "t"))
+        memory_address = CompilationMemory.next_temp_memory_space(
+            Types.STRING.value)
+        self.__quads.append((Operations.READ, Variable(
+            memory_address, Types.STRING.value, memory_address)))
 
     def write_quad(self):
-        self.__quads.append((Operations.WRITE, "t"))
+        operand = self.__operands.pop()
+        self.__quads.append((Operations.WRITE, operand))
 
     def return_quad(self):
-        self.__quads.append((Operations.RETURN, "t"))
+        operand = self.__operands.pop()
+        self.__quads.append((Operations.RETURN, operand))
 
     def start_for_quad(self):
         self.push_instruction_address()
@@ -140,64 +153,67 @@ class Interpreter:
         self.gen_goto_quad_to(self.__jumps.pop())
         goToFAddress = lowerBoundBy
         goToFQuad = self.__quads[goToFAddress]
-        self.__quads[goToFAddress] = (goToFQuad[0], goToFQuad[1], self.getNextInstructionAddr())
+        self.__quads[goToFAddress] = (
+            goToFQuad[0], goToFQuad[1], self.getNextInstructionAddr())
 
     def resolve_dimension_access(self):
         dim_tuple = self.__dim_operands.top()
         dim_variable = dim_tuple[0]
         index = self.__operands.top()
-        self.__quads.append((Operations.VER_ACCS, index, self.getLowerBound(dim_variable), self.getUpperBound(dim_variable)))
+        self.__quads.append((Operations.VER_ACCS, index, self.get_lower_bound(
+            dim_variable), self.get_upper_bound(dim_variable)))
         self.maybe_multiply_for_m(dim_tuple)
         self.__dim_operands.push((dim_tuple[0], dim_tuple[1] + 1))
 
     def maybe_multiply_for_m(self, dim_tuple):
         # Only compute mn*sn for second and higher dimensions.
-        if dim_tuple[1] == 1: return
+        if dim_tuple[1] == 1:
+            return
 
         index = self.__operands.pop()
-        self.__quads.append((Operations.PROD, index, self.getMFor(dim_tuple[0]), "t"))
+        self.__quads.append(
+            (Operations.PROD, index, self.get_m_for(dim_tuple[0]), "t"))
         self.__operands.push("t")
 
     def complete_dimension_access(self):
         dim_variable = self.__dim_operands.pop()[0]
         index = self.__operands.pop()
-        self.__quads.append((Operations.ADD, index, self.getAddressFor(dim_variable), "t"))
+        memory_address = CompilationMemory.next_temp_memory_space(
+            Types.ARRAY_POINTER.value)
+        self.__quads.append((Operations.ADD, index, self.get_address_for(
+            dim_variable), Variable(memory_address, Types.ARRAY_POINTER.value, memory_address)))
 
     def allocate_mem_quad(self, instance, method):
         self.__quads.append((Operations.ERA, instance, method))
 
     def add_method_parameter(self):
-        #TODO: Get param address once memory is implemented.
+        # TODO: Get param address once memory is implemented.
         self.__quads.append((Operations.PARAM, self.__operands.pop()))
 
     def complete_method_call(self, method):
         self.__quads.append((Operations.GOSUB, method))
 
-        #TODO: If method has return assign to temp.
+        # TODO: If method has return assign to temp.
         self.__operands.push("return temp")
 
     def add_end_function_quad(self):
         self.__quads.append(Operations.END_FUNC)
 
-    def getLowerBound(self, dim_variable):
+    def get_lower_bound(self, dim_variable):
         # TODO: Get real value once memory is implemented.
         return "lower_bound"
 
-    def getMFor(self, dim_variable):
+    def get_m_for(self, dim_variable):
         # TODO: Get real value once memory is implemented.
         return "dummy_m"
 
-    def getUpperBound(self, dim_variable):
+    def get_upper_bound(self, dim_variable):
         # TODO: Get real value once memory is implemented.
         return "upper_bound"
 
-    def getAddressFor(self, dim_variable):
+    def get_address_for(self, dim_variable):
         # TODO: Get real value once memory is implemented.
         return "dummy_address"
-
-    def hasMultipleDimensions(self, operand):
-        # TODO: Check dimension once memory is implemented.
-        return operand == "A"
 
     def debug_quads(self):
         logger.debug("==============QUADS==============")
