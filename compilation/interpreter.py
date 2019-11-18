@@ -34,7 +34,7 @@ class Interpreter:
         if variable == None:
             raise ValueError(f'Variable {name} is not defined in program.')
         if variable.has_multiple_dimensions():
-            self.__dim_operands.push((variable, 1))
+            self.__dim_operands.push((variable, 0))
         else:
             self.__operands.push(variable)
 
@@ -48,7 +48,6 @@ class Interpreter:
             raise ValueError(
                 f'Cannot perform {op} operation with {r_op.var_type} {l_op.var_type} operands.')
         self.__quads.append((Operations.ASSIGN, l_op, r_op, None))
-
 
     def check_pending_sum_sub(self) -> bool:
         if not self.__operands.isEmpty() and Operations.is_add_or_sub_op_(self.__operators.top()):
@@ -163,31 +162,31 @@ class Interpreter:
             goToFQuad[0], goToFQuad[1], self.getNextInstructionAddr())
 
     def resolve_dimension_access(self):
-        dim_tuple = self.__dim_operands.top()
+        dim_tuple = self.__dim_operands.pop()
         dim_variable = dim_tuple[0]
+        dimension = dim_variable.getDimensionNumber(dim_tuple[1])
+
         index = self.__operands.top()
-        self.__quads.append((Operations.VER_ACCS, index, self.get_lower_bound(
-            dim_variable), self.get_upper_bound(dim_variable)))
+        self.__quads.append((Operations.VER_ACCS, index, 0, dimension.size))
+
         self.maybe_multiply_for_m(dim_tuple)
         self.__dim_operands.push((dim_tuple[0], dim_tuple[1] + 1))
 
     def maybe_multiply_for_m(self, dim_tuple):
         # Only compute mn*sn for second and higher dimensions.
-        if dim_tuple[1] == 1:
-            return
+        variable = dim_tuple[0]
 
         index = self.__operands.pop()
         self.__quads.append(
-            (Operations.PROD, index, self.get_m_for(dim_tuple[0]), "t"))
-        self.__operands.push("t")
+            (Operations.PROD, index, variable.getDimensionNumber(dim_tuple[1]).m, "t"))
+        self.__operands.push(Variable("t", Types.INT, 100))
 
     def complete_dimension_access(self):
         dim_variable = self.__dim_operands.pop()[0]
         index = self.__operands.pop()
         memory_address = CompilationMemory.next_temp_memory_space(
             Types.ARRAY_POINTER.value)
-        self.__quads.append((Operations.ADD, index, self.get_address_for(
-            dim_variable), Variable(memory_address, Types.ARRAY_POINTER.value, memory_address)))
+        self.__quads.append((Operations.ADD, index, dim_variable.memory_space, Variable(memory_address, Types.ARRAY_POINTER.value, memory_address)))
 
     def allocate_mem_quad(self, instance, method):
         self.__quads.append((Operations.ERA, instance, method))
@@ -206,20 +205,8 @@ class Interpreter:
         self.__quads.append(Operations.END_FUNC)
 
     def get_lower_bound(self, dim_variable):
-        # TODO: Get real value once memory is implemented.
-        return "lower_bound"
-
-    def get_m_for(self, dim_variable):
-        # TODO: Get real value once memory is implemented.
-        return "dummy_m"
-
-    def get_upper_bound(self, dim_variable):
-        # TODO: Get real value once memory is implemented.
-        return "upper_bound"
-
-    def get_address_for(self, dim_variable):
-        # TODO: Get real value once memory is implemented.
-        return "dummy_address"
+        # We are indexing always from 0, C-like style.
+        return 0
 
     def debug_quads(self):
         logger.debug("==============QUADS==============")

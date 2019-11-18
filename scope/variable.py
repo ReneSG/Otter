@@ -30,7 +30,7 @@ class Variable:
         return self._access_modifier
 
     def has_multiple_dimensions(self):
-        return self._dimensions > 0
+        return self._dimension_count > 0
 
     def add_new_dimension(self, size):
         self._size *= size
@@ -39,7 +39,7 @@ class Variable:
         else:
             current_dimension = self._dimension_info
             while current_dimension.has_next_dimension():
-                current_dimension = current_dimension.next_dimension()
+                current_dimension = current_dimension.next_dimension
             current_dimension.next_dimension = Dimension(size)
 
         self._dimension_count += 1
@@ -53,7 +53,16 @@ class Variable:
             current_dimension.m = int(current_m)
             current_dimension = current_dimension.next_dimension
 
+    def getDimensionNumber(self, dimension_number):
+        current_dimension = self._dimension_info
 
+        while dimension_number > 0:
+            current_dimension = current_dimension.next_dimension
+            dimension_number -= 1
+            if current_dimension == None:
+                raise ValueError(f"{self.name} is not indexable.")
+
+        return current_dimension
 
     def debug_dimensions(self):
         print("==============")

@@ -128,7 +128,6 @@ class Compiler:
     def populate_dimension_attributes(name: str):
         variable = Compiler._current_method.variables_directory.search(name)
         variable.populate_dimension_attributes()
-        variable.debug_dimensions()
 
     @staticmethod
     def gen_quad_assign():
