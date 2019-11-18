@@ -19,6 +19,21 @@ class OperationsCube:
             (Types.INT, Types.INT, Operations.SUBS): Types.INT,
             (Types.INT, Types.FLOAT, Operations.SUBS): Types.FLOAT,
 
+            (Types.INT, Types.INT, Operations.EQUAL): Types.BOOL,
+            (Types.INT, Types.FLOAT, Operations.EQUAL): Types.BOOL,
+
+            (Types.INT, Types.INT, Operations.GREATER): Types.BOOL,
+            (Types.INT, Types.FLOAT, Operations.GREATER): Types.BOOL,
+
+            (Types.INT, Types.INT, Operations.GREATER_EQUAL_THAN): Types.BOOL,
+            (Types.INT, Types.FLOAT, Operations.GREATER_EQUAL_THAN): Types.BOOL,
+
+            (Types.INT, Types.INT, Operations.LESS): Types.BOOL,
+            (Types.INT, Types.FLOAT, Operations.LESS): Types.BOOL,
+
+            (Types.INT, Types.INT, Operations.LESS_EQUAL_THAN): Types.BOOL,
+            (Types.INT, Types.FLOAT, Operations.LESS_EQUAL_THAN): Types.BOOL,
+
             # =============== FLOAT ==========================
             (Types.FLOAT, Types.FLOAT, Operations.ASSIGN): Types.FLOAT,
 
@@ -34,11 +49,32 @@ class OperationsCube:
             (Types.FLOAT, Types.INT, Operations.SUBS): Types.FLOAT,
             (Types.FLOAT, Types.FLOAT, Operations.SUBS): Types.FLOAT,
 
+            (Types.FLOAT, Types.INT, Operations.EQUAL): Types.BOOL,
+            (Types.FLOAT, Types.FLOAT, Operations.EQUAL): Types.BOOL,
+
+            (Types.FLOAT, Types.INT, Operations.GREATER): Types.BOOL,
+            (Types.FLOAT, Types.FLOAT, Operations.GREATER): Types.BOOL,
+
+            (Types.FLOAT, Types.INT, Operations.GREATER_EQUAL_THAN): Types.BOOL,
+            (Types.FLOAT, Types.FLOAT, Operations.GREATER_EQUAL_THAN): Types.BOOL,
+
+            (Types.FLOAT, Types.INT, Operations.LESS): Types.BOOL,
+            (Types.FLOAT, Types.FLOAT, Operations.LESS): Types.BOOL,
+
+            (Types.FLOAT, Types.INT, Operations.LESS_EQUAL_THAN): Types.BOOL,
+            (Types.FLOAT, Types.FLOAT, Operations.LESS_EQUAL_THAN): Types.BOOL,
+
             # =============== BOOL ==========================
             (Types.BOOL, Types.BOOL, Operations.ASSIGN): Types.BOOL,
+            (Types.BOOL, Types.BOOL, Operations.AND): Types.BOOL,
+            (Types.BOOL, Types.BOOL, Operations.OR): Types.BOOL,
+            (Types.BOOL, Types.BOOL, Operations.EQUAL): Types.BOOL,
+            (Types.BOOL, None, Operations.NOT): Types.BOOL,
+            (None, Types.BOOL, Operations.NOT): Types.BOOL,
 
             # =============== STRING ==========================
             (Types.STRING, Types.STRING, Operations.ASSIGN): Types.STRING,
+            (Types.STRING, Types.STRING, Operations.EQUAL): Types.STRING,
             }
 
     @staticmethod
