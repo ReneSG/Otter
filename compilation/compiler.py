@@ -121,7 +121,7 @@ class Compiler:
 
         except Exception as error:
             logger.debug(
-                f"Error adding var: {name} {var_type} = {value}, in method {Compiler._current_method.name}. {error}")
+                f"Error adding var: {name} {var_type}, in method {Compiler._current_method.name}. {error}")
             Compiler.errors.append(error)
 
     @staticmethod
