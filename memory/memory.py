@@ -41,15 +41,15 @@ class Memory:
 
     def next_memory_chunk(self, var_type: str, chunk_size: int) -> int:
         if Types.is_int(var_type):
-            return self.__int_memory.next_memory_chunk()
+            return self.__int_memory.next_memory_chunk(chunk_size)
         if Types.is_float(var_type):
-            return self.__float_memory.next_memory_chunk()
+            return self.__float_memory.next_memory_chunk(chunk_size)
         if Types.is_bool(var_type):
-            return self.__bool_memory.next_memory_chunk()
+            return self.__bool_memory.next_memory_chunk(chunk_size)
         if Types.is_string(var_type):
-            return self.__string_memory.next_memory_chunk()
+            return self.__string_memory.next_memory_chunk(chunk_size)
         if Types.is_array_pointer(var_type):
-            raise ValueError("Unable to get memory chunk for ARRAY_POINTER type.")
+            raise ValueError(
+                "Unable to get memory chunk for ARRAY_POINTER type.")
 
-        return self.__object_memory.next_memory_chunk()
-
+        return self.__object_memory.next_memory_chunk(chunk_size)

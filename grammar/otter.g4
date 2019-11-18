@@ -30,6 +30,7 @@ FLOAT: 'float';
 STRING: 'string';
 BOOLEAN: 'boolean';
 AT: '@';
+NEW: 'new';
 
 // Operators
 AND: 'and';
@@ -93,17 +94,17 @@ classAttributes:
         };
 
 classConstructor:
-    access_modifier=accessModifiers const_name=ID {Compiler.add_constructor($const_name.text, $access_modifier.text)} OPEN_PAR arguments? CLOSE_PAR block;
+    access_modifier=accessModifiers const_name=ID {Compiler.add_constructor($const_name.text, $access_modifier.text)} OPEN_PAR arguments? CLOSE_PAR block {Compiler.end_method_scope()};
 
 declaration:
-    LET var_name=ID COLON var_type=otterType {Compiler.add_variable($var_name.text, $var_type.text)} {Compiler.push_variable($var_name.text)} ASSIGN {Compiler.push_op($ASSIGN.text)} expression {Compiler.gen_quad_assign()} SEMICOLON
+    LET var_name=ID COLON var_type=otterType {Compiler.add_variable($var_name.text, $var_type.text)} {Compiler.push_variable($var_name.text)} ASSIGN {Compiler.push_op($ASSIGN.text)} term {Compiler.gen_quad_assign()} SEMICOLON
     | listAssigment;
 
-assignment: <assoc=right> (AT)? reference ASSIGN {Compiler.push_op($ASSIGN.text)} expression {Compiler.gen_quad_assign()} SEMICOLON;
+assignment: <assoc=right> reference ASSIGN {Compiler.push_op($ASSIGN.text)} term {Compiler.gen_quad_assign()} SEMICOLON;
 
 methodCall: instance=ID DOT name=ID {Compiler.allocate_mem_quad($instance.text, $name.text)} OPEN_PAR parameters? CLOSE_PAR {Compiler.complete_method_call($name.text)} SEMICOLON?;
 
-constructorCall: ID OPEN_PAR parameters? CLOSE_PAR;
+constructorCall: NEW ID OPEN_PAR parameters? CLOSE_PAR;
 
 methodDeclaration:
     access_modifier=accessModifiers DEF method_name=ID {Compiler.add_method($method_name.text, $access_modifier.text)
@@ -182,7 +183,7 @@ constant:
 
 reference:
   ID {Compiler.push_variable($ID.text)}
-  | AT ID {Compiler.push_variable($ID.text)}
+  | AT ID {Compiler.push_variable("@" + $ID.text)}
   | listReference;
 
 listReference:

@@ -2,6 +2,9 @@ from .symbol_table import SymbolTable
 from .method_scope import MethodScope
 from .variable import Variable
 from typing import Optional
+from memory.memory import Memory
+from memory.ranges import ScopeRanges
+from scope.scopes import Scopes
 
 
 class ClassScope:
@@ -11,11 +14,13 @@ class ClassScope:
         if inherits is None:
             self._method_directory = SymbolTable(name)
             self._attribute_directory = SymbolTable(name)
+            self._local_memory = Memory(Scopes.LOCAL, ScopeRanges.LOCAL)
         else:
             self._method_directory = SymbolTable(
                 name, inherits.method_directory)
             self._attribute_directory = SymbolTable(
                 name, inherits.attribute_directory)
+            self._local_memory = inherits.local_memory
 
     @property
     def name(self) -> str:
@@ -29,9 +34,18 @@ class ClassScope:
     def attribute_directory(self) -> SymbolTable:
         return self._attribute_directory
 
-    def add_method(self, method_scope: MethodScope) -> None:
+    @property
+    def local_memory(self) -> Memory:
+        return self._local_memory
+
+    def add_method(self, name: str, access_modifier: str) -> MethodScope:
+        method_scope = MethodScope(
+            name, access_modifier, self._attribute_directory, self._local_memory)
         self._method_directory.add_symbol(method_scope)
 
-    def add_attribute(self, name: str, var_type: str, access_modifier: str, memory_space: int) -> None:
-        self._method_directory.add_symbol(
-            Variable(name, var_type, memory_space, access_modifier))
+        return method_scope
+
+    def add_attribute(self, name: str, var_type: str, access_modifier: str) -> None:
+        memory_address = self._local_memory.next_memory_space(var_type)
+        self._attribute_directory.add_symbol(
+            Variable(f"@{name}", var_type, memory_address, access_modifier=access_modifier))
