@@ -5,6 +5,8 @@ class OperationsCube:
 
     cube = {
             # =============== INT ==========================
+            (Types.INT, Types.INT, Operations.ASSIGN): Types.INT,
+
             (Types.INT, Types.INT, Operations.ADD): Types.INT,
             (Types.INT, Types.FLOAT, Operations.ADD): Types.FLOAT,
             (Types.INT, Types.BOOL, Operations.ADD): Types.ERROR,
@@ -26,6 +28,8 @@ class OperationsCube:
             (Types.INT, Types.STRING, Operations.SUBS): Types.ERROR,
 
             # =============== FLOAT ==========================
+            (Types.FLOAT, Types.FLOAT, Operations.ASSIGN): Types.FLOAT,
+
             (Types.FLOAT, Types.INT, Operations.ADD): Types.FLOAT,
             (Types.FLOAT, Types.FLOAT, Operations.ADD): Types.FLOAT,
             (Types.FLOAT, Types.BOOL, Operations.ADD): Types.ERROR,
@@ -47,6 +51,8 @@ class OperationsCube:
             (Types.FLOAT, Types.STRING, Operations.SUBS): Types.ERROR,
 
             # =============== BOOL ==========================
+            (Types.BOOL, Types.BOOL, Operations.ASSIGN): Types.BOOL,
+
             (Types.BOOL, Types.INT, Operations.ADD): Types.ERROR,
             (Types.BOOL, Types.FLOAT, Operations.ADD): Types.ERROR,
             (Types.BOOL, Types.BOOL, Operations.ADD): Types.ERROR,
@@ -67,7 +73,9 @@ class OperationsCube:
             (Types.BOOL, Types.BOOL, Operations.SUBS): Types.ERROR,
             (Types.BOOL, Types.STRING, Operations.SUBS): Types.ERROR,
 
-            # =============== BOOL ==========================
+            # =============== STRING ==========================
+            (Types.STRING, Types.STRING, Operations.ASSIGN): Types.STRING,
+
             (Types.STRING, Types.INT, Operations.ADD): Types.ERROR,
             (Types.STRING, Types.FLOAT, Operations.ADD): Types.ERROR,
             (Types.STRING, Types.BOOL, Operations.ADD): Types.ERROR,

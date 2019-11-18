@@ -96,7 +96,7 @@ classConstructor:
     access_modifier=accessModifiers const_name=ID {Compiler.add_constructor($const_name.text, $access_modifier.text)} OPEN_PAR arguments? CLOSE_PAR block;
 
 declaration:
-    LET var_name=ID COLON var_type=otterType ASSIGN expression {Compiler.add_variable($var_name.text, $var_type.text)} SEMICOLON
+    LET var_name=ID COLON var_type=otterType {Compiler.add_variable($var_name.text, $var_type.text)} {Compiler.push_variable($var_name.text)} ASSIGN {Compiler.push_op($ASSIGN.text)} expression {Compiler.gen_quad_assign()} SEMICOLON
     | listAssigment;
 
 assignment: <assoc=right> (AT)? reference ASSIGN {Compiler.push_op($ASSIGN.text)} expression {Compiler.gen_quad_assign()} SEMICOLON;

@@ -1,8 +1,9 @@
 from typing import Optional
+from helpers.types import Types
 
 
 class Variable:
-    def __init__(self, name: str, var_type: str, memory_space: int, dimensions: int = 0, access_modifier: Optional[str] = None):
+    def __init__(self, name: str, var_type: Types, memory_space: int, dimensions: int = 0, access_modifier: Optional[str] = None):
         self._name = name
         self._memory_space = memory_space
         self._var_type = var_type
@@ -14,7 +15,7 @@ class Variable:
         return self._name
 
     @property
-    def var_type(self) -> str:
+    def var_type(self) -> Types:
         return self._var_type
 
     @property
