@@ -4,6 +4,7 @@ from scope.method_scope import MethodScope
 from scope.symbol_table import SymbolTable
 from typing import List, Optional
 from memory.compilation_memory import CompilationMemory
+from helpers.types import Types
 import logging
 
 
@@ -74,7 +75,8 @@ class Compiler:
     @staticmethod
     def add_method(name: str, access_modifier: str) -> None:
         try:
-            method_scope = Compiler._current_class.add_method(name, access_modifier)
+            method_scope = Compiler._current_class.add_method(
+                name, access_modifier)
             logger.debug(
                 f"Added method: {name}, to class: {Compiler._current_class.name}")
             Compiler._current_method = method_scope
@@ -119,8 +121,18 @@ class Compiler:
 
         except Exception as error:
             logger.debug(
-                f"Error adding var: {name} {var_type}, in method {Compiler._current_method.name}")
+                f"Error adding var: {name} {var_type} = {value}, in method {Compiler._current_method.name}. {error}")
             Compiler.errors.append(error)
+
+    @staticmethod
+    def add_dimension(name: str, size: int):
+        variable = Compiler._current_method.variables_directory.search(name)
+        variable.add_new_dimension(int(size))
+
+    @staticmethod
+    def populate_dimension_attributes(name: str):
+        variable = Compiler._current_method.variables_directory.search(name)
+        variable.populate_dimension_attributes()
 
     @staticmethod
     def gen_quad_assign():

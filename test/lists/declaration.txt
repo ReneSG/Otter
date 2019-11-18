@@ -1,0 +1,10 @@
+Class Main {
+  public Main() {
+    let a: int[10];
+    let b: int[10][20];
+    let c: int[10][20][30];
+    b[1][2] = 2;
+    c[1][2][3] = 2;
+  }
+}
+

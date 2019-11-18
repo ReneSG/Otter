@@ -97,7 +97,7 @@ classConstructor:
     access_modifier=accessModifiers const_name=ID {Compiler.add_constructor($const_name.text, $access_modifier.text)} OPEN_PAR arguments? CLOSE_PAR block {Compiler.end_method_scope()};
 
 declaration:
-    LET var_name=ID COLON var_type=otterType ASSIGN term {Compiler.add_variable($var_name.text, $var_type.text)} SEMICOLON
+    LET var_name=ID COLON var_type=otterType {Compiler.add_variable($var_name.text, $var_type.text)} {Compiler.push_variable($var_name.text)} ASSIGN {Compiler.push_op($ASSIGN.text)} term {Compiler.gen_quad_assign()} SEMICOLON
     | listAssigment;
 
 assignment: <assoc=right> reference ASSIGN {Compiler.push_op($ASSIGN.text)} term {Compiler.gen_quad_assign()} SEMICOLON;
@@ -145,8 +145,7 @@ writeIO:
 readIO: READ OPEN_PAR CLOSE_PAR {Compiler.read_quad()} SEMICOLON;
 
 listAssigment:
-    LET ID COLON LIST LESS otterType GREATER ASSIGN OPEN_SQUARE listElements? CLOSE_SQUARE SEMICOLON
-        ;
+    LET name=ID COLON var_type=otterType {Compiler.add_variable($name.text, $var_type.text)} (OPEN_SQUARE size=INT_PRIMITIVE CLOSE_SQUARE {Compiler.add_dimension($name.text, $size.text)})+ {Compiler.populate_dimension_attributes($name.text)} SEMICOLON;
 
 listElements: term (COMMA term)*;
 
@@ -154,7 +153,7 @@ expression: (NOT {Compiler.push_op($NOT.text)})? relationalExpr {Compiler.maybe_
 
 relationalExpr:comparisonExpr {Compiler.check_pending_and_or()} (op=(AND | OR) {Compiler.push_op($op.text)} relationalExpr {Compiler.check_pending_and_or()})?;
 
-comparisonExpr: expr {Compiler.check_pending_rel_op()} (op=(GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | EQUAL) {Compiler.push_op($op.text)} expr {Compiler.check_pending_rel_op()})?;
+comparisonExpr: expr {Compiler.check_pending_rel_op()} (op=(GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | EQUAL | NOT_EQUAL) {Compiler.push_op($op.text)} expr {Compiler.check_pending_rel_op()})?;
 
 expr: termino {Compiler.check_pending_sum_sub()} (op=(ADD | SUBS) {Compiler.push_op($op.text)} expr {Compiler.check_pending_sum_sub()})?;
 
