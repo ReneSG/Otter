@@ -18,6 +18,7 @@ class Operations(Enum):
     GREATER_EQUAL_THAN = ">="
     LESS = "<"
     LESS_EQUAL_THAN = "<="
+    NOT_EQUAL = "!="
 
     ASSIGN = "="
     NOT = "not"
@@ -43,7 +44,7 @@ class Operations(Enum):
 
     @staticmethod
     def is_rel_op(op) -> bool:
-        return op in [Operations.EQUAL, Operations.GREATER, Operations.GREATER_EQUAL_THAN, Operations.LESS, Operations.LESS_EQUAL_THAN]
+        return op in [Operations.EQUAL, Operations.GREATER, Operations.GREATER_EQUAL_THAN, Operations.LESS, Operations.LESS_EQUAL_THAN, Operations.NOT_EQUAL]
 
     @staticmethod
     def is_and_or_op(op) -> bool:

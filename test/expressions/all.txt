@@ -1,0 +1,17 @@
+Class Main {
+  public Main() {
+    let a: int = 1;
+    let b: float = 1.2;
+    let c: string = "hola";
+    let d: bool = falsy;
+    b = a + b * a / b;
+    a = a * a;
+    b = a / b;
+    d = d and d or d == d;
+    d = a == a and b == a or c == c;
+    d = a >= 5 and b <= a or a == b;
+    d = d != d and a != a or b != b and c != c;
+  }
+}
+
+
