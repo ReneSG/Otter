@@ -39,10 +39,16 @@ class Interpreter:
             self.__operands.push(variable)
 
     def assign(self) -> bool:
-        logger.debug(f"Current quads at assign: {self.quads}")
         op = self.__operators.pop()
         l_op = self.__operands.pop()
-        self.__quads.append((Operations.ASSIGN, op, l_op, None))
+        r_op = self.__operands.pop()
+
+        result = OperationsCube.verify(r_op.var_type, l_op.var_type, op)
+        if result == Types.ERROR:
+            raise ValueError(
+                f'Cannot perform {op} operation with {r_op.var_type} {l_op.var_type} operands.')
+        self.__quads.append((Operations.ASSIGN, l_op, r_op, None))
+
 
     def check_pending_sum_sub(self) -> bool:
         if not self.__operands.isEmpty() and Operations.is_add_or_sub_op_(self.__operators.top()):

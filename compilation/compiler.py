@@ -4,6 +4,7 @@ from scope.method_scope import MethodScope
 from scope.symbol_table import SymbolTable
 from typing import List, Optional
 from memory.compilation_memory import CompilationMemory
+from helpers.types import Types
 import logging
 
 
@@ -97,10 +98,10 @@ class Compiler:
             f"Added return type: {return_type}, in method {Compiler._current_method.name}")
 
     @staticmethod
-    def add_variable(name: str, var_type: str, value: Optional[str]) -> None:
+    def add_variable(name: str, var_type: str, value: Optional[str] = None) -> None:
         try:
             if Compiler._current_method is not None:
-                Compiler._current_method.add_variable(name, var_type, value)
+                Compiler._current_method.add_variable(name, Types(var_type), value)
                 logger.debug(
                     f"Added var: {name} {var_type} = {value}, in method {Compiler._current_method.name}")
             else:
@@ -115,7 +116,7 @@ class Compiler:
 
         except Exception as error:
             logger.debug(
-                f"Error adding var: {name} {var_type} = {value}, in method ")
+                f"Error adding var: {name} {var_type} = {value}, in method. {error}")
             Compiler.errors.append(error)
 
     @staticmethod
