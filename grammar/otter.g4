@@ -144,8 +144,7 @@ writeIO:
 readIO: READ OPEN_PAR CLOSE_PAR {Compiler.read_quad()} SEMICOLON;
 
 listAssigment:
-    LET ID COLON LIST LESS otterType GREATER ASSIGN OPEN_SQUARE listElements? CLOSE_SQUARE SEMICOLON
-        ;
+    LET name=ID COLON var_type=otterType {Compiler.add_variable($name.text, $var_type.text)} (OPEN_SQUARE size=INT_PRIMITIVE CLOSE_SQUARE {Compiler.add_dimension($name.text, $size.text)})+ {Compiler.populate_dimension_attributes($name.text)} SEMICOLON;
 
 listElements: term (COMMA term)*;
 

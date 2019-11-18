@@ -120,6 +120,17 @@ class Compiler:
             Compiler.errors.append(error)
 
     @staticmethod
+    def add_dimension(name: str, size: int):
+        variable = Compiler._current_method.variables_directory.search(name)
+        variable.add_new_dimension(int(size))
+
+    @staticmethod
+    def populate_dimension_attributes(name: str):
+        variable = Compiler._current_method.variables_directory.search(name)
+        variable.populate_dimension_attributes()
+        variable.debug_dimensions()
+
+    @staticmethod
     def gen_quad_assign():
         Compiler._interpreter.assign()
 
