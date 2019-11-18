@@ -7,6 +7,8 @@ class OperationsCube:
             # =============== INT ==========================
             (Types.INT, Types.INT, Operations.ASSIGN): Types.INT,
 
+            (Types.INT, Types.INT, Operations.NOT_EQUAL): Types.BOOL,
+
             (Types.INT, Types.INT, Operations.ADD): Types.INT,
             (Types.INT, Types.FLOAT, Operations.ADD): Types.FLOAT,
 
@@ -37,6 +39,8 @@ class OperationsCube:
             # =============== FLOAT ==========================
             (Types.FLOAT, Types.FLOAT, Operations.ASSIGN): Types.FLOAT,
 
+            (Types.FLOAT, Types.FLOAT, Operations.NOT_EQUAL): Types.BOOL,
+
             (Types.FLOAT, Types.INT, Operations.ADD): Types.FLOAT,
             (Types.FLOAT, Types.FLOAT, Operations.ADD): Types.FLOAT,
 
@@ -66,6 +70,7 @@ class OperationsCube:
 
             # =============== BOOL ==========================
             (Types.BOOL, Types.BOOL, Operations.ASSIGN): Types.BOOL,
+            (Types.BOOL, Types.BOOL, Operations.NOT_EQUAL): Types.BOOL,
             (Types.BOOL, Types.BOOL, Operations.AND): Types.BOOL,
             (Types.BOOL, Types.BOOL, Operations.OR): Types.BOOL,
             (Types.BOOL, Types.BOOL, Operations.EQUAL): Types.BOOL,
@@ -74,6 +79,7 @@ class OperationsCube:
 
             # =============== STRING ==========================
             (Types.STRING, Types.STRING, Operations.ASSIGN): Types.STRING,
+            (Types.STRING, Types.STRING, Operations.NOT_EQUAL): Types.BOOL,
             (Types.STRING, Types.STRING, Operations.EQUAL): Types.BOOL,
             }
 

@@ -10,6 +10,7 @@ Class Main {
     d = d and d or d == d;
     d = a == a and b == a or c == c;
     d = a >= 5 and b <= a or a == b;
+    d = d != d and a != a or b != b and c != c;
   }
 }
 

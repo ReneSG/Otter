@@ -152,7 +152,7 @@ expression: (NOT {Compiler.push_op($NOT.text)})? relationalExpr {Compiler.maybe_
 
 relationalExpr:comparisonExpr {Compiler.check_pending_and_or()} (op=(AND | OR) {Compiler.push_op($op.text)} relationalExpr {Compiler.check_pending_and_or()})?;
 
-comparisonExpr: expr {Compiler.check_pending_rel_op()} (op=(GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | EQUAL) {Compiler.push_op($op.text)} expr {Compiler.check_pending_rel_op()})?;
+comparisonExpr: expr {Compiler.check_pending_rel_op()} (op=(GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | EQUAL | NOT_EQUAL) {Compiler.push_op($op.text)} expr {Compiler.check_pending_rel_op()})?;
 
 expr: termino {Compiler.check_pending_sum_sub()} (op=(ADD | SUBS) {Compiler.push_op($op.text)} expr {Compiler.check_pending_sum_sub()})?;
 
