@@ -1,0 +1,29 @@
+Class A {
+  public let a: int;
+
+  public A() {
+
+  }
+} 
+
+Class Main {
+  public let objA: A;
+  public let objA2: A;
+  public let a: int;
+
+  public Main() {
+    @objA = new A();
+    @objA2 = new A();
+    @a = 1;
+  }
+
+  public def modifyA(): void {
+    let a: int = 1;
+    @a = 2;
+  }
+
+  public def modifyA2(): void {
+    let a: int = 1;
+    @a = 2;
+  }
+}

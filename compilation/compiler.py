@@ -13,6 +13,21 @@ logger = logging.getLogger('compiler.Compiler')
 
 
 class Compiler:
+    """The compiler is a static class responsible for taking all the input from the 
+       Parser/Lexer and adding it to the correct places (Interpreter, Scopes, Directories), 
+       as well as handling errors.
+
+       The main parts of the Compiler are:
+         _global_scope [MethodScope] = Keeps track of all the global variables in our program.
+         _current_method [MethodScope] = Keeps track of the current method being parsed, this allows
+            us to add all the parameters, return type, and adding the variables to the correct
+            method.
+         _current_class [ClassScope] = Keeps track of the current class being parsed, this allows us
+           to add all the methods and attributes to the correct class.
+         _interpreter [Interpreter] = Responsible for generating all the quadruples based on input from
+           the parser. 
+         errors [List[str]]: Responsible for keeping track of all errors in Otter.
+    """
     _global_scope: MethodScope = MethodScope("Global Scope", "private")
     _current_method: MethodScope = _global_scope
     _current_class: ClassScope = None
@@ -58,10 +73,8 @@ class Compiler:
 
     @staticmethod
     def add_method(name: str, access_modifier: str) -> None:
-        method_scope = MethodScope(
-            name, access_modifier, Compiler._current_class.attribute_directory)
         try:
-            Compiler._current_class.add_method(method_scope)
+            method_scope = Compiler._current_class.add_method(name, access_modifier)
             logger.debug(
                 f"Added method: {name}, to class: {Compiler._current_class.name}")
             Compiler._current_method = method_scope
@@ -80,6 +93,7 @@ class Compiler:
                 f"Constructor {name} must have the same name as the class {Compiler._current_class.name}")
 
         Compiler.add_method(f"constructor_{name}", access_modifier)
+        Compiler.add_return_type(name)
 
     @staticmethod
     def add_method_argument(name: str, arg_type: str) -> None:
@@ -97,25 +111,15 @@ class Compiler:
             f"Added return type: {return_type}, in method {Compiler._current_method.name}")
 
     @staticmethod
-    def add_variable(name: str, var_type: str, value: Optional[str]) -> None:
+    def add_variable(name: str, var_type: str) -> None:
         try:
-            if Compiler._current_method is not None:
-                Compiler._current_method.add_variable(name, var_type, value)
-                logger.debug(
-                    f"Added var: {name} {var_type} = {value}, in method {Compiler._current_method.name}")
-            else:
-                # This is a global variable, it will be added as a private attribute
-                # To not be used as a public instance variable.
-                memory_space = CompilationMemory.next_global_memory_space(
-                    var_type)
-                Compiler._current_class.add_attribute(
-                    name, var_type, "private", memory_space)
-                logger.debug(
-                    f"Added global var: {name} {var_type} = {value}, in {Compiler._current_class.name}")
+            Compiler._current_method.add_variable(name, var_type)
+            logger.debug(
+                f"Added var: {name} {var_type}, in method {Compiler._current_method.name}")
 
         except Exception as error:
             logger.debug(
-                f"Error adding var: {name} {var_type} = {value}, in method ")
+                f"Error adding var: {name} {var_type}, in method {Compiler._current_method.name}")
             Compiler.errors.append(error)
 
     @staticmethod
@@ -143,6 +147,7 @@ class Compiler:
     def push_variable(name):
         if Compiler._current_method is not None:
             current_scope = Compiler._current_method
+            logger.debug(current_scope.variables_directory)
         else:
             current_scope = Compiler._current_class
 

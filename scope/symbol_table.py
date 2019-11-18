@@ -1,6 +1,8 @@
 from .variable import Variable
 from typing import Optional, Dict, Any
+import logging
 
+logger = logging.getLogger(__name__)
 
 class SymbolTable:
     # Recursive typing, see: https://stackoverflow.com/a/38341145
@@ -8,6 +10,9 @@ class SymbolTable:
         self._parent = parent
         self._name = name
         self._symbols = dict()
+
+    def __str__(self):
+        return f"Name: {self._name}\n Parent: {self._parent}\n Symbols ({self._name}):\n {self._symbols}"
 
     @property
     def name(self) -> str:
@@ -34,4 +39,6 @@ class SymbolTable:
             raise Exception(
                 f'Symbol "{symbol.name}" already exists in {self._name}.')
 
+        logger.debug(f"Added {symbol.name} to {self._name}")
         self._symbols[symbol.name] = symbol
+        logger.debug(self._symbols)
