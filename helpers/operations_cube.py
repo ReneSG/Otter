@@ -74,7 +74,7 @@ class OperationsCube:
 
             # =============== STRING ==========================
             (Types.STRING, Types.STRING, Operations.ASSIGN): Types.STRING,
-            (Types.STRING, Types.STRING, Operations.EQUAL): Types.STRING,
+            (Types.STRING, Types.STRING, Operations.EQUAL): Types.BOOL,
             }
 
     @staticmethod
