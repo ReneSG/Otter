@@ -75,6 +75,9 @@ class Compiler:
     @staticmethod
     def add_method(name: str, access_modifier: str) -> None:
         try:
+            # Clear temporary when starting new method.
+            CompilationMemory.clear_temp_memory()
+
             method_scope = Compiler._current_class.add_method(
                 name, access_modifier)
             logger.debug(
