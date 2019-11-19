@@ -66,10 +66,12 @@ class Compiler:
     def add_instance_variable(name: str, var_type: str, access_modifier: str) -> None:
         try:
             Compiler._current_class.add_attribute(
-                name, Types(var_type), access_modifier)
+                name, var_type, access_modifier)
             logger.debug(
                 f"Added attribute: {access_modifier} {name} {var_type}, to class: {Compiler._current_class.name}")
         except Exception as error:
+            logger.debug(
+                f"Error adding instance var: {name} {var_type}, in method {Compiler._current_method.name}. {error}")
             Compiler.errors.append(error)
 
     @staticmethod
@@ -119,7 +121,7 @@ class Compiler:
     @staticmethod
     def add_variable(name: str, var_type: str) -> None:
         try:
-            Compiler._current_method.add_variable(name, Types(var_type))
+            Compiler._current_method.add_variable(name, var_type)
             logger.debug(
                 f"Added var: {name} {var_type}, in method {Compiler._current_method.name}")
 

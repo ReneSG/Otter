@@ -26,7 +26,7 @@ class Interpreter:
         self.__operators.push(Operations(operator))
 
     def push_constant(self, type_, memory_space):
-        new_variable = Variable(memory_space, Types(type_), memory_space)
+        new_variable = Variable(memory_space, type_, memory_space)
         self.__operands.push(new_variable)
 
     def push_variable(self, current_scope, name):
@@ -132,9 +132,9 @@ class Interpreter:
 
     def read_quad(self):
         memory_address = CompilationMemory.next_temp_memory_space(
-            Types.STRING.value)
+            Types.STRING)
         self.__quads.append((Operations.READ, Variable(
-            memory_address, Types.STRING.value, memory_address)))
+            memory_address, Types.STRING, memory_address)))
 
     def write_quad(self):
         operand = self.__operands.pop()
@@ -185,8 +185,8 @@ class Interpreter:
         dim_variable = self.__dim_operands.pop()[0]
         index = self.__operands.pop()
         memory_address = CompilationMemory.next_temp_memory_space(
-            Types.ARRAY_POINTER.value)
-        self.__quads.append((Operations.ADD, index, dim_variable.memory_space, Variable(memory_address, Types.ARRAY_POINTER.value, memory_address)))
+            Types.ARRAY_POINTER)
+        self.__quads.append((Operations.ADD, index, dim_variable.memory_space, Variable(memory_address, Types.ARRAY_POINTER, memory_address)))
 
     def allocate_mem_quad(self, instance, method):
         self.__quads.append((Operations.ERA, instance, method))
