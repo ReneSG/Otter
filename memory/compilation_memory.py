@@ -24,4 +24,4 @@ class CompilationMemory:
 
     @staticmethod
     def clear_temp_memory() -> None:
-        CompilationMemory.__temp_memory = Memory(Scopes.TEMP, Scopes.TEMP)
+        CompilationMemory.__temp_memory = Memory(Scopes.TEMP, ScopeRanges.TEMP)
