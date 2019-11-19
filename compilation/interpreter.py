@@ -177,9 +177,12 @@ class Interpreter:
         variable = dim_tuple[0]
 
         index = self.__operands.pop()
+        memory_address = CompilationMemory.next_temp_memory_space(
+            Types.INT)
+        new_temp = Variable(memory_address, Types.INT, memory_address)
         self.__quads.append(
-            (Operations.PROD, index, variable.getDimensionNumber(dim_tuple[1]).m, "t"))
-        self.__operands.push(Variable("t", Types.INT, 100))
+            (Operations.PROD, index, variable.getDimensionNumber(dim_tuple[1]).m, new_temp))
+        self.__operands.push(new_temp)
 
     def complete_dimension_access(self):
         dim_variable = self.__dim_operands.pop()[0]
