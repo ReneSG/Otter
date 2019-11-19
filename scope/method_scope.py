@@ -43,7 +43,7 @@ class MethodScope:
         return self._return_type
 
     @property
-    def _return_memory_address(self):
+    def return_memory_address(self):
         return self._return_memory_address
 
     def add_return_type(self, return_type: str) -> None:
