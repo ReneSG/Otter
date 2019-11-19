@@ -44,7 +44,7 @@ class Interpreter:
         r_op = self.__operands.pop()
 
         result = OperationsCube.verify(r_op.var_type, l_op.var_type, op)
-        if result == Types.ERROR:
+        if r_op.var_type != l_op.var_type and result == Types.ERROR:
             raise ValueError(
                 f'Cannot perform {op} operation with {r_op.var_type} {l_op.var_type} operands.')
         self.__quads.append((Operations.ASSIGN, l_op, r_op, None))
@@ -199,7 +199,7 @@ class Interpreter:
         self.__quads.append((Operations.GOSUB, method))
 
         # TODO: If method has return assign to temp.
-        self.__operands.push("return temp")
+        self.__operands.push(Variable("t", "A", ""))
 
     def add_end_function_quad(self):
         self.__quads.append(Operations.END_FUNC)

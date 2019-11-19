@@ -104,7 +104,7 @@ assignment: <assoc=right> reference ASSIGN {Compiler.push_op($ASSIGN.text)} term
 
 methodCall: instance=ID DOT name=ID {Compiler.allocate_mem_quad($instance.text, $name.text)} OPEN_PAR parameters? CLOSE_PAR {Compiler.complete_method_call($name.text)} SEMICOLON?;
 
-constructorCall: NEW ID OPEN_PAR parameters? CLOSE_PAR;
+constructorCall: NEW name=ID OPEN_PAR {Compiler.allocate_mem_quad("constructor", $name.text)} parameters? CLOSE_PAR {Compiler.complete_method_call($name.text)} SEMICOLON?;
 
 methodDeclaration:
     access_modifier=accessModifiers DEF method_name=ID {Compiler.add_method($method_name.text, $access_modifier.text)
