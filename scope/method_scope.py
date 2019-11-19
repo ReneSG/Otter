@@ -26,6 +26,7 @@ class MethodScope:
         # which goes after the arguments
         self._arguments = SymbolTable(f'{name} Arguments', parent)
         self._return_type = None
+        self._return_memory_address = -1
 
         self._variables_directory = SymbolTable(name, self._arguments)
 
@@ -37,8 +38,18 @@ class MethodScope:
     def variables_directory(self) -> SymbolTable:
         return self._variables_directory
 
+    @property
+    def return_type(self) -> str:
+        return self._return_type
+
+    @property
+    def return_memory_address(self):
+        return self._return_memory_address
+
     def add_return_type(self, return_type: str) -> None:
         self._return_type = return_type
+        if return_type != "void":
+            self._return_memory_address = CompilationMemory.next_global_memory_space(return_type)
 
     def add_argument(self, name: str, arg_type: str) -> None:
         memory_space = self._local_memory.next_memory_space(arg_type)

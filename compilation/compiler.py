@@ -75,6 +75,9 @@ class Compiler:
     @staticmethod
     def add_method(name: str, access_modifier: str) -> None:
         try:
+            # Clear temporary when starting new method.
+            CompilationMemory.clear_temp_memory()
+
             method_scope = Compiler._current_class.add_method(
                 name, access_modifier)
             logger.debug(
@@ -85,6 +88,7 @@ class Compiler:
 
     @staticmethod
     def end_method_scope() -> None:
+        logger.debug(f"Ended method {Compiler._current_method.name} scope.")
         Compiler._current_method = Compiler._global_scope
         Compiler._interpreter.add_end_function_quad()
 
@@ -157,11 +161,8 @@ class Compiler:
 
     @staticmethod
     def push_variable(name):
-        if Compiler._current_method is not None:
-            current_scope = Compiler._current_method
-            logger.debug(current_scope.variables_directory)
-        else:
-            current_scope = Compiler._current_class
+        current_scope = Compiler._current_method
+        logger.debug(current_scope.variables_directory)
 
         Compiler._interpreter.push_variable(current_scope, name)
 
