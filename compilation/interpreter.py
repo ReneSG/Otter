@@ -82,7 +82,7 @@ class Interpreter:
             raise ValueError(
                 f'Cannot perform {op} operation with {r_op.var_type} {l_op.var_type} operands.')
 
-        memory_address = CompilationMemory.next_temp_memory_space(result.value)
+        memory_address = CompilationMemory.next_temp_memory_space(result)
         self.__quads.append((op, r_op, l_op, memory_address))
         self.__operands.push(Variable(memory_address, result, memory_address))
 
