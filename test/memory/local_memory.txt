@@ -2,7 +2,7 @@ Class A {
   public let a: int;
 
   public A() {
-
+    @a = 2 + 3;
   }
 
   public def foo(): int {

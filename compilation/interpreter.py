@@ -216,6 +216,9 @@ class Interpreter:
         # We are indexing always from 0, C-like style.
         return 0
 
+    def gen_start_quad(self):
+        self.__quads.insert(0, (Operations.GOTO, self.getNextInstructionAddr() + 1))
+
     def debug_quads(self):
         logger.debug("==============QUADS==============")
         for i in range(0, len(self.__quads)):

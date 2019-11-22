@@ -105,6 +105,7 @@ class Compiler:
             logger.debug(
                 f"Added method: {name}, to class: {Compiler._current_class.name}")
             Compiler._current_method = method_scope
+
         except Exception as error:
             Compiler.errors.append(error)
 
@@ -132,6 +133,8 @@ class Compiler:
 
         Compiler.add_method(f"constructor_{name}", access_modifier)
         Compiler.add_return_type(name)
+        if name == "Main":
+            Compiler._interpreter.gen_start_quad()
 
     @staticmethod
     def add_method_argument(name: str, arg_type: str) -> None:
