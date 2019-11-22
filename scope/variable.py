@@ -23,6 +23,9 @@ class Variable:
 
     def __str__(self):
         return f"Var: {self._name} | Type: {self._var_type} | Access: {self._access_modifier} | Memory: {self._memory_space}"
+    
+    def __repr__(self):
+        return f"<{self._name}: {self._var_type} | {self._memory_space}>"
 
     @property
     def name(self) -> str:

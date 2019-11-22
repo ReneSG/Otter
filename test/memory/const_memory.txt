@@ -9,10 +9,10 @@ Class Main {
     let myInt3: int = 5;
     let myInt4: int = 5;
 
-    let myStr: str = "123";
-    let myStr2: str = "123";
-    let myStr3: str = "456";
-    let myStr4: str = "456";
+    let myStr: string = "123";
+    let myStr2: string = "123";
+    let myStr3: string = "456";
+    let myStr4: string = "456";
 
     let myBool: bool = truthy;
     let myBool2: bool = truthy;
