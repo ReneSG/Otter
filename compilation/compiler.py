@@ -211,7 +211,7 @@ class Compiler:
     @staticmethod
     def push_variable(name):
         current_scope = Compiler._current_method
-        logger.debug(current_scope.variables_directory)
+        # logger.debug(current_scope.variables_directory)
 
         Compiler._interpreter.push_variable(current_scope, name)
 

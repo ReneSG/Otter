@@ -11,7 +11,7 @@ class Variable:
             - name [str]: The name of the variable.
             - var_type [Types]: The type of the variable.
             - memory_space [int]: Where this variable is stored in memory.
-            - access_modifier [str]: Optional, if a variable is global it does not have one. Whether the variable is public or private.  
+            - access_modifier [str]: Optional, if a variable is global/local it does not have one. Whether the variable is public or private.  
         """
         self._name = name
         self._memory_space = memory_space
@@ -20,6 +20,9 @@ class Variable:
         self._dimension_info = None
         self._dimension_count = 0
         self._size = 1
+
+    def __str__(self):
+        return f"Var: {self._name} | Type: {self._var_type} | Access: {self._access_modifier} | Memory: {self._memory_space}"
 
     @property
     def name(self) -> str:

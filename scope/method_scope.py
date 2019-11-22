@@ -27,7 +27,6 @@ class MethodScope:
         if parent is not None:
             logger.debug(
                 f"Created MethodScope {access_modifier} {name}, parent {parent.name}")
-            logger.debug(parent)     
 
         # These are added later, as there could be multiple arguments,
         # so we parse them one by one, and finally add the return type

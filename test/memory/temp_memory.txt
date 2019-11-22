@@ -4,6 +4,7 @@ Class Main {
   }
 
   public def testPublic(): void {
-    let a: int = 1 + 2 * 3 / 4;
+    let a: int = 1 + 2;
+    let b: int = a;
   }
 }

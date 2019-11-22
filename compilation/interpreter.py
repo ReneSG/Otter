@@ -40,14 +40,15 @@ class Interpreter:
 
     def assign(self) -> bool:
         op = self.__operators.pop()
-        l_op = self.__operands.pop()
         r_op = self.__operands.pop()
+        l_op = self.__operands.pop()
 
         result = OperationsCube.verify(r_op.var_type, l_op.var_type, op)
         if r_op.var_type != l_op.var_type and result == Types.ERROR:
             raise ValueError(
                 f'Cannot perform {op} operation with {r_op.var_type} {l_op.var_type} operands.')
-        self.__quads.append((Operations.ASSIGN, l_op, r_op, None))
+
+        self.__quads.append((Operations.ASSIGN, l_op, r_op, l_op.memory_space))
 
     def check_pending_sum_sub(self) -> bool:
         if not self.__operands.isEmpty() and Operations.is_add_or_sub_op_(self.__operators.top()):
@@ -83,7 +84,7 @@ class Interpreter:
                 f'Cannot perform {op} operation with {r_op.var_type} {l_op.var_type} operands.')
 
         memory_address = CompilationMemory.next_temp_memory_space(result)
-        self.__quads.append((op, r_op, l_op, memory_address))
+        self.__quads.append((op, l_op, r_op, memory_address))
         self.__operands.push(Variable(memory_address, result, memory_address))
 
     def open_par(self):

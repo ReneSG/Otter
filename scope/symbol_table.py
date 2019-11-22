@@ -83,4 +83,3 @@ class SymbolTable:
 
         logger.debug(f"Added {symbol.name} to {self._name}")
         self._symbols[symbol.name] = symbol
-        logger.debug(self._symbols)
