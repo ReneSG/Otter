@@ -4,6 +4,24 @@ from collections import namedtuple
 range_tuple = namedtuple('range_tuple', 'inf max')
 
 
+def merge_ranges(scope_range: (int, int), type_range: (int, int)):
+    """Merges a scope range and a type ranges.
+
+    E.g. Local: (10000, 19999) and Bool: (4000, 5999) = (14000, 15999)
+
+    Arguments:
+        - scope_range [(int, int)]: a valid ScopeRange.
+        - type_range [(int, int)]: a valid TypeRange.
+
+    Returns:
+        The merged range tuple.
+    """
+    inf_scope_range, _ = scope_range
+    inf_type_range, max_type_range = type_range
+
+    return (inf_scope_range + inf_type_range, inf_scope_range + max_type_range)
+
+
 class ScopeRanges():
     """The ranges in memory for the different types of scope."""
     GLOBAL = range_tuple(0, 9999)

@@ -1,35 +1,33 @@
 from .base_memory import BaseMemory
-from .ranges import TypeRanges
+from .ranges import TypeRanges, merge_ranges
 from helpers.types import Types
 from scope.variable import Variable
 from scope.scopes import Scopes
 
 
 class Memory:
-    def __init__(self, scope_name: str, limits: (int, int)):
+    def __init__(self, scope_name: str, scope_limits: (int, int)):
         """The Memory class groups several BaseMemory classes of different types (int, string, bool, float, objects, pointers).
 
         Arguments:
             - scope_name [str]: The name of the scope
             - limits [(int, int)]: The limits of this type of scope. One of ScopeRanges.
         """
-        self.__inf_limit = limits.inf
-        self.__max_limit = limits.max
         self.__scope_name = scope_name
-        self.__int_memory = BaseMemory(scope_name, Types.INT, TypeRanges.INT)
+        self.__int_memory = BaseMemory(scope_name, Types.INT, merge_ranges(scope_limits, TypeRanges.INT))
         self.__float_memory = BaseMemory(
-            scope_name, Types.FLOAT, TypeRanges.FLOAT)
+            scope_name, Types.FLOAT, merge_ranges(scope_limits, TypeRanges.FLOAT))
         self.__bool_memory = BaseMemory(
-            scope_name, Types.BOOL, TypeRanges.BOOL)
+            scope_name, Types.BOOL, merge_ranges(scope_limits, TypeRanges.BOOL))
         self.__string_memory = BaseMemory(
-            scope_name, Types.STRING, TypeRanges.STRING)
+            scope_name, Types.STRING, merge_ranges(scope_limits, TypeRanges.STRING))
         self.__object_memory = BaseMemory(
-            scope_name, Types.OBJECT, TypeRanges.OBJECT)
+            scope_name, Types.OBJECT, merge_ranges(scope_limits, TypeRanges.OBJECT))
 
         # If memory is temporary we need to store array pointer values as well.
         if Scopes.is_temp_scope(scope_name):
             self.__array_pointer_memory = BaseMemory(
-                scope_name, Types.ARRAY_POINTER, TypeRanges.ARRAY_POINTER)
+                scope_name, Types.ARRAY_POINTER, merge_ranges(scope_limits, TypeRanges.ARRAY_POINTER))
 
     def next_memory_space(self, var_type: str) -> int:
         """Gets the next memory address for the type of variable.
