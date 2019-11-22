@@ -210,7 +210,7 @@ class Interpreter:
         self.__operands.push(temp)
 
     def add_end_function_quad(self):
-        self.__quads.append(Operations.END_FUNC)
+        self.__quads.append((Operations.END_FUNC,))
 
     def get_lower_bound(self, dim_variable):
         # We are indexing always from 0, C-like style.
@@ -223,6 +223,6 @@ class Interpreter:
         return self.__quads
 
     def debug_quads(self):
-        logger.debug("==============QUADS==============")
+        logger.debug("===========================================QUADS===========================================")
         for i in range(0, len(self.__quads)):
             logger.debug(f"{i}, {self.__quads[i]}")

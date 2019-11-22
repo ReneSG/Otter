@@ -22,6 +22,22 @@ def merge_ranges(scope_range: (int, int), type_range: (int, int)):
     return (inf_scope_range + inf_type_range, inf_scope_range + max_type_range)
 
 
+def remove_base_prefix(address: int) -> int:
+    """Removes the inferior range of the scope from the address.
+
+    E.g. address = 24000, CONST ranges is (20000, 29999) = 4000
+
+    Arguments:
+        - address [int]: The address to remove the prefix from.
+
+    Returns:
+        - [int] the address without the prefix.
+
+    """
+    inf_range, _ = ScopeRanges.get_range(address)
+    return address - inf_range
+
+
 class ScopeRanges():
     """The ranges in memory for the different types of scope."""
     GLOBAL = range_tuple(0, 9999)
@@ -78,6 +94,28 @@ class ScopeRanges():
             - [bool] True if it is const. False otherwise.
         """
         return ScopeRanges.CONSTANTS.inf <= value <= ScopeRanges.CONSTANTS.max
+
+    @staticmethod
+    def get_range(address: int) -> (int, int):
+        """Gets the range an address belongs to.
+
+        Arguments:
+            - address [int] = The address to evaluate.
+
+        Returns:
+            - [(int, int)] The tuple of the ranges.
+
+        """
+        if ScopeRanges.is_global(address):
+            return ScopeRanges.GLOBAL
+        if ScopeRanges.is_local(address):
+            return ScopeRanges.LOCAL
+        if ScopeRanges.is_const(address):
+            return ScopeRanges.CONSTANTS
+        if ScopeRanges.is_temp(address):
+            return ScopeRanges.TEMP
+
+        raise ValueError(f"Invalid memory address: f{address}.")
 
 
 class TypeRanges():

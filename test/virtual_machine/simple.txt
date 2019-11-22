@@ -3,5 +3,9 @@ let b: int = 3;
 Class Main {
   public Main() {
     let a: int = 1 + 5;
+    let b: int = 1 - 5;
+
+    let c: float = 1.1 + 2.2;
+    let d: float = 6 - 1.5;
   }
 }

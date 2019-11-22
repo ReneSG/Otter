@@ -9,6 +9,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 def main(argv):
     input_stream = FileStream(argv[1])
     lexer = otterLexer(input_stream)
@@ -18,7 +19,9 @@ def main(argv):
     #   print(Trees.toStringTree(tree, None, parser))
 
     if parser.getNumberOfSyntaxErrors() == 0 and len(Compiler.errors) == 0:
-        print("PROGRAMA CORRECTO")
+        logger.debug("PROGRAMA CORRECTO")
+        logger.debug(
+            "===========================================STARTING VIRTUAL MACHINE EXECUTION===========================================")
         quads = Compiler.get_quads()
         vm = VirtualMachine(quads)
         vm.run()
