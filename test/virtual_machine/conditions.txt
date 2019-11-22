@@ -1,0 +1,5 @@
+Class Main {
+  public Main() {
+  }
+}
+

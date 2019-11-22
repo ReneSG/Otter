@@ -4,11 +4,16 @@ Class Main {
   public Main() {
     let a: int = 1 + 5;
     let b: int = 1 - 5;
+    let aa: int = a + a;
 
     let c: float = 1.1 + 2.2;
     let d: float = 6 - 1.5;
     let e: float = 8 * 10.0;
     let f: float = 10.0/9;
     let g: float = 10.0 - 4 / 3;
+    let h: float = 10 - 4.0 * 29 - 10 / 5;
+
+    let i: bool = falsy == falsy;
+    let j: bool = 10 >= 11;
   }
 }

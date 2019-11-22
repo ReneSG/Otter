@@ -1,0 +1,12 @@
+let b: int = 3;
+
+Class Main {
+  public Main() {
+    let a: int = 1 + 5;
+    let aa: int = a + a;
+
+    write(aa);
+    write(10 + 10 * 20);
+  }
+}
+

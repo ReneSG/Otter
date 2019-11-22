@@ -140,7 +140,7 @@ forLoop:
 returnStatement: RETURN term {Compiler.return_quad()} SEMICOLON;
 
 writeIO:
-    WRITE OPEN_PAR (STRING_PRIMITIVE | ID) {Compiler.write_quad()} CLOSE_PAR SEMICOLON;
+    WRITE OPEN_PAR term {Compiler.write_quad()} CLOSE_PAR SEMICOLON;
 
 readIO: READ OPEN_PAR CLOSE_PAR {Compiler.read_quad()} SEMICOLON;
 
@@ -176,7 +176,8 @@ otterType: INT | FLOAT | STRING | BOOLEAN | ID;
 returnType: otterType | VOID;
 
 constant:
-    BOOLEAN_PRIMITIVE {Compiler.push_constant('bool', $BOOLEAN_PRIMITIVE.text)}
+      'truthy' {Compiler.push_constant('bool', True)}
+    |  'falsy' {Compiler.push_constant('bool', False)}
     | FLOAT_PRIMITIVE {Compiler.push_constant('float', $FLOAT_PRIMITIVE.text)}
     | INT_PRIMITIVE {Compiler.push_constant('int', $INT_PRIMITIVE.text)}
     | STRING_PRIMITIVE {Compiler.push_constant('string', $STRING_PRIMITIVE.text)};

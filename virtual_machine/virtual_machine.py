@@ -29,6 +29,8 @@ class VirtualMachine:
             Operations.LESS_EQUAL_THAN: self.solveExpression,
             Operations.NOT: self.solveExpression,
             Operations.EQUAL: self.solveExpression,
+
+            Operations.WRITE: self.write,
         }
 
         self.__expression_operations = {
@@ -68,28 +70,12 @@ class VirtualMachine:
         logger.debug(f"Added values: {quad[1]} + {quad[2]} = {result}")
         self.increase_instruction_pointer()
 
-    def add(self):
+    def write(self):
         quad = self.current_instruction
 
-        # TODO: search whole memory instead of const memory
-        l_val, _ = self.__const_memory.get_value(quad[1])
-        r_val, _ = self.__const_memory.get_value(quad[2])
-        result = literal_eval(l_val) + literal_eval(r_val)
-        self.__method_memory.set_value(quad[3], result)
-
-        logger.debug(f"Added values: {quad[1]} + {quad[2]} = {result}")
+        val = self.__method_memory.get_value(quad[1].memory_space)
+        print(val)
         self.increase_instruction_pointer()
-
-    def sub(self):
-        quad = self.current_instruction
-        l_val, _ = self.__const_memory.get_value(quad[1])
-        r_val, _ = self.__const_memory.get_value(quad[2])
-        result = literal_eval(l_val) - literal_eval(r_val)
-        self.__method_memory.set_value(quad[3], result)
-
-        logger.debug(f"Sub values: {quad[1]} + {quad[2]} = {result}")
-        self.increase_instruction_pointer()
-
 
     def assign(self):
         quad = self.current_instruction
