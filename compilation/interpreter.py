@@ -199,7 +199,10 @@ class Interpreter:
         # TODO: Get param address once memory is implemented.
         self.__quads.append((Operations.PARAM, self.__operands.pop()))
 
-    def complete_method_call(self, method_scope):
+    def complete_method_call(self, method_scope, instance):
+        # Handle weird case when the instance is detected as an operand.
+        if instance != None:
+            self.__operands.pop()
         self.__quads.append((Operations.GOSUB, method_scope.name))
         next_address = CompilationMemory.next_temp_memory_space(method_scope.return_type)
         temp = Variable(next_address, method_scope.return_type, next_address)

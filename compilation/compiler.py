@@ -296,6 +296,16 @@ class Compiler:
         Compiler._interpreter.add_method_parameter()
 
     @staticmethod
-    def complete_method_call(method):
-        method_scope = Compiler._class_directory.search(method).method_directory.search(f"constructor_{method}")
-        Compiler._interpreter.complete_method_call(method_scope)
+    def complete_method_call(method, instance = None):
+        class_name = ""
+        method_name = ""
+        if instance == None:
+            # Case when method is the constructor
+            class_name = method
+            method_name = f"constructor_{method}"
+        else:
+            # Case for regular methods
+            class_name = Compiler._current_method.variables_directory.search(instance).var_type
+            method_name = method
+        method_scope = Compiler._class_directory.search(class_name).method_directory.search(method_name)
+        Compiler._interpreter.complete_method_call(method_scope, instance)

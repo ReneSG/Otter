@@ -4,6 +4,10 @@ Class A {
   public A() {
 
   }
+
+  public def foo(): int {
+    return 1;
+  }
 }
 
 Class Main {
@@ -14,7 +18,7 @@ Class Main {
   public Main() {
     @objA = new A();
     @objA2 = new A();
-    @a = 1;
+    @a = @objA.foo();
   }
 
   public def modifyA(): void {
