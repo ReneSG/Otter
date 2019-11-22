@@ -38,7 +38,13 @@ class Compiler:
     errors: List[str] = []
 
     @staticmethod
-    def add_class(class_name: str, inherit_name: Optional[str]):
+    def add_class(class_name: str, inherit_name: Optional[str]) -> None:
+        """Adds a class to the class directory. Makes it the _current_class.
+
+        Arguments:
+            - class_name [str]: The class name.
+            - inherit_name [str]: Optional. The name of the parent class it inherits from.
+        """
         inherits_scope = None
 
         # If there is inheritance look for parent class.
@@ -60,10 +66,18 @@ class Compiler:
 
     @staticmethod
     def end_class_scope() -> None:
+        """Sets the _current_class to None. This is done when it finishes parsing a Class."""
         Compiler._current_class = None
 
     @staticmethod
     def add_instance_variable(name: str, var_type: str, access_modifier: str) -> None:
+        """Adds an instance variable to _current_class attribute table.
+
+        Arguments:
+            - name [str]: The name of the variable.
+            - var_type [str]: The type of the variable.
+            - access_modifier [str]: Either 'public' or 'private'.
+        """
         try:
             Compiler._current_class.add_attribute(
                 name, var_type, access_modifier)
@@ -74,6 +88,12 @@ class Compiler:
 
     @staticmethod
     def add_method(name: str, access_modifier: str) -> None:
+        """Adds a method to _current_class method table.
+
+        Arguments:
+            - name [str]: The name of the method.
+            - access_modifier [str]: Either 'public' or 'private'.
+        """
         try:
             # Clear temporary when starting new method.
             CompilationMemory.clear_temp_memory()
@@ -88,12 +108,22 @@ class Compiler:
 
     @staticmethod
     def end_method_scope() -> None:
+        """Ends the scope of _current_method. Sets it back to the global scope."""
         logger.debug(f"Ended method {Compiler._current_method.name} scope.")
         Compiler._current_method = Compiler._global_scope
         Compiler._interpreter.add_end_function_quad()
 
     @staticmethod
     def add_constructor(name: str, access_modifier: str) -> None:
+        """Adds a constructor to _current_class. 
+        
+        The constructor is treated as any other method, the only difference it its return value is always
+        the name of the object. It is stored as 'constructor_' + the class name in the method table.
+
+        Arguments:
+            - name [str]: The name of the constructor.
+            - access_modifier [str]: Either 'public' or 'private'.
+        """
         if Compiler._current_class.name != name:
             Compiler.errors.append(
                 f"Constructor {name} must have the same name as the class {Compiler._current_class.name}")
@@ -103,6 +133,12 @@ class Compiler:
 
     @staticmethod
     def add_method_argument(name: str, arg_type: str) -> None:
+        """Adds an argument to _current_method.
+
+        Arguments:
+            - name [str]: The name of the argument.
+            - arg_type [str]: The type of the argument.
+        """
         try:
             Compiler._current_method.add_argument(name, arg_type)
             logger.debug(
@@ -112,12 +148,23 @@ class Compiler:
 
     @staticmethod
     def add_return_type(return_type: str) -> None:
+        """Adds the return type to _current_method.
+
+        Arguments:
+            - return_type [str]: The return type.
+        """
         Compiler._current_method.add_return_type(return_type)
         logger.debug(
             f"Added return type: {return_type}, in method {Compiler._current_method.name}")
 
     @staticmethod
     def add_variable(name: str, var_type: str) -> None:
+        """Adds a variable to the _current_method variable table.
+
+        Arguments:
+            - name [str]: The name of the variable.
+            - var_type [str]: The type of the variable.
+        """
         try:
             Compiler._current_method.add_variable(name, var_type)
             logger.debug(

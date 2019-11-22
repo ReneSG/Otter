@@ -7,6 +7,12 @@ from scope.scopes import Scopes
 
 class Memory:
     def __init__(self, scope_name: str, limits: (int, int)):
+        """The Memory class groups several BaseMemory classes of different types (int, string, bool, float, objects, pointers).
+
+        Arguments:
+            - scope_name [str]: The name of the scope
+            - limits [(int, int)]: The limits of this type of scope. One of ScopeRanges.
+        """
         self.__inf_limit = limits.inf
         self.__max_limit = limits.max
         self.__scope_name = scope_name
@@ -26,6 +32,17 @@ class Memory:
                 scope_name, Types.ARRAY_POINTER, TypeRanges.ARRAY_POINTER)
 
     def next_memory_space(self, var_type: str) -> int:
+        """Gets the next memory address for the type of variable.
+
+        Arguments:
+            - var_type [str]: The type of the variable.
+
+        Returns:
+            - [int] The memory address for the variable.
+
+        Raises:
+            - Exception: If the limits of the memory are exceeded.
+        """
         if Types.is_int(var_type):
             return self.__int_memory.next_available()
         if Types.is_float(var_type):
@@ -40,6 +57,17 @@ class Memory:
         return self.__object_memory.next_available()
 
     def next_memory_chunk(self, var_type: str, chunk_size: int) -> int:
+        """Gets the next memory address chunk for the type of variable.
+
+        Arguments:
+            - var_type [str]: The type of the variable.
+
+        Returns:
+            - [int] The memory address for the variable.
+
+        Raises:
+            - Exception: If the limits of the memory are exceeded.
+        """
         if Types.is_int(var_type):
             return self.__int_memory.next_memory_chunk(chunk_size)
         if Types.is_float(var_type):
