@@ -84,6 +84,8 @@ class Compiler:
             logger.debug(
                 f"Added attribute: {access_modifier} {name} {var_type}, to class: {Compiler._current_class.name}")
         except Exception as error:
+            logger.debug(
+                f"Error adding instance var: {name} {var_type}, in method {Compiler._current_method.name}. {error}")
             Compiler.errors.append(error)
 
     @staticmethod

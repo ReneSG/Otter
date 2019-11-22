@@ -26,7 +26,7 @@ class Interpreter:
         self.__operators.push(Operations(operator))
 
     def push_constant(self, type_, memory_space):
-        new_variable = Variable(memory_space, Types(type_), memory_space)
+        new_variable = Variable(memory_space, type_, memory_space)
         self.__operands.push(new_variable)
 
     def push_variable(self, current_scope, name):
@@ -44,7 +44,7 @@ class Interpreter:
         r_op = self.__operands.pop()
 
         result = OperationsCube.verify(r_op.var_type, l_op.var_type, op)
-        if result == Types.ERROR:
+        if r_op.var_type != l_op.var_type and result == Types.ERROR:
             raise ValueError(
                 f'Cannot perform {op} operation with {r_op.var_type} {l_op.var_type} operands.')
         self.__quads.append((Operations.ASSIGN, l_op, r_op, None))
@@ -132,9 +132,9 @@ class Interpreter:
 
     def read_quad(self):
         memory_address = CompilationMemory.next_temp_memory_space(
-            Types.STRING.value)
+            Types.STRING)
         self.__quads.append((Operations.READ, Variable(
-            memory_address, Types.STRING.value, memory_address)))
+            memory_address, Types.STRING, memory_address)))
 
     def write_quad(self):
         operand = self.__operands.pop()
@@ -177,16 +177,19 @@ class Interpreter:
         variable = dim_tuple[0]
 
         index = self.__operands.pop()
+        memory_address = CompilationMemory.next_temp_memory_space(
+            Types.INT)
+        new_temp = Variable(memory_address, Types.INT, memory_address)
         self.__quads.append(
-            (Operations.PROD, index, variable.getDimensionNumber(dim_tuple[1]).m, "t"))
-        self.__operands.push(Variable("t", Types.INT, 100))
+            (Operations.PROD, index, variable.getDimensionNumber(dim_tuple[1]).m, new_temp))
+        self.__operands.push(new_temp)
 
     def complete_dimension_access(self):
         dim_variable = self.__dim_operands.pop()[0]
         index = self.__operands.pop()
         memory_address = CompilationMemory.next_temp_memory_space(
-            Types.ARRAY_POINTER.value)
-        self.__quads.append((Operations.ADD, index, dim_variable.memory_space, Variable(memory_address, Types.ARRAY_POINTER.value, memory_address)))
+            Types.ARRAY_POINTER)
+        self.__quads.append((Operations.ADD, index, dim_variable.memory_space, Variable(memory_address, Types.ARRAY_POINTER, memory_address)))
 
     def allocate_mem_quad(self, instance, method):
         self.__quads.append((Operations.ERA, instance, method))
@@ -199,7 +202,7 @@ class Interpreter:
         self.__quads.append((Operations.GOSUB, method))
 
         # TODO: If method has return assign to temp.
-        self.__operands.push("return temp")
+        self.__operands.push(Variable("t", "A", ""))
 
     def add_end_function_quad(self):
         self.__quads.append(Operations.END_FUNC)

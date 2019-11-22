@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class Types(Enum):
+class Types():
 
     # Primitive data types
     INT = "int"
@@ -16,20 +16,20 @@ class Types(Enum):
 
     @staticmethod
     def is_int(var_type: str) -> bool:
-        return var_type == Types.INT.value
+        return var_type == Types.INT
 
     @staticmethod
     def is_float(var_type: str) -> bool:
-        return var_type == Types.FLOAT.value
+        return var_type == Types.FLOAT
 
     @staticmethod
     def is_string(var_type: str) -> bool:
-        return var_type == Types.STRING.value
+        return var_type == Types.STRING
 
     @staticmethod
     def is_bool(var_type: str) -> bool:
-        return var_type == Types.BOOL.value
+        return var_type == Types.BOOL
 
     @staticmethod
     def is_array_pointer(var_type: str) -> bool:
-        return var_type == Types.ARRAY_POINTER.value
+        return var_type == Types.ARRAY_POINTER
