@@ -30,7 +30,7 @@ class BaseMemory:
         next_available_space = self._get_next_available_space(1)
 
         logger.debug(
-            f"BaseMemory: Added variable to {self.__scope_name} {self.__type_name} memory in space {next_available_space}.")
+            f"Added variable to {self.__scope_name} {self.__type_name} memory in space {next_available_space}.")
         return next_available_space
 
     def next_memory_chunk(self, chunk_size: int) -> int:
@@ -48,7 +48,7 @@ class BaseMemory:
         next_available_space = self._get_next_available_space(chunk_size)
 
         logger.debug(
-            f"BaseMemory: Added chunk of size {chunk_size} to {self.__scope_name} {self.__type_name} memory from {next_available_space} to {self.__variable_counter - 1}.")
+            f"Added chunk of size {chunk_size} to {self.__scope_name} {self.__type_name} memory from {next_available_space} to {self.__variable_counter - 1}.")
         return next_available_space
 
     def _get_next_available_space(self, chunk_size: int) -> int:
@@ -69,6 +69,6 @@ class BaseMemory:
         # Stop compilation if program has too many variables.
         if self.__inf_limit + self.__variable_counter > self.__max_limit:
             raise Exception(
-                f"BaseMemory: Too many variables for {self.__scope_name} {self.__type_name} memory.")
+                f"Too many variables for {self.__scope_name} {self.__type_name} memory.")
 
         return next_available_space

@@ -8,7 +8,7 @@ from helpers.types import Types
 import logging
 
 
-FORMAT = "%(name)s: %(message)s"
+FORMAT = "%(name)-25s %(message)s"
 logging.basicConfig(level=logging.DEBUG, format=FORMAT)
 logger = logging.getLogger('compiler.Compiler')
 
