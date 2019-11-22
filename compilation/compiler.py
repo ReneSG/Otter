@@ -297,4 +297,5 @@ class Compiler:
 
     @staticmethod
     def complete_method_call(method):
-        Compiler._interpreter.complete_method_call(method)
+        method_scope = Compiler._class_directory.search(method).method_directory.search(f"constructor_{method}")
+        Compiler._interpreter.complete_method_call(method_scope)

@@ -199,11 +199,12 @@ class Interpreter:
         # TODO: Get param address once memory is implemented.
         self.__quads.append((Operations.PARAM, self.__operands.pop()))
 
-    def complete_method_call(self, method):
-        self.__quads.append((Operations.GOSUB, method))
-
-        # TODO: If method has return assign to temp.
-        self.__operands.push(Variable("t", "A", ""))
+    def complete_method_call(self, method_scope):
+        self.__quads.append((Operations.GOSUB, method_scope.name))
+        next_address = CompilationMemory.next_temp_memory_space(method_scope.return_type)
+        temp = Variable(next_address, method_scope.return_type, next_address)
+        self.__quads.append((Operations.ASSIGN, temp, method_scope.return_memory_address))
+        self.__operands.push(temp)
 
     def add_end_function_quad(self):
         self.__quads.append(Operations.END_FUNC)
