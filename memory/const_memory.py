@@ -31,6 +31,9 @@ class ConstMemory:
     def get_value(self, variable):
         return self.__const_dict.get(variable.memory_space)
 
+    def get_value_from_address(self, address):
+        return self.__const_dict.get(address)
+
     def next_memory_space(self, value: str, var_type: str) -> int:
         """Retrieves the next available memory space if needed. If the value was already cached it returns
         the memory address previously used.
@@ -65,7 +68,7 @@ class ConstMemory:
         else:
             raise ValueError(f"Unrecognized constant type '{var_type}'.")
 
-        self.__const_dict[memory_space] = (value, var_type)
+        self.__const_dict[memory_space] = value
         self.__const_dict_mirror[(value, var_type)] = memory_space
         logger.debug(
             f"Store const {value}: {var_type} in memory space {memory_space}.")

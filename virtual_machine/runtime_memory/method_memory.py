@@ -22,4 +22,4 @@ class MethodMemory:
         elif ScopeRanges.is_temp(address):
             return self.__temp_memory[remove_base_prefix(address)]
         else:
-            raise NotImplementedError("Variable no es temp ni local.")
+            return self.__parent_memory.get_value_from_address(remove_base_prefix(address))

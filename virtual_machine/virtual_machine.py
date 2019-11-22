@@ -2,6 +2,7 @@ from helpers.operations import Operations
 from memory.compilation_memory import CompilationMemory
 from .runtime_memory.method_memory import MethodMemory
 from ast import literal_eval
+import operator
 import logging
 
 
@@ -13,15 +14,35 @@ class VirtualMachine:
     def __init__(self, quads):
         self.__instruction_pointer = 0
         self.__quads = quads
-        self.__const_memory = CompilationMemory.get_const_memory()
-        self.__method_memory = MethodMemory(None)
+        self.__method_memory = MethodMemory(CompilationMemory.get_const_memory())
         self.__operations = {
-            Operations.ADD: self.add,
             Operations.GOTO: self.goto,
             Operations.ASSIGN: self.assign,
             Operations.END_FUNC: self.end_func,
-            Operations.SUBS: self.sub,
+            Operations.ADD: self.solveExpression,
+            Operations.SUBS: self.solveExpression,
+            Operations.DIV: self.solveExpression,
+            Operations.PROD: self.solveExpression,
+            Operations.GREATER: self.solveExpression,
+            Operations.GREATER_EQUAL_THAN: self.solveExpression,
+            Operations.LESS: self.solveExpression,
+            Operations.LESS_EQUAL_THAN: self.solveExpression,
+            Operations.NOT: self.solveExpression,
+            Operations.EQUAL: self.solveExpression,
         }
+
+        self.__expression_operations = {
+                Operations.ADD: operator.add,
+                Operations.SUBS: operator.sub,
+                Operations.DIV: operator.truediv,
+                Operations.PROD: operator.mul,
+                Operations.GREATER: operator.gt,
+                Operations.GREATER_EQUAL_THAN: operator.ge,
+                Operations.LESS: operator.lt,
+                Operations.LESS_EQUAL_THAN: operator.le,
+                Operations.NOT: operator.ne,
+                Operations.EQUAL: operator.eq,
+                }
 
     @property
     def current_instruction(self):
@@ -34,6 +55,18 @@ class VirtualMachine:
 
     def goto(self):
         self.__instruction_pointer = self.current_instruction[1]
+
+    def solveExpression(self):
+        quad = self.current_instruction
+
+        # TODO: search whole memory instead of const memory
+        l_val = self.__method_memory.get_value(quad[1].memory_space)
+        r_val = self.__method_memory.get_value(quad[2].memory_space)
+        result = self.__expression_operations.get(quad[0])(literal_eval(str(l_val)), literal_eval(str(r_val)))
+        self.__method_memory.set_value(quad[3], result)
+
+        logger.debug(f"Added values: {quad[1]} + {quad[2]} = {result}")
+        self.increase_instruction_pointer()
 
     def add(self):
         quad = self.current_instruction
