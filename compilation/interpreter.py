@@ -219,6 +219,9 @@ class Interpreter:
     def gen_start_quad(self):
         self.__quads.insert(0, (Operations.GOTO, self.getNextInstructionAddr() + 1))
 
+    def get_quads(self):
+        return self.__quads
+
     def debug_quads(self):
         logger.debug("==============QUADS==============")
         for i in range(0, len(self.__quads)):

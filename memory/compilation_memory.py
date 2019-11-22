@@ -12,6 +12,10 @@ class CompilationMemory:
     __const_memory = ConstMemory(Scopes.CONSTANT, ScopeRanges.CONSTANTS)
 
     @staticmethod
+    def get_const_memory():
+        return CompilationMemory.__const_memory
+
+    @staticmethod
     def next_const_memory_space(value: str, var_type: str) -> int:
         """Gets the next available memory address for constants.
 

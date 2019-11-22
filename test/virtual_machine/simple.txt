@@ -1,0 +1,7 @@
+let b: int = 3;
+
+Class Main {
+  public Main() {
+    let a: int = 1 + 5;
+  }
+}

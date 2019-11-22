@@ -26,6 +26,10 @@ class ConstMemory:
         self.__string_memory = BaseMemory(
             scope_name, Types.STRING, TypeRanges.STRING)
         self.__const_dict = dict()
+        self.__const_dict_mirror = dict()
+
+    def get_value(self, variable):
+        return self.__const_dict.get(variable.memory_space)
 
     def next_memory_space(self, value: str, var_type: str) -> int:
         """Retrieves the next available memory space if needed. If the value was already cached it returns
@@ -43,8 +47,8 @@ class ConstMemory:
             ValueError: If the type is not one of the primitive Data Types it raises a ValueError.
         """
         # If value is already in memory return the existing memory space
-        if (value, var_type) in self.__const_dict:
-            memory_space = self.__const_dict[(value, var_type)]
+        if (value, var_type) in self.__const_dict_mirror:
+            memory_space = self.__const_dict_mirror[(value, var_type)]
             logger.debug(
                 f"Retrieving already created const {value}: {var_type} in memory space {memory_space}.")
             return memory_space
@@ -61,7 +65,8 @@ class ConstMemory:
         else:
             raise ValueError(f"Unrecognized constant type '{var_type}'.")
 
-        self.__const_dict[(value, var_type)] = memory_space
+        self.__const_dict[memory_space] = (value, var_type)
+        self.__const_dict_mirror[(value, var_type)] = memory_space
         logger.debug(
             f"Store const {value}: {var_type} in memory space {memory_space}.")
         return memory_space

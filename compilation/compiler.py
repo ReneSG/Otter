@@ -38,6 +38,10 @@ class Compiler:
     errors: List[str] = []
 
     @staticmethod
+    def get_quads():
+        return Compiler._interpreter.get_quads()
+
+    @staticmethod
     def add_class(class_name: str, inherit_name: Optional[str]) -> None:
         """Adds a class to the class directory. Makes it the _current_class.
 
