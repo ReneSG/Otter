@@ -31,6 +31,7 @@ STRING: 'string';
 BOOLEAN: 'boolean';
 AT: '@';
 NEW: 'new';
+SELF: 'self';
 
 // Operators
 AND: 'and';
@@ -185,6 +186,7 @@ constant:
 reference:
   ID {Compiler.push_variable($ID.text)}
   | AT ID {Compiler.push_variable("@" + $ID.text)}
+  | SELF
   | listReference;
 
 listReference:

@@ -1,4 +1,5 @@
 from helpers.operations import Operations
+from helpers.custom_stack import Stack
 from memory.compilation_memory import CompilationMemory
 from .runtime_memory.method_memory import MethodMemory
 from ast import literal_eval
@@ -15,10 +16,18 @@ class VirtualMachine:
         self.__instruction_pointer = 0
         self.__quads = quads
         self.__method_memory = MethodMemory(CompilationMemory.get_const_memory())
+        self.__memory_stack = Stack()
+        self.__memory_stack.push(self.__method_memory)
+        self.__jump_stack = Stack()
+        self.__keep_running = True
+
         self.__operations = {
             Operations.GOTO: self.goto,
             Operations.ASSIGN: self.assign,
             Operations.END_FUNC: self.end_func,
+            Operations.ERA: self.era,
+            Operations.GOSUB: self.go_sub,
+
             Operations.ADD: self.solveExpression,
             Operations.SUBS: self.solveExpression,
             Operations.DIV: self.solveExpression,
@@ -62,7 +71,7 @@ class VirtualMachine:
         return self.__quads[self.__instruction_pointer]
 
     def run(self):
-        while self.__instruction_pointer < len(self.__quads):
+        while self.__keep_running:
             logger.debug(f"Current instruction: {self.current_instruction}")
             self.__operations.get(self.current_instruction[0])()
 
@@ -113,7 +122,6 @@ class VirtualMachine:
 
     def literal_add(self):
         quad = self.current_instruction
-        print(quad[1])
         var = self.__method_memory.get_value(quad[1].memory_space)
         m = quad[2]
         result = var + m
@@ -121,6 +129,21 @@ class VirtualMachine:
         self.__method_memory.set_value(quad[3].memory_space, result)
 
         self.increase_instruction_pointer()
+
+    def era(self):
+        self.__method_memory = MethodMemory(CompilationMemory.get_const_memory())
+        self.__memory_stack.push(self.__memory_stack)
+        self.increase_instruction_pointer()
+
+    def go_sub(self):
+        quad = self.current_instruction
+        self.__jump_stack.push(self.get_next_ip)
+        self.move_instruction_pointer(quad[2])
+
+
+    @property
+    def get_next_ip(self):
+        return self.__instruction_pointer + 1
 
     @staticmethod
     def and_op(l, r):
@@ -153,8 +176,12 @@ class VirtualMachine:
         self.increase_instruction_pointer()
 
     def end_func(self):
-        logger.debug("Ended method.")
-        self.increase_instruction_pointer()
+        # TODO: Handle memory swaps.
+        if self.__jump_stack.isEmpty():
+            # END PROGRAM
+            self.__keep_running = False
+            return
+        self.move_instruction_pointer(self.__jump_stack.pop())
 
     def go_to_f(self):
         quad = self.current_instruction
@@ -166,7 +193,6 @@ class VirtualMachine:
 
     def go_to_t(self):
         quad = self.current_instruction
-        print(quad)
 
         if self.get_value(quad[1]) == True:
             self.move_instruction_pointer(quad[2])

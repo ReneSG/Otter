@@ -156,7 +156,6 @@ class Interpreter:
         self.start_condition_quad()
 
     def end_for_quad(self):
-        print(vars(self.__jumps))
         upperBoundBy = self.__jumps.pop()
         lowerBoundBy = self.__jumps.pop()
 
@@ -214,13 +213,15 @@ class Interpreter:
 
     def complete_method_call(self, method_scope, instance):
         # Handle weird case when the instance is detected as an operand.
-        if instance != None:
+        if instance != None and instance != "self":
             self.__operands.pop()
-        self.__quads.append((Operations.GOSUB, method_scope.name))
-        next_address = CompilationMemory.next_temp_memory_space(method_scope.return_type)
-        temp = Variable(next_address, method_scope.return_type, next_address)
-        self.__quads.append((Operations.ASSIGN, temp, method_scope.return_memory_address))
-        self.__operands.push(temp)
+        self.__quads.append((Operations.GOSUB, method_scope.name, method_scope.instruction_pointer))
+
+        if method_scope.return_type != "void":
+            next_address = CompilationMemory.next_temp_memory_space(method_scope.return_type)
+            temp = Variable(next_address, method_scope.return_type, next_address)
+            self.__quads.append((Operations.ASSIGN, temp, method_scope.return_memory_address))
+            self.__operands.push(temp)
 
     def add_end_function_quad(self):
         self.__quads.append((Operations.END_FUNC,))

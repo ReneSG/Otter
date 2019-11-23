@@ -1,0 +1,12 @@
+Class Main {
+  public def foo(): void {
+    write("Se llamo foo");
+  }
+
+  public Main() {
+    write("Antes de foo");
+    self.foo();
+    write("Despues de foo");
+  }
+}
+

@@ -23,6 +23,7 @@ class MethodScope:
         self._access_modifier = access_modifier
         self._parent = parent
         self._local_memory = deepcopy(parent_memory)
+        self._instruction_pointer = None
 
         if parent is not None:
             logger.debug(
@@ -114,3 +115,11 @@ class MethodScope:
             CompilationMemory.next_global_memory_chunk(variable.var_type, variable.size - 1)
         elif variable.is_local():
             self._local_memory.next_memory_chunk(variable.var_type, variable.size - 1)
+
+    @property
+    def instruction_pointer(self):
+        return self._instruction_pointer
+
+    @instruction_pointer.setter
+    def instruction_pointer(self, ip):
+        self._instruction_pointer = ip

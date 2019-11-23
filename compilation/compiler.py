@@ -111,6 +111,7 @@ class Compiler:
             Compiler._current_method = method_scope
 
         except Exception as error:
+            raise error
             Compiler.errors.append(error)
 
     @staticmethod
@@ -163,6 +164,7 @@ class Compiler:
             - return_type [str]: The return type.
         """
         Compiler._current_method.add_return_type(return_type)
+        Compiler._current_method.instruction_pointer = Compiler._interpreter.getNextInstructionAddr() + 1
         logger.debug(
             f"Added return type: {return_type}, in method {Compiler._current_method.name}")
 
@@ -309,15 +311,20 @@ class Compiler:
 
     @staticmethod
     def complete_method_call(method, instance = None):
-        class_name = ""
-        method_name = ""
         if instance == None:
             # Case when method is the constructor
             class_name = method
             method_name = f"constructor_{method}"
+        elif instance == "self":
+            class_name = Compiler._current_class.name
+            method_name = method
+            logger.debug(f"METHOD NAME {method_name}")
+            logger.debug(f"CLASS NAME {class_name}")
         else:
             # Case for regular methods
             class_name = Compiler._current_method.variables_directory.search(instance).var_type
             method_name = method
         method_scope = Compiler._class_directory.search(class_name).method_directory.search(method_name)
+
+        logger.debug(f"METHOD SCOPE {method_scope}")
         Compiler._interpreter.complete_method_call(method_scope, instance)
