@@ -53,6 +53,32 @@ class CompilationMemory:
         return CompilationMemory.__temp_memory.next_memory_space(var_type)
 
     @staticmethod
+    def next_temp_memory_chunk(var_type: str, size: int) -> int:
+        """Gets the next available memory chunk for temp.
+
+        Arguments:
+            - var_type [str]: The type of the constant.
+            - size [int]: The size of the chunk
+
+        Returns:
+            - [int] The first memory address of the global.
+        """
+        return CompilationMemory.__temp_memory.next_memory_chunk(value, var_type)
+
+    @staticmethod
+    def next_global_memory_chunk(var_type: str, size: int) -> int:
+        """Gets the next available memory chunk for globals.
+
+        Arguments:
+            - var_type [str]: The type of the constant.
+            - size [int]: The size of the chunk
+
+        Returns:
+            - [int] The first memory address of the global.
+        """
+        return CompilationMemory.__global_memory.next_memory_chunk(value, var_type)
+
+    @staticmethod
     def clear_temp_memory() -> None:
         """Clears the temporary memory."""
         CompilationMemory.__temp_memory = Memory(Scopes.TEMP, ScopeRanges.TEMP)

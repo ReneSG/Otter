@@ -48,7 +48,7 @@ class BaseMemory:
         next_available_space = self._get_next_available_space(chunk_size)
 
         logger.debug(
-            f"Added chunk of size {chunk_size} to {self.__scope_name} {self.__type_name} memory from {next_available_space} to {self.__variable_counter - 1}.")
+            f"Added chunk of size {chunk_size + 1} to {self.__scope_name} {self.__type_name} memory from {next_available_space - 1} to {self.__inf_limit + self.__variable_counter}.")
         return next_available_space
 
     def _get_next_available_space(self, chunk_size: int) -> int:

@@ -193,6 +193,7 @@ class Compiler:
     def populate_dimension_attributes(name: str):
         variable = Compiler._current_method.variables_directory.search(name)
         variable.populate_dimension_attributes()
+        Compiler._current_method.allocate_memory_chunk(variable)
 
     @staticmethod
     def gen_quad_assign():

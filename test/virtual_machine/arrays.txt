@@ -1,0 +1,6 @@
+Class Main {
+  public Main() {
+    let arr: int[10];
+  }
+}
+

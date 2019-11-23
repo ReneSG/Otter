@@ -108,3 +108,9 @@ class MethodScope:
 
         self._variables_directory.add_symbol(
             Variable(name, var_type, memory_space))
+
+    def allocate_memory_chunk(self, variable) -> None:
+        if variable.is_global():
+            CompilationMemory.next_global_memory_chunk(variable.var_type, variable.size - 1)
+        elif variable.is_local():
+            self._local_memory.next_memory_chunk(variable.var_type, variable.size - 1)

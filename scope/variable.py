@@ -1,7 +1,7 @@
 from typing import Optional
 from helpers.types import Types
+from memory.ranges import ScopeRanges
 from .dimension import Dimension
-
 
 class Variable:
     def __init__(self, name: str, var_type: Types, memory_space: int, access_modifier: Optional[str] = None):
@@ -44,6 +44,15 @@ class Variable:
             - [Types] The type of the variable.
         """
         return self._var_type
+
+    @property
+    def size(self) -> int:
+        """The size of the variable.
+
+        Returns:
+            - [int] The size of the variable.
+        """
+        return self._size
 
     @property
     def memory_space(self) -> int:
@@ -96,6 +105,18 @@ class Variable:
             current_m /= current_dimension.size
             current_dimension.m = int(current_m)
             current_dimension = current_dimension.next_dimension
+
+    def is_global(self):
+        return ScopeRanges.is_global(self.memory_space)
+
+    def is_local(self):
+        return ScopeRanges.is_local(self.memory_space)
+
+    def is_temp(self):
+        return ScopeRanges.is_temp(self.memory_space)
+
+    def is_constant(self):
+        return ScopeRanges.is_const(self.memory_space)
 
     def getDimensionNumber(self, dimension_number) -> int:
         current_dimension = self._dimension_info

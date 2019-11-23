@@ -229,6 +229,9 @@ class Interpreter:
     def gen_start_quad(self):
         self.__quads.insert(0, (Operations.GOTO, None, self.getNextInstructionAddr() + 1))
 
+    def allocate_memory_for_array(self, variable):
+        CompilationMemory.next_memory_chunk(variable.var_type, variable.size)
+
     def get_quads(self):
         return self.__quads
 
