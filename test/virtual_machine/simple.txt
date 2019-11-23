@@ -14,6 +14,7 @@ Class Main {
     let h: float = 10 - 4.0 * 29 - 10 / 5;
 
     let i: bool = falsy == falsy;
+    let k: bool = not falsy or truthy;
     let j: bool = 10 >= 11;
   }
 }

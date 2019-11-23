@@ -69,8 +69,11 @@ class Interpreter:
     def maybe_gen_not_quad(self) -> bool:
         if not self.__operators.isEmpty() and Operations.is_not_op(self.__operators.top()):
             op = self.__operators.pop()
-            l_op = self.__operands.pop()
-            self.__quads.append((Operations.NOT, op, l_op, None))
+            operand = self.__operands.pop()
+
+            memory_address = CompilationMemory.next_temp_memory_space(operand)
+            self.__quads.append((op, operand, memory_address))
+            self.__operands.push(Variable(memory_address, operand.var_type, memory_address))
 
     def gen_quad_for_next_op(self) -> bool:
         r_op = self.__operands.pop()

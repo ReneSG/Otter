@@ -27,8 +27,11 @@ class VirtualMachine:
             Operations.GREATER_EQUAL_THAN: self.solveExpression,
             Operations.LESS: self.solveExpression,
             Operations.LESS_EQUAL_THAN: self.solveExpression,
-            Operations.NOT: self.solveExpression,
+            Operations.NOT: self.not_op,
             Operations.EQUAL: self.solveExpression,
+
+            Operations.AND: self.solveExpression,
+            Operations.OR: self.solveExpression,
 
             Operations.WRITE: self.write,
 
@@ -45,8 +48,10 @@ class VirtualMachine:
                 Operations.GREATER_EQUAL_THAN: operator.ge,
                 Operations.LESS: operator.lt,
                 Operations.LESS_EQUAL_THAN: operator.le,
-                Operations.NOT: operator.ne,
                 Operations.EQUAL: operator.eq,
+
+                Operations.AND: VirtualMachine.and_op,
+                Operations.OR: VirtualMachine.or_op,
                 }
 
     @property
@@ -72,6 +77,24 @@ class VirtualMachine:
 
         logger.debug(f"Solved for values: <{quad[1]}> {quad[0]} <{quad[2]}> = {result}")
         self.increase_instruction_pointer()
+
+    def not_op(self):
+        quad = self.current_instruction
+
+        val = self.__method_memory.get_value(quad[1].memory_space)
+        result = not val
+        self.__method_memory.set_value(quad[2], result)
+
+        logger.debug(f"Not operator: <{quad[1]}> = {result}")
+        self.increase_instruction_pointer()
+
+    @staticmethod
+    def and_op(l, r):
+        return l and r
+
+    @staticmethod
+    def or_op(l, r):
+        return l or r
 
     def write(self):
         quad = self.current_instruction
