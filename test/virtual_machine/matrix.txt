@@ -1,0 +1,9 @@
+Class Main {
+  public Main() {
+    let arr: int[10][10];
+    arr[5][3] = 4;
+    write(arr[5][3]);
+  }
+}
+
+
