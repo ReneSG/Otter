@@ -85,4 +85,5 @@ class OperationsCube:
 
     @staticmethod
     def verify(left_op: Types, right_op: Types, op: Operations) -> Types:
+        if left_op == Types.ARRAY_POINTER or right_op == Types.ARRAY_POINTER: return Types.ARRAY_POINTER
         return OperationsCube.cube.get((left_op, right_op, op), Types.ERROR)

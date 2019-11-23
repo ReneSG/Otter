@@ -29,6 +29,9 @@ class VirtualMachine:
             Operations.LESS_EQUAL_THAN: self.solveExpression,
             Operations.NOT: self.not_op,
             Operations.EQUAL: self.solveExpression,
+            Operations.VER_ACCS: self.verify_access,
+            Operations.PROD_LIT: self.literal_product,
+            Operations.ADD_LIT: self.literal_add,
 
             Operations.AND: self.solveExpression,
             Operations.OR: self.solveExpression,
@@ -88,6 +91,37 @@ class VirtualMachine:
         logger.debug(f"Not operator: <{quad[1]}> = {result}")
         self.increase_instruction_pointer()
 
+    def verify_access(self):
+        quad = self.current_instruction
+        index = literal_eval(self.__method_memory.get_value(quad[1].memory_space))
+        upper_bound = quad[3]
+        lower_bound = quad[2]
+        if not (index >= lower_bound and index < upper_bound):
+            raise ValueError("Segmentation fault.")
+
+        self.increase_instruction_pointer()
+
+    def literal_product(self):
+        quad = self.current_instruction
+        var = literal_eval(self.__method_memory.get_value(quad[1].memory_space))
+        m = quad[2]
+        result = var * m
+
+        self.__method_memory.set_value(quad[3].memory_space, result)
+
+        self.increase_instruction_pointer()
+
+    def literal_add(self):
+        quad = self.current_instruction
+        print(quad[1])
+        var = self.__method_memory.get_value(quad[1].memory_space)
+        m = quad[2]
+        result = var + m
+
+        self.__method_memory.set_value(quad[3].memory_space, result)
+
+        self.increase_instruction_pointer()
+
     @staticmethod
     def and_op(l, r):
         return l and r
@@ -99,16 +133,23 @@ class VirtualMachine:
     def write(self):
         quad = self.current_instruction
 
-        val = self.__method_memory.get_value(quad[1].memory_space)
+        val = self.get_value(quad[1])
         print(val)
         self.increase_instruction_pointer()
 
     def assign(self):
         quad = self.current_instruction
-        value = self.__method_memory.get_value(quad[2].memory_space)
-        self.__method_memory.set_value(quad[3], value)
+        address = None
+        value = None
+        if quad[1].is_array_pointer():
+            address = self.__method_memory.get_value(quad[1].memory_space)
+            value = self.__method_memory.get_value(quad[2].memory_space)
+        else:
+            address = quad[3]
+            value = self.__method_memory.get_value(address)
+        self.__method_memory.set_value(address, value)
 
-        logger.debug(f"Assigned value {value} to {quad[1].name}")
+        logger.debug(f"Assigned value {value} to {address}")
         self.increase_instruction_pointer()
 
     def end_func(self):
@@ -117,7 +158,6 @@ class VirtualMachine:
 
     def go_to_f(self):
         quad = self.current_instruction
-        print(quad)
 
         if self.get_value(quad[1]) == False:
             self.move_instruction_pointer(quad[2])
@@ -137,6 +177,9 @@ class VirtualMachine:
         self.__instruction_pointer += 1
 
     def get_value(self, variable):
+        if variable.is_array_pointer():
+            address = self.__method_memory.get_value(variable.memory_space)
+            return self.__method_memory.get_value(address)
         return self.__method_memory.get_value(variable.memory_space)
 
     def move_instruction_pointer(self, new_pointer: int):

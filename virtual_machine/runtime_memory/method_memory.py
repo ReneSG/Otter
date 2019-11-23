@@ -1,6 +1,10 @@
 from memory.ranges import ScopeRanges, remove_base_prefix
 from typing import Any
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class MethodMemory:
     def __init__(self, parent_memory):

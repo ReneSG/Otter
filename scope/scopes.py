@@ -15,7 +15,7 @@ class Scopes(Enum):
         Returns:
             - [bool] Whether the scope is global.
         """
-        return scope == Scopes.GLOBAL.value
+        return scope == Scopes.GLOBAL
 
     @staticmethod
     def is_local_scope(scope: str) -> bool:
@@ -24,7 +24,7 @@ class Scopes(Enum):
         Returns:
             - [bool] Whether the scope is local.
         """
-        return scope == Scopes.LOCAL.value
+        return scope == Scopes.LOCAL
 
     @staticmethod
     def is_constant_scope(scope: str) -> bool:
@@ -33,7 +33,7 @@ class Scopes(Enum):
         Returns:
             - [bool] Whether the scope is constant.
         """
-        return scope == Scopes.CONSTANT.value
+        return scope == Scopes.CONSTANT
 
     @staticmethod
     def is_temp_scope(scope: str) -> bool:
@@ -42,4 +42,4 @@ class Scopes(Enum):
         Returns:
             - [bool] Whether the scope is temporary.
         """
-        return scope == Scopes.TEMP.value
+        return scope == Scopes.TEMP

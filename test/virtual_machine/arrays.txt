@@ -1,6 +1,8 @@
 Class Main {
   public Main() {
     let arr: int[10];
+    arr[9] = 90;
+    write(arr[9]);
   }
 }
 

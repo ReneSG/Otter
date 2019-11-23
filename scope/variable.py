@@ -129,6 +129,9 @@ class Variable:
 
         return current_dimension
 
+    def is_array_pointer(self):
+        return self._var_type == Types.ARRAY_POINTER
+
     def debug_dimensions(self) -> None:
         """Method used to debug the dimensions of an object."""
         print("==============")

@@ -42,6 +42,7 @@ class Interpreter:
         op = self.__operators.pop()
         r_op = self.__operands.pop()
         l_op = self.__operands.pop()
+        logger.debug(f"Assigning {r_op} {l_op}")
 
         result = OperationsCube.verify(r_op.var_type, l_op.var_type, op)
         if r_op.var_type != l_op.var_type and result == Types.ERROR:
@@ -192,7 +193,7 @@ class Interpreter:
             Types.INT)
         new_temp = Variable(memory_address, Types.INT, memory_address)
         self.__quads.append(
-            (Operations.PROD, index, variable.getDimensionNumber(dim_tuple[1]).m, new_temp))
+                (Operations.PROD_LIT, index, variable.getDimensionNumber(dim_tuple[1]).m, new_temp))
         self.__operands.push(new_temp)
 
     def complete_dimension_access(self):
@@ -200,7 +201,9 @@ class Interpreter:
         index = self.__operands.pop()
         memory_address = CompilationMemory.next_temp_memory_space(
             Types.ARRAY_POINTER)
-        self.__quads.append((Operations.ADD, index, dim_variable.memory_space, Variable(memory_address, Types.ARRAY_POINTER, memory_address)))
+        var_pointer = Variable(memory_address, Types.ARRAY_POINTER, memory_address)
+        self.__quads.append((Operations.ADD_LIT, index, dim_variable.memory_space, var_pointer))
+        self.__operands.push(var_pointer)
 
     def allocate_mem_quad(self, instance, method):
         self.__quads.append((Operations.ERA, instance, method))
