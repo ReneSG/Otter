@@ -33,6 +33,7 @@ class MethodScope:
         # so we parse them one by one, and finally add the return type
         # which goes after the arguments
         self._arguments = SymbolTable(f'{name} Arguments', parent)
+        self._ordered_arguments = []
         self._return_type = None
         self._return_memory_address = -1
 
@@ -74,6 +75,10 @@ class MethodScope:
         """
         return self._return_memory_address
 
+    @property
+    def ordered_arguments(self):
+        return self._ordered_arguments
+
     def add_return_type(self, return_type: str) -> None:
         """Adds the return type to the method after parsing it.
         
@@ -92,7 +97,9 @@ class MethodScope:
             - arg_type [str]: The type of the argument.
         """
         memory_space = self._local_memory.next_memory_space(arg_type)
-        self._arguments.add_symbol(Variable(name, arg_type, memory_space))
+        variable = Variable(name, arg_type, memory_space)
+        self._arguments.add_symbol(variable)
+        self._ordered_arguments.append(variable)
 
     def add_variable(self, name: str, var_type: str) -> None:
         """Adds a variable to the method after parsing it. 
