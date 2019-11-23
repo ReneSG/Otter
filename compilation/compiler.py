@@ -259,6 +259,10 @@ class Compiler:
         Compiler._interpreter.push_instruction_address()
 
     @staticmethod
+    def push_next_instruction_address():
+        Compiler._interpreter.push_next_instruction_address()
+
+    @staticmethod
     def end_while_quad():
         Compiler._interpreter.end_while_quad()
 

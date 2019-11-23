@@ -124,6 +124,9 @@ class Interpreter:
     def push_instruction_address(self):
         self.__jumps.push(self.getCurrentInstructionAddr())
 
+    def push_next_instruction_address(self):
+        self.__jumps.push(self.getNextInstructionAddr())
+
     def getNextInstructionAddr(self):
         return len(self.__quads)
 
@@ -149,12 +152,17 @@ class Interpreter:
         self.start_condition_quad()
 
     def end_for_quad(self):
+        print(vars(self.__jumps))
         upperBoundBy = self.__jumps.pop()
         lowerBoundBy = self.__jumps.pop()
 
-        for _ in range(lowerBoundBy + 1, upperBoundBy):
+        for _ in range(lowerBoundBy, upperBoundBy):
             self.__quads.append(self.__quads.pop(lowerBoundBy + 1))
 
+        r_op = self.__operands.pop()
+        l_op = self.__operands.pop()
+
+        self.__quads.append((Operations.ADD, l_op, r_op, l_op.memory_space))
         self.gen_goto_quad_to(self.__jumps.pop())
         goToFAddress = lowerBoundBy
         goToFQuad = self.__quads[goToFAddress]

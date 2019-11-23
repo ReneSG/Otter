@@ -69,7 +69,7 @@ class VirtualMachine:
         result = self.__expression_operations.get(quad[0])(literal_eval(str(l_val)), literal_eval(str(r_val)))
         self.__method_memory.set_value(quad[3], result)
 
-        logger.debug(f"Added values: {quad[1]} + {quad[2]} = {result}")
+        logger.debug(f"Solved for values: <{quad[1]}> {quad[0]} <{quad[2]}> = {result}")
         self.increase_instruction_pointer()
 
     def write(self):

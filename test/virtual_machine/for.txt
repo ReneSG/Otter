@@ -1,0 +1,8 @@
+Class Main {
+  public Main() {
+    let i: int = 0;
+    for(i until i < 10 by 5) {
+      write(i);
+    }
+  }
+}
