@@ -1,8 +1,11 @@
 Class Main {
   public def fib(n: int): int {
+    let a: int = 11;
     if(n == 0 or n == 1) {
-      return 1;
+      write("HI!");
+      return a;
     }
+    return 10;
   }
 
   public Main() {

@@ -180,7 +180,7 @@ class VirtualMachine:
             value = self.__method_memory.get_value(quad[2].memory_space)
         else:
             address = quad[1].memory_space
-            value = self.__method_memory.get_value(address)
+            value = self.__method_memory.get_value(quad[2].memory_space)
         self.__method_memory.set_value(address, value)
 
         logger.debug(f"Assigned value {value} to {address}")
