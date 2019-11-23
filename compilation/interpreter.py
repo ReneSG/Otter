@@ -95,7 +95,7 @@ class Interpreter:
 
     def start_condition_quad(self, isUnless=False):
         # TODO: Get last temporal.
-        condVar = "cond"
+        condVar = self.__operands.pop()
         self.__jumps.push(self.getNextInstructionAddr())
         self.__quads.append(
             (Operations.GOTOT if isUnless else Operations.GOTOF, condVar, None))
@@ -217,7 +217,7 @@ class Interpreter:
         return 0
 
     def gen_start_quad(self):
-        self.__quads.insert(0, (Operations.GOTO, self.getNextInstructionAddr() + 1))
+        self.__quads.insert(0, (Operations.GOTO, None, self.getNextInstructionAddr() + 1))
 
     def get_quads(self):
         return self.__quads

@@ -31,6 +31,8 @@ class VirtualMachine:
             Operations.EQUAL: self.solveExpression,
 
             Operations.WRITE: self.write,
+
+            Operations.GOTOF: self.go_to_f,
         }
 
         self.__expression_operations = {
@@ -56,7 +58,7 @@ class VirtualMachine:
             self.__operations.get(self.current_instruction[0])()
 
     def goto(self):
-        self.__instruction_pointer = self.current_instruction[1]
+        self.__instruction_pointer = self.current_instruction[2]
 
     def solveExpression(self):
         quad = self.current_instruction
@@ -89,10 +91,22 @@ class VirtualMachine:
         logger.debug("Ended method.")
         self.increase_instruction_pointer()
 
-    def increase_instruction_pointer(self):
-        self.move_instruction_pointer(1)
+    def go_to_f(self):
+        quad = self.current_instruction
+        print(quad)
 
-    def move_instruction_pointer(self, amount: int):
-        self.__instruction_pointer += amount
+        if self.get_value(quad[1]) == False:
+            self.move_instruction_pointer(quad[2])
+        else:
+            self.increase_instruction_pointer()
+
+    def increase_instruction_pointer(self):
+        self.__instruction_pointer += 1
+
+    def get_value(self, variable):
+        return self.__method_memory.get_value(variable.memory_space)
+
+    def move_instruction_pointer(self, new_pointer: int):
+        self.__instruction_pointer = new_pointer
         logger.debug(
-            f"Moved instruction pointer to {self.__instruction_pointer} from {self.__instruction_pointer - amount}")
+            f"Moved instruction pointer to {new_pointer} from {self.__instruction_pointer}")
