@@ -114,16 +114,15 @@ class Interpreter:
     def end_while_quad(self):
         goToFAddress = self.__jumps.pop()
         goToFQuad = self.__quads[goToFAddress]
+        self.gen_goto_quad_to(self.__jumps.pop())
         self.__quads[goToFAddress] = (
             goToFQuad[0], goToFQuad[1], self.getNextInstructionAddr())
 
-        self.gen_goto_quad_to(self.__jumps.pop())
-
     def gen_goto_quad_to(self, address):
-        self.__quads.append((Operations.GOTO, address))
+        self.__quads.append((Operations.GOTO, None, address))
 
     def push_instruction_address(self):
-        self.__jumps.push(self.getNextInstructionAddr())
+        self.__jumps.push(self.getCurrentInstructionAddr())
 
     def getNextInstructionAddr(self):
         return len(self.__quads)
