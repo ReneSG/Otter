@@ -1,0 +1,11 @@
+Class Main {
+  public Main() {
+    let a: int = 15;
+
+    unless (a < 10) {
+      write("a es mayor que 10");
+    }
+  }
+}
+
+

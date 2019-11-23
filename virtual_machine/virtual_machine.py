@@ -33,6 +33,7 @@ class VirtualMachine:
             Operations.WRITE: self.write,
 
             Operations.GOTOF: self.go_to_f,
+            Operations.GOTOT: self.go_to_t,
         }
 
         self.__expression_operations = {
@@ -96,6 +97,15 @@ class VirtualMachine:
         print(quad)
 
         if self.get_value(quad[1]) == False:
+            self.move_instruction_pointer(quad[2])
+        else:
+            self.increase_instruction_pointer()
+
+    def go_to_t(self):
+        quad = self.current_instruction
+        print(quad)
+
+        if self.get_value(quad[1]) == True:
             self.move_instruction_pointer(quad[2])
         else:
             self.increase_instruction_pointer()
