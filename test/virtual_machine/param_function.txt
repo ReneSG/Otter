@@ -1,0 +1,14 @@
+Class Main {
+  public def foo(a: int, b: string, c: bool, d: float): void {
+    write(a);
+    write(b);
+    write(c);
+    write(d);
+  }
+
+  public Main() {
+    self.foo(1, "Hola", truthy, 4.32);
+  }
+}
+
+
