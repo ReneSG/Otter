@@ -17,6 +17,7 @@ class Interpreter:
         self.__operators = Stack()
         self.__jumps = Stack()
         self.__quads = []
+        self.__current_param_index = 0
 
     @property
     def quads(self):
@@ -207,9 +208,13 @@ class Interpreter:
     def allocate_mem_quad(self, instance, method):
         self.__quads.append((Operations.ERA, instance, method))
 
-    def add_method_parameter(self):
+    def add_method_parameter(self, method_scope):
         # TODO: Get param address once memory is implemented.
-        self.__quads.append((Operations.PARAM, self.__operands.pop()))
+        print(method_scope.name)
+        print(method_scope.ordered_arguments)
+        to_variable = method_scope.ordered_arguments[self.__current_param_index]
+        self.__quads.append((Operations.PARAM, self.__operands.pop(), to_variable))
+        self.__current_param_index += 1
 
     def complete_method_call(self, method_scope, instance):
         # Handle weird case when the instance is detected as an operand.
@@ -222,6 +227,7 @@ class Interpreter:
             temp = Variable(next_address, method_scope.return_type, next_address)
             self.__quads.append((Operations.ASSIGN, temp, method_scope.return_memory_address))
             self.__operands.push(temp)
+        self.__current_param_index = 0
 
     def add_end_function_quad(self):
         self.__quads.append((Operations.END_FUNC,))

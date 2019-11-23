@@ -27,6 +27,7 @@ class VirtualMachine:
             Operations.END_FUNC: self.end_func,
             Operations.ERA: self.era,
             Operations.GOSUB: self.go_sub,
+            Operations.PARAM: self.param,
 
             Operations.ADD: self.solveExpression,
             Operations.SUBS: self.solveExpression,
@@ -131,15 +132,25 @@ class VirtualMachine:
         self.increase_instruction_pointer()
 
     def era(self):
-        self.__method_memory = MethodMemory(CompilationMemory.get_const_memory())
-        self.__memory_stack.push(self.__memory_stack)
+        new_memory = MethodMemory(CompilationMemory.get_const_memory())
+        self.__memory_stack.push(new_memory)
         self.increase_instruction_pointer()
 
     def go_sub(self):
         quad = self.current_instruction
         self.__jump_stack.push(self.get_next_ip)
+        self.__method_memory = self.__memory_stack.top()
         self.move_instruction_pointer(quad[2])
 
+    def param(self):
+        quad = self.current_instruction
+
+        function_memory = self.__memory_stack.top()
+
+        from_variable_value = self.get_value(quad[1])
+        to_variable = quad[2]
+        function_memory.set_value(to_variable.memory_space, from_variable_value)
+        self.increase_instruction_pointer()
 
     @property
     def get_next_ip(self):
@@ -203,10 +214,13 @@ class VirtualMachine:
         self.__instruction_pointer += 1
 
     def get_value(self, variable):
+        return self.get_value_from_memory(variable, self.__method_memory)
+
+    def get_value_from_memory(self, variable, memory):
         if variable.is_array_pointer():
-            address = self.__method_memory.get_value(variable.memory_space)
-            return self.__method_memory.get_value(address)
-        return self.__method_memory.get_value(variable.memory_space)
+            address = memory.get_value(variable.memory_space)
+            return memory.get_value(address)
+        return memory.get_value(variable.memory_space)
 
     def move_instruction_pointer(self, new_pointer: int):
         self.__instruction_pointer = new_pointer

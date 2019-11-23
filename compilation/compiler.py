@@ -306,11 +306,15 @@ class Compiler:
         Compiler._interpreter.allocate_mem_quad(instance, method)
 
     @staticmethod
-    def add_method_parameter():
-        Compiler._interpreter.add_method_parameter()
+    def add_method_parameter(method, instance = None):
+        Compiler._interpreter.add_method_parameter(Compiler.get_method_scope(method, instance))
 
     @staticmethod
     def complete_method_call(method, instance = None):
+        Compiler._interpreter.complete_method_call(Compiler.get_method_scope(method, instance), instance)
+
+    @staticmethod
+    def get_method_scope(method, instance):
         if instance == None:
             # Case when method is the constructor
             class_name = method
@@ -318,13 +322,9 @@ class Compiler:
         elif instance == "self":
             class_name = Compiler._current_class.name
             method_name = method
-            logger.debug(f"METHOD NAME {method_name}")
-            logger.debug(f"CLASS NAME {class_name}")
         else:
             # Case for regular methods
             class_name = Compiler._current_method.variables_directory.search(instance).var_type
             method_name = method
-        method_scope = Compiler._class_directory.search(class_name).method_directory.search(method_name)
+        return Compiler._class_directory.search(class_name).method_directory.search(method_name)
 
-        logger.debug(f"METHOD SCOPE {method_scope}")
-        Compiler._interpreter.complete_method_call(method_scope, instance)
