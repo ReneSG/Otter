@@ -279,7 +279,7 @@ class Compiler:
 
     @staticmethod
     def return_quad():
-        Compiler._interpreter.return_quad()
+        Compiler._interpreter.return_quad(Compiler._current_method)
 
     @staticmethod
     def start_for_quad():

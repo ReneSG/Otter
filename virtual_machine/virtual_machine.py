@@ -13,9 +13,10 @@ logger = logging.getLogger(__name__)
 class VirtualMachine:
 
     def __init__(self, quads):
+        self.__global_memory = [None] * 10000
         self.__instruction_pointer = 0
         self.__quads = quads
-        self.__method_memory = MethodMemory(CompilationMemory.get_const_memory())
+        self.__method_memory = MethodMemory(CompilationMemory.get_const_memory(), self.__global_memory)
         self.__memory_stack = Stack()
         self.__memory_stack.push(self.__method_memory)
         self.__jump_stack = Stack()
@@ -28,6 +29,7 @@ class VirtualMachine:
             Operations.ERA: self.era,
             Operations.GOSUB: self.go_sub,
             Operations.PARAM: self.param,
+            Operations.RETURN: self.return_op,
 
             Operations.ADD: self.solveExpression,
             Operations.SUBS: self.solveExpression,
@@ -132,7 +134,7 @@ class VirtualMachine:
         self.increase_instruction_pointer()
 
     def era(self):
-        new_memory = MethodMemory(CompilationMemory.get_const_memory())
+        new_memory = MethodMemory(CompilationMemory.get_const_memory(), self.__global_memory)
         self.__memory_stack.push(new_memory)
         self.increase_instruction_pointer()
 
@@ -173,13 +175,11 @@ class VirtualMachine:
 
     def assign(self):
         quad = self.current_instruction
-        address = None
-        value = None
         if quad[1].is_array_pointer():
             address = self.__method_memory.get_value(quad[1].memory_space)
             value = self.__method_memory.get_value(quad[2].memory_space)
         else:
-            address = quad[3]
+            address = quad[1].memory_space
             value = self.__method_memory.get_value(address)
         self.__method_memory.set_value(address, value)
 
@@ -209,6 +209,9 @@ class VirtualMachine:
             self.move_instruction_pointer(quad[2])
         else:
             self.increase_instruction_pointer()
+
+    def return_op(self):
+        self.move_instruction_pointer(self.__jump_stack.pop())
 
     def increase_instruction_pointer(self):
         self.__instruction_pointer += 1

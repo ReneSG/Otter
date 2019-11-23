@@ -148,9 +148,11 @@ class Interpreter:
         operand = self.__operands.pop()
         self.__quads.append((Operations.WRITE, operand))
 
-    def return_quad(self):
+    def return_quad(self, method_scope):
         operand = self.__operands.pop()
-        self.__quads.append((Operations.RETURN, operand))
+
+        self.__quads.append((Operations.ASSIGN, method_scope.return_memory_address, operand))
+        self.__quads.append((Operations.RETURN,))
 
     def start_for_quad(self):
         self.push_instruction_address()

@@ -1,0 +1,11 @@
+Class Main {
+  public def foo(): int {
+    return 10 + 5;
+  }
+
+  public Main() {
+    write(self.foo());
+  }
+}
+
+

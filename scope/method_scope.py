@@ -87,7 +87,8 @@ class MethodScope:
         """
         self._return_type = return_type
         if return_type != "void":
-            self._return_memory_address = CompilationMemory.next_global_memory_space(return_type)
+            address = CompilationMemory.next_global_memory_space(return_type)
+            self._return_memory_address = Variable(address, return_type, address)
 
     def add_argument(self, name: str, arg_type: str) -> None:
         """Adds an argument to the method.

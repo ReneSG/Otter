@@ -1,0 +1,14 @@
+Class Main {
+  public def fib(n: int): int {
+    if(n == 0 or n == 1) {
+      return 1;
+    }
+  }
+
+  public Main() {
+    write(self.fib(1));
+  }
+}
+
+
+
