@@ -103,7 +103,7 @@ declaration:
 
 assignment: <assoc=right> reference ASSIGN {Compiler.push_op($ASSIGN.text)} term {Compiler.gen_quad_assign()} SEMICOLON;
 
-methodCall: instance=reference DOT name=ID {Compiler.allocate_mem_quad($instance.text, $name.text)} OPEN_PAR (term {Compiler.add_method_parameter($name.text, $instance.text)} (COMMA term {Compiler.add_method_parameter($name.text, $instance.text)})*)? CLOSE_PAR {Compiler.complete_method_call($name.text, $instance.text)} SEMICOLON?;
+methodCall: {Compiler.open_par()} instance=reference DOT name=ID {Compiler.allocate_mem_quad($instance.text, $name.text)} OPEN_PAR (term {Compiler.add_method_parameter($name.text, $instance.text)} (COMMA term {Compiler.add_method_parameter($name.text, $instance.text)})*)? CLOSE_PAR {Compiler.complete_method_call($name.text, $instance.text)} SEMICOLON? {Compiler.close_par()} ;
 
 constructorCall: NEW name=ID OPEN_PAR {Compiler.allocate_mem_quad("constructor", $name.text)} (term {Compiler.add_method_parameter($name.text)} (COMMA term {Compiler.add_method_parameter($name.text)})*)? CLOSE_PAR {Compiler.complete_method_call($name.text)} SEMICOLON?;
 

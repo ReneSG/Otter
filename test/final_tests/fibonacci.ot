@@ -1,6 +1,5 @@
 Class Main {
   public def fib(n: int): int {
-    write(n);
     if(n == 0) {
       return 0;
     }
@@ -13,7 +12,7 @@ Class Main {
   }
 
   public Main() {
-    write(self.fib(5));
+    write(self.fib(10));
   }
 }
 
