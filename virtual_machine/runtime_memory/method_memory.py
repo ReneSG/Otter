@@ -19,7 +19,6 @@ class MethodMemory:
         elif ScopeRanges.is_temp(address):
             self.__temp_memory[remove_base_prefix(address)] = value
         elif ScopeRanges.is_global(address):
-            print(f"SETTING GLOBAL {remove_base_prefix(address)} to {value}")
             self.__global_memory[remove_base_prefix(address)] = value
         else:
             raise NotImplementedError("Variable no es temp ni local ni global.")
@@ -30,7 +29,6 @@ class MethodMemory:
         elif ScopeRanges.is_temp(address):
             return self.__temp_memory[remove_base_prefix(address)]
         elif ScopeRanges.is_global(address):
-            print(f"GETTING GLOBAL {remove_base_prefix(address)}")
             return self.__global_memory[remove_base_prefix(address)]
         elif ScopeRanges.is_const(address):
             return self.__const_memory.get_value_from_address(address)

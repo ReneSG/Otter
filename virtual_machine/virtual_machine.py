@@ -178,12 +178,6 @@ class VirtualMachine:
         self.increase_instruction_pointer()
 
     def assign(self):
-        # print("======================BEFORE=========================")
-        # for el in self.__memory_stack.elements:
-            # el.debug_memory()
-            # print("<<<<<<<>>>>>>>>>")
-
-        # self.__method_memory.debug_memory()
         quad = self.current_instruction
         if quad[1].is_array_pointer():
             address = self.__method_memory.get_value(quad[1].memory_space)
@@ -193,12 +187,7 @@ class VirtualMachine:
             value = self.__method_memory.get_value(quad[2].memory_space)
 
         self.__method_memory.set_value(address, value)
-        # print("======================AFTER=========================")
-        # for el in self.__memory_stack.elements:
-            # el.debug_memory()
-            # print("<<<<<<<>>>>>>>>>")
 
-        # self.__method_memory.debug_memory()
         logger.debug(f"Assigned value {value} to {address}")
         self.increase_instruction_pointer()
 

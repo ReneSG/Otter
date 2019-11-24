@@ -8,7 +8,7 @@ Class Main {
   }
 
   public Main() {
-    write(self.fact(3));
+    write(self.fact(10));
   }
 }
 

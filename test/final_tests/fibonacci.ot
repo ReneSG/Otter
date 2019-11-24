@@ -1,15 +1,19 @@
 Class Main {
   public def fib(n: int): int {
-    let a: int = 11;
-    if(n == 0 or n == 1) {
-      write("HI!");
-      return a;
+    write(n);
+    if(n == 0) {
+      return 0;
     }
-    return 10;
+
+    if(n == 1) {
+      return 1;
+    }
+
+    return self.fib(n - 1) + self.fib(n - 2);
   }
 
   public Main() {
-    write(self.fib(1));
+    write(self.fib(5));
   }
 }
 
