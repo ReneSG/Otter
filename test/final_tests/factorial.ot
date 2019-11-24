@@ -1,0 +1,17 @@
+Class Main {
+  public def fact(n: int): int {
+    if(n == 1) {
+      return n;
+    }
+
+    return self.fact(n-1) * n;
+  }
+
+  public Main() {
+    write(self.fact(3));
+  }
+}
+
+
+
+

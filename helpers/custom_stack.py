@@ -18,3 +18,7 @@ class Stack:
 
     def size(self):
         return len(self.__elements)
+
+    @property
+    def elements(self):
+        return self.__elements

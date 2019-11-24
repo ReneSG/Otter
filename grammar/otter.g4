@@ -152,7 +152,7 @@ listElements: term (COMMA term)*;
 
 expression: (NOT {Compiler.push_op($NOT.text)})? relationalExpr {Compiler.maybe_gen_not_quad()};
 
-relationalExpr:comparisonExpr {Compiler.check_pending_and_or()} (op=(AND | OR) {Compiler.push_op($op.text)} relationalExpr {Compiler.check_pending_and_or()})?;
+relationalExpr: comparisonExpr {Compiler.check_pending_and_or()} (op=(AND | OR) {Compiler.push_op($op.text)} relationalExpr {Compiler.check_pending_and_or()})?;
 
 comparisonExpr: expr {Compiler.check_pending_rel_op()} (op=(GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | EQUAL | NOT_EQUAL) {Compiler.push_op($op.text)} expr {Compiler.check_pending_rel_op()})?;
 
@@ -160,7 +160,7 @@ expr: termino {Compiler.check_pending_sum_sub()} (op=(ADD | SUBS) {Compiler.push
 
 termino: factor {Compiler.check_pending_div_prod()} (op=(MULT | DIV) {Compiler.push_op($op.text)} termino {Compiler.check_pending_div_prod()})?;
 
-factor: (constant | reference) | OPEN_PAR {Compiler.open_par()} relationalExpr CLOSE_PAR {Compiler.close_par()};
+factor: (constant | reference | methodCall) | OPEN_PAR {Compiler.open_par()} relationalExpr CLOSE_PAR {Compiler.close_par()};
 
 term: constant | reference | expression | methodCall | constructorCall;
 

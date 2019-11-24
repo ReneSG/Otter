@@ -2,12 +2,10 @@ Class Main {
   public Main() {
     let a: int = 10 - 1;
 
-    if (a > 10) {
+    if (a == 1) {
       write("a es mayor que 10");
-    } elseif(a == 9) {
-      write("a es 9");
-    } else {
-      write("a no es mayor que 10");
+      write("a es mayor que 10");
+      write("a es mayor que 10");
     }
   }
 }

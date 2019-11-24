@@ -18,7 +18,6 @@ class VirtualMachine:
         self.__quads = quads
         self.__method_memory = MethodMemory(CompilationMemory.get_const_memory(), self.__global_memory)
         self.__memory_stack = Stack()
-        self.__memory_stack.push(self.__method_memory)
         self.__jump_stack = Stack()
         self.__keep_running = True
 
@@ -91,6 +90,8 @@ class VirtualMachine:
         self.__method_memory.set_value(quad[3], result)
 
         logger.debug(f"Solved for values: <{quad[1]}> {quad[0]} <{quad[2]}> = {result}")
+
+        logger.debug(f"Solved for values: {literal_eval(str(l_val))} {literal_eval(str(r_val))} = {result}")
         self.increase_instruction_pointer()
 
     def not_op(self):
@@ -141,7 +142,10 @@ class VirtualMachine:
     def go_sub(self):
         quad = self.current_instruction
         self.__jump_stack.push(self.get_next_ip)
-        self.__method_memory = self.__memory_stack.top()
+        aux = self.__method_memory
+        self.__method_memory = self.__memory_stack.pop()
+        self.__memory_stack.push(aux)
+
         self.move_instruction_pointer(quad[2])
 
     def param(self):
@@ -174,6 +178,12 @@ class VirtualMachine:
         self.increase_instruction_pointer()
 
     def assign(self):
+        # print("======================BEFORE=========================")
+        # for el in self.__memory_stack.elements:
+            # el.debug_memory()
+            # print("<<<<<<<>>>>>>>>>")
+
+        # self.__method_memory.debug_memory()
         quad = self.current_instruction
         if quad[1].is_array_pointer():
             address = self.__method_memory.get_value(quad[1].memory_space)
@@ -181,8 +191,14 @@ class VirtualMachine:
         else:
             address = quad[1].memory_space
             value = self.__method_memory.get_value(quad[2].memory_space)
-        self.__method_memory.set_value(address, value)
 
+        self.__method_memory.set_value(address, value)
+        # print("======================AFTER=========================")
+        # for el in self.__memory_stack.elements:
+            # el.debug_memory()
+            # print("<<<<<<<>>>>>>>>>")
+
+        # self.__method_memory.debug_memory()
         logger.debug(f"Assigned value {value} to {address}")
         self.increase_instruction_pointer()
 
@@ -211,6 +227,13 @@ class VirtualMachine:
             self.increase_instruction_pointer()
 
     def return_op(self):
+        # print("==========AT RETURN=====")
+        # self.__method_memory.debug_memory()
+        # print("==========AT RETURN=====")
+        self.__method_memory = self.__memory_stack.pop()
+        # print("==========AFTER SWAP=====")
+        # self.__method_memory.debug_memory()
+        # print("==========AFTER SWAP=====")
         self.move_instruction_pointer(self.__jump_stack.pop())
 
     def increase_instruction_pointer(self):
@@ -226,6 +249,6 @@ class VirtualMachine:
         return memory.get_value(variable.memory_space)
 
     def move_instruction_pointer(self, new_pointer: int):
-        self.__instruction_pointer = new_pointer
         logger.debug(
-            f"Moved instruction pointer to {new_pointer} from {self.__instruction_pointer}")
+            f"Moved instruction pointer from {self.__instruction_pointer} to {new_pointer}")
+        self.__instruction_pointer = new_pointer

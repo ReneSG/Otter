@@ -164,7 +164,7 @@ class Compiler:
             - return_type [str]: The return type.
         """
         Compiler._current_method.add_return_type(return_type)
-        Compiler._current_method.instruction_pointer = Compiler._interpreter.getNextInstructionAddr() + 1
+        Compiler._current_method.instruction_pointer = Compiler._interpreter.getNextInstructionAddr()
         logger.debug(
             f"Added return type: {return_type}, in method {Compiler._current_method.name}")
 

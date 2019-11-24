@@ -68,8 +68,8 @@ class ConstMemory:
         else:
             raise ValueError(f"Unrecognized constant type '{var_type}'.")
 
-        self.__const_dict[memory_space] = value
-        self.__const_dict_mirror[(value, var_type)] = memory_space
+        self.__const_dict[memory_space + self.__inf_limit] = value
+        self.__const_dict_mirror[(value, var_type)] = memory_space + self.__inf_limit
         logger.debug(
-            f"Store const {value}: {var_type} in memory space {memory_space}.")
-        return memory_space
+            f"Store const {value}: {var_type} in memory space {memory_space + self.__inf_limit}.")
+        return memory_space + self.__inf_limit

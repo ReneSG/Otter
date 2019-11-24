@@ -16,7 +16,8 @@ class Interpreter:
         self.__dim_operands = Stack()
         self.__operators = Stack()
         self.__jumps = Stack()
-        self.__quads = []
+        # DO NOT REMOVE None, its replaced by the initial goto to main.
+        self.__quads = [None]
         self.__current_param_index = 0
 
     @property
@@ -239,7 +240,7 @@ class Interpreter:
         return 0
 
     def gen_start_quad(self):
-        self.__quads.insert(0, (Operations.GOTO, None, self.getNextInstructionAddr() + 1))
+        self.__quads[0] = (Operations.GOTO, None, self.getNextInstructionAddr())
 
     def allocate_memory_for_array(self, variable):
         CompilationMemory.next_memory_chunk(variable.var_type, variable.size)
