@@ -143,7 +143,9 @@ class VirtualMachine:
                 - Exception: When the index is out of bounds.
         """
         quad = self.current_instruction
-        index = literal_eval(self.__method_memory.get_value(quad[1].memory_space))
+        index = self.__method_memory.get_value(quad[1].memory_space)
+        if type(index) == str:
+            index = literal_eval(index)
         upper_bound = quad[3]
         lower_bound = quad[2]
         if not (index >= lower_bound and index < upper_bound):
@@ -155,7 +157,9 @@ class VirtualMachine:
         """ Handler to make a product with a int primitive instead of a variable.
         """
         quad = self.current_instruction
-        var = literal_eval(self.__method_memory.get_value(quad[1].memory_space))
+        var = self.__method_memory.get_value(quad[1].memory_space)
+        if type(var) == str:
+            var = literal_eval(var)
         m = quad[2]
         result = var * m
 

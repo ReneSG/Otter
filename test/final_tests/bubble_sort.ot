@@ -1,0 +1,20 @@
+Class Main {
+  public Main() {
+    let array: int[10];
+
+    let i: int = 0;
+    for(i until i < 10 by 1) {
+      array[i] = i;
+    }
+
+    i = 0;
+    for(i until i < 10 by 1) {
+      write(array[i]);
+    }
+  }
+}
+
+
+
+
+
