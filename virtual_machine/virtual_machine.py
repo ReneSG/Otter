@@ -262,9 +262,18 @@ class VirtualMachine:
             looked on memory and use the value as the address.
         """
         quad = self.current_instruction
-        if quad[1].is_array_pointer():
+        if quad[1].is_array_pointer() and quad[2].is_array_pointer():
+            address = self.__method_memory.get_value(quad[1].memory_space)
+            pointer_address = self.__method_memory.get_value(quad[2].memory_space)
+            value = self.__method_memory.get_value(pointer_address)
+        elif quad[1].is_array_pointer():
             address = self.__method_memory.get_value(quad[1].memory_space)
             value = self.__method_memory.get_value(quad[2].memory_space)
+        elif quad[2].is_array_pointer():
+            ## Assign of a quad of type (<Operations.ASSIGN: '='>, <temp: int | 10012>, <40004: array_pointer | 40004>, 10012).
+            address = quad[1].memory_space
+            pointer_address = self.__method_memory.get_value(quad[2].memory_space)
+            value = self.__method_memory.get_value(pointer_address)
         else:
             address = quad[1].memory_space
             value = self.__method_memory.get_value(quad[2].memory_space)

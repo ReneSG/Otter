@@ -11,6 +11,25 @@ Class Main {
     for(i until i < 10 by 1) {
       write(array[i]);
     }
+
+    i = 0;
+    for(i until i < 10 by 1) {
+      let j: int = 0;
+      for(j until j < 10 - i - 1 by 1) {
+        if(array[j] < array[j+1]) {
+          let temp: int = array[j];
+          array[j] = array[j+1];
+          array[j + 1] = temp;
+        }
+      }
+    }
+
+    write("=========================");
+
+    i = 0;
+    for(i until i < 10 by 1) {
+      write(array[i]);
+    }
   }
 }
 
