@@ -113,8 +113,8 @@ class VirtualMachine:
         quad = self.current_instruction
 
         # TODO: search whole memory instead of const memory
-        l_val = self.__method_memory.get_value(quad[1].memory_space)
-        r_val = self.__method_memory.get_value(quad[2].memory_space)
+        l_val = self.get_value(quad[1])
+        r_val = self.get_value(quad[2])
         result = self.__expression_operations.get(quad[0])(literal_eval(str(l_val)), literal_eval(str(r_val)))
         self.__method_memory.set_value(quad[3], result)
 
@@ -128,7 +128,7 @@ class VirtualMachine:
         """
         quad = self.current_instruction
 
-        val = self.__method_memory.get_value(quad[1].memory_space)
+        val = self.get_value(quad[1])
         result = not val
         self.__method_memory.set_value(quad[2], result)
 
@@ -143,7 +143,7 @@ class VirtualMachine:
                 - Exception: When the index is out of bounds.
         """
         quad = self.current_instruction
-        index = self.__method_memory.get_value(quad[1].memory_space)
+        index = self.get_value(quad[1])
         if type(index) == str:
             index = literal_eval(index)
         upper_bound = quad[3]
@@ -157,7 +157,7 @@ class VirtualMachine:
         """ Handler to make a product with a int primitive instead of a variable.
         """
         quad = self.current_instruction
-        var = self.__method_memory.get_value(quad[1].memory_space)
+        var = self.get_value(quad[1])
         if type(var) == str:
             var = literal_eval(var)
         m = quad[2]
@@ -171,7 +171,7 @@ class VirtualMachine:
         """ Handler to make an addition with a int primitive instead of a variable.
         """
         quad = self.current_instruction
-        var = self.__method_memory.get_value(quad[1].memory_space)
+        var = self.get_value(quad[1])
         m = quad[2]
         result = var + m
 
@@ -207,9 +207,17 @@ class VirtualMachine:
 
         function_memory = self.__memory_stack.top()
 
-        from_variable_value = self.get_value(quad[1])
+        from_variable = quad[1]
         to_variable = quad[2]
-        function_memory.set_value(to_variable.memory_space, from_variable_value)
+
+        if from_variable.has_multiple_dimensions():
+            for index in range(0, from_variable.size):
+                from_variable_value = self.get_value_from_memory_address(from_variable.memory_space + index)
+                function_memory.set_value(to_variable.memory_space + index, from_variable_value)
+
+        else:
+            from_variable_value = self.get_value(quad[1])
+            function_memory.set_value(to_variable.memory_space, from_variable_value)
         self.increase_instruction_pointer()
 
     @property
@@ -351,6 +359,9 @@ class VirtualMachine:
             address = memory.get_value(variable.memory_space)
             return memory.get_value(address)
         return memory.get_value(variable.memory_space)
+
+    def get_value_from_memory_address(self, address):
+        return self.__method_memory.get_value(address)
 
     def move_instruction_pointer(self, new_pointer: int):
         """ Moves the instruction pointer to the provided address.

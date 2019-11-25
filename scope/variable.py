@@ -20,6 +20,7 @@ class Variable:
         self._dimension_info = None
         self._dimension_count = 0
         self._size = 1
+        self._pointer_type = None
 
     def __str__(self):
         return f"Var: {self._name} | Type: {self._var_type} | Access: {self._access_modifier} | Memory: {self._memory_space}"
@@ -37,12 +38,22 @@ class Variable:
         return self._name
 
     @property
+    def pointer_type(self):
+        return self._pointer_type
+
+    @pointer_type.setter
+    def pointer_type(self, type_):
+        self._pointer_type = type_
+
+    @property
     def var_type(self) -> Types:
         """The type of the variable.
 
         Returns:
             - [Types] The type of the variable.
         """
+        if self._var_type == Types.ARRAY_POINTER:
+            return self._pointer_type
         return self._var_type
 
     @property

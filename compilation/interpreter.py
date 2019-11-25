@@ -338,6 +338,7 @@ class Interpreter:
         memory_address = CompilationMemory.next_temp_memory_space(
             Types.ARRAY_POINTER)
         var_pointer = Variable(memory_address, Types.ARRAY_POINTER, memory_address)
+        var_pointer.pointer_type = dim_variable.var_type
         self.__quads.append((Operations.ADD_LIT, index, dim_variable.memory_space, var_pointer))
         self.__operands.push(var_pointer)
 
