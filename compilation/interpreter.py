@@ -357,8 +357,16 @@ class Interpreter:
             - method_scope [MethodScope]: The method scope from the function
                 that is being called.
         """
+        self.debug_quads()
+        print(vars(self.__operands))
         to_variable = method_scope.ordered_arguments[self.__current_param_index]
-        self.__quads.append((Operations.PARAM, self.__operands.pop(), to_variable))
+
+        if to_variable.has_multiple_dimensions():
+            operand, _ = self.__dim_operands.pop()
+        else:
+            operand = self.__operands.pop()
+
+        self.__quads.append((Operations.PARAM, operand, to_variable))
         self.__current_param_index += 1
 
     def complete_method_call(self, method_scope: MethodScope, instance: str):

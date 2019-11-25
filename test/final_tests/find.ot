@@ -1,0 +1,27 @@
+Class Main {
+  public def find(array: int[10], target: int): bool {
+    let i: int = 0;
+    for(i until i < 10 by 1) {
+      if(array[i] == target) {
+        return truthy;
+      }
+    }
+    return falsy;
+  }
+
+  public Main() {
+    let ar: int[10];
+
+    let i: int = 0;
+    for(i until i < 10 by 1) {
+      ar[i] = i;
+    }
+
+    write(self.find(ar, 9));
+    write(self.find(ar, 15));
+  }
+}
+
+
+
+

@@ -166,7 +166,8 @@ term: constant | reference | expression | methodCall | constructorCall;
 
 arguments: argument (COMMA argument)*;
 
-argument: arg_name=ID COLON arg_type=otterType {Compiler.add_method_argument($arg_name.text, $arg_type.text)};
+argument: arg_name=ID COLON arg_type=otterType {Compiler.add_method_argument($arg_name.text, $arg_type.text)}
+          | arg_name=ID COLON arg_type=otterType {Compiler.add_method_argument($arg_name.text, $arg_type.text)} (OPEN_SQUARE size=INT_PRIMITIVE CLOSE_SQUARE {Compiler.add_dimension($arg_name.text, $size.text)})+ {Compiler.populate_dimension_attributes($arg_name.text)};
 
 accessModifiers: PUBLIC | PRIVATE;
 
