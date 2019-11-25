@@ -7,8 +7,20 @@ Class Main {
     return self.fact(n-1) * n;
   }
 
+  public def itFact(n: int): int {
+    let prod: int = 1;
+
+    while(n > 0) {
+      prod = prod * n;
+      n = n - 1;
+    }
+
+    return prod;
+  }
+
   public Main() {
     write(self.fact(10));
+    write(self.itFact(10));
   }
 }
 

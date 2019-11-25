@@ -11,8 +11,28 @@ Class Main {
     return self.fib(n - 1) + self.fib(n - 2);
   }
 
+  public def itFib(n: int): int {
+    if (n == 0 or n == 1) {
+      return n;
+    }
+    let a: int = 0;
+    let b: int = 1;
+    let c: int = a + b;
+    n = n - 1;
+
+    while(n > 0) {
+      c = a + b;
+      a = b;
+      b = c;
+      n = n - 1;
+    }
+
+    return c;
+  }
+
   public Main() {
     write(self.fib(10));
+    write(self.itFib(10));
   }
 }
 

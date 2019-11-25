@@ -9,7 +9,7 @@ import logging
 
 
 FORMAT = "%(name)-25s %(message)s"
-logging.basicConfig(level=logging.DEBUG, format=FORMAT)
+logging.basicConfig(level=logging.WARNING, format=FORMAT)
 logger = logging.getLogger('compiler.Compiler')
 
 
