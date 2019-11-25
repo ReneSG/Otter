@@ -2,6 +2,9 @@ from .types import Types
 from .operations import Operations
 
 class OperationsCube:
+    """ The OperationsCube is a static class that defines all the valid operations
+        in the Otter language.
+    """
 
     cube = {
             # =============== INT ==========================
@@ -85,5 +88,15 @@ class OperationsCube:
 
     @staticmethod
     def verify(left_op: Types, right_op: Types, op: Operations) -> Types:
+        """ Verifies that the provided operators are type valid for the provided operation.
+
+            Arguments:
+                - left_op [Types]: The type of the left operator.
+                - right_op [Types]: The type of the right operator.
+                - op [Operations]: The operation to be performed.
+
+            Returns:
+                - [Types]: The result type of the operation or Types.ERROR if it is not valid.
+        """
         if left_op == Types.ARRAY_POINTER or right_op == Types.ARRAY_POINTER: return Types.ARRAY_POINTER
         return OperationsCube.cube.get((left_op, right_op, op), Types.ERROR)
