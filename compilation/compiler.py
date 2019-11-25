@@ -26,7 +26,7 @@ class Compiler:
          _current_class [ClassScope] = Keeps track of the current class being parsed, this allows us
            to add all the methods and attributes to the correct class.
          _interpreter [Interpreter] = Responsible for generating all the quadruples based on input from
-           the parser. 
+           the parser.
          errors [List[str]]: Responsible for keeping track of all errors in Otter.
     """
     _global_scope: MethodScope = MethodScope("Global Scope", "private")

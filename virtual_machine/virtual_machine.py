@@ -3,6 +3,7 @@ from helpers.custom_stack import Stack
 from memory.compilation_memory import CompilationMemory
 from .runtime_memory.method_memory import MethodMemory
 from ast import literal_eval
+from scope.variable import Variable
 import operator
 import logging
 
@@ -11,6 +12,20 @@ logger = logging.getLogger(__name__)
 
 
 class VirtualMachine:
+    """ The Virtual Machine class is responsible for taking a list of quads as its input
+        and based on the operation code of the quad take certain actions.
+
+        The main parts of the VirtualMachine are:
+        __global_memory [List[Any]]: A list to represent the global memory.
+        __instruction_pointer [int]: Points to the current quad.
+        __quads [List[Any]]: List with all the quads for the program.
+        __method_memory [MethodMemory]: Keeps track of the current active runtime memory.
+        __memory_stack [Stack]: Keeps track of the stack of memory.
+        __jump_stack [Stack]: Keeps track of the jumps in the virtual machine.
+        __keep_running [bool]: Keeps track of wether we should keep executing the program or stop.
+        __operations [dict]: Dictionary mapping all the Operations to its correct handler.
+        __expression_operations [dict]: Dictionary mapping each operation in a expression to its handler.
+    """
 
     def __init__(self, quads):
         self.__global_memory = [None] * 10000
@@ -70,17 +85,30 @@ class VirtualMachine:
 
     @property
     def current_instruction(self):
+        """ Takes the current quad.
+
+            Returns:
+                - The quad that is pointed by __instruction_pointer.
+        """
         return self.__quads[self.__instruction_pointer]
 
     def run(self):
+        """ Executes the virtual machine by looping thought all the quads and
+            running its corresponding handler.
+        """
         while self.__keep_running:
             logger.debug(f"Current instruction: {self.current_instruction}")
             self.__operations.get(self.current_instruction[0])()
 
     def goto(self):
+        """ Handler for goto operation. Moves the __instruction_pointer to the
+            address indicated in the quad.
+        """
         self.__instruction_pointer = self.current_instruction[2]
 
     def solveExpression(self):
+        """ Solves an operation.
+        """
         quad = self.current_instruction
 
         # TODO: search whole memory instead of const memory
@@ -95,6 +123,8 @@ class VirtualMachine:
         self.increase_instruction_pointer()
 
     def not_op(self):
+        """ Handler for a Not Operation.
+        """
         quad = self.current_instruction
 
         val = self.__method_memory.get_value(quad[1].memory_space)
@@ -105,6 +135,12 @@ class VirtualMachine:
         self.increase_instruction_pointer()
 
     def verify_access(self):
+        """ Handler to verify that an index is within the range of a dimensional
+            variable.
+
+            Raises:
+                - Exception: When the index is out of bounds.
+        """
         quad = self.current_instruction
         index = literal_eval(self.__method_memory.get_value(quad[1].memory_space))
         upper_bound = quad[3]
@@ -115,6 +151,8 @@ class VirtualMachine:
         self.increase_instruction_pointer()
 
     def literal_product(self):
+        """ Handler to make a product with a int primitive instead of a variable.
+        """
         quad = self.current_instruction
         var = literal_eval(self.__method_memory.get_value(quad[1].memory_space))
         m = quad[2]
@@ -125,6 +163,8 @@ class VirtualMachine:
         self.increase_instruction_pointer()
 
     def literal_add(self):
+        """ Handler to make an addition with a int primitive instead of a variable.
+        """
         quad = self.current_instruction
         var = self.__method_memory.get_value(quad[1].memory_space)
         m = quad[2]
@@ -135,11 +175,17 @@ class VirtualMachine:
         self.increase_instruction_pointer()
 
     def era(self):
+        """ Handler for ERA Operation. Creates a new method memory for the method
+            that is going to be called.
+        """
         new_memory = MethodMemory(CompilationMemory.get_const_memory(), self.__global_memory)
         self.__memory_stack.push(new_memory)
         self.increase_instruction_pointer()
 
     def go_sub(self):
+        """ Handler for GOSUB Operation. Assigns the __method_memory to the memory of the method
+            that is going to go to, and stores the current memory in the memory stack.
+        """
         quad = self.current_instruction
         self.__jump_stack.push(self.get_next_ip)
         aux = self.__method_memory
@@ -149,6 +195,9 @@ class VirtualMachine:
         self.move_instruction_pointer(quad[2])
 
     def param(self):
+        """ Handler for PARAM Operation. Assigns the function arguments from the current memory to
+            the memory of the method to be called.
+        """
         quad = self.current_instruction
 
         function_memory = self.__memory_stack.top()
@@ -159,18 +208,43 @@ class VirtualMachine:
         self.increase_instruction_pointer()
 
     @property
-    def get_next_ip(self):
+    def get_next_ip(self) -> int:
+        """ Returns the next instruction pointer.
+
+            Returns:
+                - [int]: The next instruction pointer.
+        """
         return self.__instruction_pointer + 1
 
     @staticmethod
-    def and_op(l, r):
+    def and_op(l: bool, r: bool) -> bool:
+        """ Handler for and operation.
+
+            Arguments:
+                - l [bool]: Left operator of and operation.
+                - r [bool]: Right operator of and operation.
+
+            Returns:
+                - [int]: Result of the and operation.
+        """
         return l and r
 
     @staticmethod
     def or_op(l, r):
+        """ Handler for or operation.
+
+            Arguments:
+                - l [bool]: Left operator of or operation.
+                - r [bool]: Right operator of or operation.
+
+            Returns:
+                - [int]: Result of the or operation.
+        """
         return l or r
 
     def write(self):
+        """ Handler for WRITE Operation.
+        """
         quad = self.current_instruction
 
         val = self.get_value(quad[1])
@@ -178,6 +252,10 @@ class VirtualMachine:
         self.increase_instruction_pointer()
 
     def assign(self):
+        """ Handler for ASSIGN operation. When the variable is an array pointer, instead of
+            just using its direction for the assing operation, its memory_space should be
+            looked on memory and use the value as the address.
+        """
         quad = self.current_instruction
         if quad[1].is_array_pointer():
             address = self.__method_memory.get_value(quad[1].memory_space)
@@ -192,6 +270,9 @@ class VirtualMachine:
         self.increase_instruction_pointer()
 
     def end_func(self):
+        """ Handler for ENDFUNC Operation. Finish the execution of the VirtualMachine if it is 
+            the end of the program.
+        """
         # TODO: Handle memory swaps.
         if self.__jump_stack.isEmpty():
             # END PROGRAM
@@ -200,6 +281,8 @@ class VirtualMachine:
         self.move_instruction_pointer(self.__jump_stack.pop())
 
     def go_to_f(self):
+        """ Handler for GOTOF. Moves the __instruction_pointer when the condition value is false.
+        """
         quad = self.current_instruction
 
         if self.get_value(quad[1]) == False:
@@ -208,6 +291,8 @@ class VirtualMachine:
             self.increase_instruction_pointer()
 
     def go_to_t(self):
+        """ Handler for GOTOT. Moves the __instruction_pointer when the condition variable is true.
+        """
         quad = self.current_instruction
 
         if self.get_value(quad[1]) == True:
@@ -216,28 +301,49 @@ class VirtualMachine:
             self.increase_instruction_pointer()
 
     def return_op(self):
-        # print("==========AT RETURN=====")
-        # self.__method_memory.debug_memory()
-        # print("==========AT RETURN=====")
+        """ Handler for RETURN Operation. Swaps active memory and moves the instruction pointer
+            to where it was before the GOSUB Operation.
+        """
         self.__method_memory = self.__memory_stack.pop()
-        # print("==========AFTER SWAP=====")
-        # self.__method_memory.debug_memory()
-        # print("==========AFTER SWAP=====")
         self.move_instruction_pointer(self.__jump_stack.pop())
 
     def increase_instruction_pointer(self):
+        """ Increases the instruction pointer by one.
+        """
         self.__instruction_pointer += 1
 
-    def get_value(self, variable):
+    def get_value(self, variable: Variable):
+        """ Retrieves the value of the variabel from the active memory.
+
+            Arguments:
+                - variable [Variable]: The variable to be retrieved.
+
+            Returns:
+                - The value in memory of the provieded variable.
+        """
         return self.get_value_from_memory(variable, self.__method_memory)
 
-    def get_value_from_memory(self, variable, memory):
+    def get_value_from_memory(self, variable: Variable, memory: MethodMemory):
+        """ Retrieves the value of the variable from the provided memory.
+
+            Arguments:
+                - variable [Variable]: The variable to be retrieved.
+                - memory [MethodMemory]: The memory to be used to retireved the variable.
+
+            Returns:
+                - The value in memory of the provieded variable.
+        """
         if variable.is_array_pointer():
             address = memory.get_value(variable.memory_space)
             return memory.get_value(address)
         return memory.get_value(variable.memory_space)
 
     def move_instruction_pointer(self, new_pointer: int):
+        """ Moves the instruction pointer to the provided address.
+
+            Arguments:
+                - new_pointer [int]: Pointer to new address.
+        """
         logger.debug(
             f"Moved instruction pointer from {self.__instruction_pointer} to {new_pointer}")
         self.__instruction_pointer = new_pointer
