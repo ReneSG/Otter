@@ -133,7 +133,7 @@ conditional:
 
 unless: UNLESS OPEN_PAR expression CLOSE_PAR {Compiler.start_condition_quad(True)} block {Compiler.end_condition_quad()};
 
-whileLoop: WHILE OPEN_PAR {Compiler.push_instruction_address()} expression CLOSE_PAR {Compiler.start_for_quad()} block {Compiler.end_while_quad()};
+whileLoop: WHILE OPEN_PAR {Compiler.push_next_instruction_address()} expression CLOSE_PAR {Compiler.start_for_quad()} block {Compiler.end_while_quad()};
 
 forLoop:
     FOR OPEN_PAR name=ID {Compiler.push_variable($name.text)} UNTIL {Compiler.push_next_instruction_address()} expression {Compiler.start_condition_quad()} BY term CLOSE_PAR {Compiler.push_instruction_address()} block {Compiler.end_for_quad()};

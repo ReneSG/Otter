@@ -195,6 +195,8 @@ class Interpreter:
             jump address to the GOTOF quad, and generates a GOTO quad to the start of the 
             loop.
         """
+        print("")
+        print(vars(self.__jumps))
         goToFAddress = self.__jumps.pop()
         goToFQuad = self.__quads[goToFAddress]
         self.gen_goto_quad_to(self.__jumps.pop())
@@ -266,7 +268,6 @@ class Interpreter:
             address is needed to complete the GOTOF later on, and to generate the GOTO
             quad to the start of the loop.
         """
-        self.push_instruction_address()
         self.start_condition_quad()
 
     def end_for_quad(self):
