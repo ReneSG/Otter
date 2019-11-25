@@ -4,6 +4,7 @@ from memory.compilation_memory import CompilationMemory
 from .runtime_memory.method_memory import MethodMemory
 from ast import literal_eval
 from scope.variable import Variable
+from typing import Tuple, List
 import operator
 import logging
 
@@ -16,18 +17,18 @@ class VirtualMachine:
         and based on the operation code of the quad take certain actions.
 
         The main parts of the VirtualMachine are:
-        __global_memory [List[Any]]: A list to represent the global memory.
-        __instruction_pointer [int]: Points to the current quad.
-        __quads [List[Any]]: List with all the quads for the program.
-        __method_memory [MethodMemory]: Keeps track of the current active runtime memory.
-        __memory_stack [Stack]: Keeps track of the stack of memory.
-        __jump_stack [Stack]: Keeps track of the jumps in the virtual machine.
-        __keep_running [bool]: Keeps track of wether we should keep executing the program or stop.
-        __operations [dict]: Dictionary mapping all the Operations to its correct handler.
-        __expression_operations [dict]: Dictionary mapping each operation in a expression to its handler.
+            __global_memory [List[Any]]: A list to represent the global memory.
+            __instruction_pointer [int]: Points to the current quad.
+            __quads [List[Any]]: List with all the quads for the program.
+            __method_memory [MethodMemory]: Keeps track of the current active runtime memory.
+            __memory_stack [Stack]: Keeps track of the stack of memory.
+            __jump_stack [Stack]: Keeps track of the jumps in the virtual machine.
+            __keep_running [bool]: Keeps track of wether we should keep executing the program or stop.
+            __operations [dict]: Dictionary mapping all the Operations to its correct handler.
+            __expression_operations [dict]: Dictionary mapping each operation in a expression to its handler.
     """
 
-    def __init__(self, quads):
+    def __init__(self, quads: List):
         self.__global_memory = [None] * 10000
         self.__instruction_pointer = 0
         self.__quads = quads

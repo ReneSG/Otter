@@ -13,6 +13,11 @@ class CompilationMemory:
 
     @staticmethod
     def get_const_memory():
+        """ Returns the const memory.
+
+            Returns:
+                - [Memory]: The const memory.
+        """
         return CompilationMemory.__const_memory
 
     @staticmethod
