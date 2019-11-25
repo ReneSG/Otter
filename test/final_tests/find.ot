@@ -2,6 +2,7 @@ Class Main {
   public def find(array: int[10], target: int): bool {
     let i: int = 0;
     for(i until i < 10 by 1) {
+      write(array[i]);
       if(array[i] == target) {
         return truthy;
       }

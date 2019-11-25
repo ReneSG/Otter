@@ -38,6 +38,7 @@ class Operations(Enum):
     END_FUNC = "END_FUNC"
     PROD_LIT = "PROD_LIT"
     ADD_LIT = "ADD_LIT"
+    RES_POINTER = "RES_POINTER"
 
     @staticmethod
     def is_add_or_sub_op_(op: "Operations") -> bool:

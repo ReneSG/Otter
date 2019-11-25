@@ -195,8 +195,6 @@ class Interpreter:
             jump address to the GOTOF quad, and generates a GOTO quad to the start of the 
             loop.
         """
-        print("")
-        print(vars(self.__jumps))
         goToFAddress = self.__jumps.pop()
         goToFQuad = self.__quads[goToFAddress]
         self.gen_goto_quad_to(self.__jumps.pop())
@@ -338,8 +336,11 @@ class Interpreter:
         memory_address = CompilationMemory.next_temp_memory_space(
             Types.ARRAY_POINTER)
         var_pointer = Variable(memory_address, Types.ARRAY_POINTER, memory_address)
+        temp_var_address = CompilationMemory.next_temp_memory_space(dim_variable.var_type)
+        temp_var = Variable(temp_var_address, dim_variable.var_type, temp_var_address)
         self.__quads.append((Operations.ADD_LIT, index, dim_variable.memory_space, var_pointer))
-        self.__operands.push(var_pointer)
+        self.__quads.append((Operations.RES_POINTER, var_pointer, temp_var))
+        self.__operands.push(temp_var)
 
     def allocate_mem_quad(self, instance: str, method: str):
         """ Creates a ERA quad.
@@ -357,8 +358,6 @@ class Interpreter:
             - method_scope [MethodScope]: The method scope from the function
                 that is being called.
         """
-        self.debug_quads()
-        print(vars(self.__operands))
         to_variable = method_scope.ordered_arguments[self.__current_param_index]
 
         if to_variable.has_multiple_dimensions():

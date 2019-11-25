@@ -59,6 +59,7 @@ class VirtualMachine:
             Operations.VER_ACCS: self.verify_access,
             Operations.PROD_LIT: self.literal_product,
             Operations.ADD_LIT: self.literal_add,
+            Operations.RES_POINTER: self.resolve_pointer,
 
             Operations.AND: self.solveExpression,
             Operations.OR: self.solveExpression,
@@ -113,8 +114,8 @@ class VirtualMachine:
         quad = self.current_instruction
 
         # TODO: search whole memory instead of const memory
-        l_val = self.__method_memory.get_value(quad[1].memory_space)
-        r_val = self.__method_memory.get_value(quad[2].memory_space)
+        l_val = self.get_value(quad[1])
+        r_val = self.get_value(quad[2])
         result = self.__expression_operations.get(quad[0])(literal_eval(str(l_val)), literal_eval(str(r_val)))
         self.__method_memory.set_value(quad[3], result)
 
@@ -128,7 +129,7 @@ class VirtualMachine:
         """
         quad = self.current_instruction
 
-        val = self.__method_memory.get_value(quad[1].memory_space)
+        val = self.get_value(quad[1])
         result = not val
         self.__method_memory.set_value(quad[2], result)
 
@@ -143,7 +144,7 @@ class VirtualMachine:
                 - Exception: When the index is out of bounds.
         """
         quad = self.current_instruction
-        index = self.__method_memory.get_value(quad[1].memory_space)
+        index = self.get_value(quad[1])
         if type(index) == str:
             index = literal_eval(index)
         upper_bound = quad[3]
@@ -157,7 +158,7 @@ class VirtualMachine:
         """ Handler to make a product with a int primitive instead of a variable.
         """
         quad = self.current_instruction
-        var = self.__method_memory.get_value(quad[1].memory_space)
+        var = self.get_value(quad[1])
         if type(var) == str:
             var = literal_eval(var)
         m = quad[2]
@@ -171,7 +172,7 @@ class VirtualMachine:
         """ Handler to make an addition with a int primitive instead of a variable.
         """
         quad = self.current_instruction
-        var = self.__method_memory.get_value(quad[1].memory_space)
+        var = self.get_value(quad[1])
         m = quad[2]
         result = var + m
 
@@ -313,6 +314,13 @@ class VirtualMachine:
             self.move_instruction_pointer(quad[2])
         else:
             self.increase_instruction_pointer()
+
+    def resolve_pointer(self):
+        quad = self.current_instruction
+
+        value = self.get_value(quad[1])
+        self.__method_memory.set_value(quad[2].memory_space, value)
+        self.increase_instruction_pointer()
 
     def return_op(self):
         """ Handler for RETURN Operation. Swaps active memory and moves the instruction pointer
