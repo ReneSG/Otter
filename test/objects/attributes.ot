@@ -1,10 +1,14 @@
 Class Main {
   public let a: int;
 
-  public Main() {
-    let b: int = 100;
-    @a = 1000;
+  public def modifyAttribute(): void {
+    @a = 2020;
+  }
 
+  public Main() {
+    @a = 1000;
+    write(@a);
+    self.modifyAttribute();
     write(@a);
   }
 }

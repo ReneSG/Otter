@@ -75,6 +75,10 @@ class Compiler:
         Compiler._current_class = None
 
     @staticmethod
+    def end_class_constructor() -> None:
+        Compiler._interpreter.add_end_constructor_quad(Compiler._current_method)
+
+    @staticmethod
     def add_instance_variable(name: str, var_type: str, access_modifier: str) -> None:
         """Adds an instance variable to _current_class attribute table.
 

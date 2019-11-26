@@ -2,15 +2,16 @@ from .symbol_table import SymbolTable
 from .variable import Variable
 from memory.compilation_memory import CompilationMemory
 from memory.memory import Memory
+from memory.ranges import ScopeRanges
 from typing import Optional
-from copy import deepcopy
+from scope.scopes import Scopes
 import logging
 
 logger = logging.getLogger(__name__)
 
 
 class MethodScope:
-    def __init__(self, name: str, access_modifier: str, parent: Optional[SymbolTable] = None, parent_memory: Optional[Memory] = None):
+    def __init__(self, name: str, access_modifier: str, parent: Optional[SymbolTable] = None):
         """The MethodScope object is responsible for keeping track of the information of a method.
 
         Arguments:
@@ -22,7 +23,7 @@ class MethodScope:
         self._name = name
         self._access_modifier = access_modifier
         self._parent = parent
-        self._local_memory = deepcopy(parent_memory)
+        self._local_memory = Memory(Scopes.LOCAL, ScopeRanges.LOCAL)
         self._instruction_pointer = None
 
         if parent is not None:
@@ -110,7 +111,7 @@ class MethodScope:
             - var_type [str]: The type of the variable.
         """
         # It belongs to global memory if it has no parent.
-        if self._local_memory is not None:
+        if self._parent is not None:
             memory_space = self._local_memory.next_memory_space(var_type)
         else:
             memory_space = CompilationMemory.next_global_memory_space(var_type)

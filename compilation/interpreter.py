@@ -400,6 +400,9 @@ class Interpreter:
         """
         self.__quads.append((Operations.END_FUNC,))
 
+    def add_end_constructor_quad(self, method_scope: MethodScope):
+        self.__quads.append((Operations.RETURN, "constructor", method_scope.return_memory_address))
+
     def gen_start_quad(self):
         """ Generates the GOTO quad to the main function and stores in the
             first element of the quad list.

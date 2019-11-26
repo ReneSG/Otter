@@ -24,6 +24,7 @@ Class B inherits A {
 Class Main {
   public Main() {
     let a: B = new B();
+    a.test();
   }
 }
 

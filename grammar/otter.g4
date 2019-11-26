@@ -95,7 +95,7 @@ classAttributes:
         };
 
 classConstructor:
-    access_modifier=accessModifiers const_name=ID {Compiler.add_constructor($const_name.text, $access_modifier.text)} OPEN_PAR arguments? CLOSE_PAR block {Compiler.end_method_scope()};
+    access_modifier=accessModifiers const_name=ID {Compiler.add_constructor($const_name.text, $access_modifier.text)} OPEN_PAR arguments? CLOSE_PAR block {Compiler.end_class_constructor()} {Compiler.end_method_scope()};
 
 declaration:
     LET var_name=ID COLON var_type=otterType {Compiler.add_variable($var_name.text, $var_type.text)} {Compiler.push_variable($var_name.text)} ASSIGN {Compiler.push_op($ASSIGN.text)} term {Compiler.gen_quad_assign()} SEMICOLON

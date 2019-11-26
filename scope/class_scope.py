@@ -20,18 +20,19 @@ class ClassScope:
         if inherits is None:
             self._method_directory = SymbolTable(name)
             self._attribute_directory = SymbolTable(name)
-            self._local_memory = Memory(Scopes.LOCAL, ScopeRanges.LOCAL)
+            self._instance_memory = Memory(
+                Scopes.INSTANCE, ScopeRanges.INSTANCE)
         else:
             self._method_directory = SymbolTable(
                 name, inherits.method_directory)
             self._attribute_directory = SymbolTable(
                 name, inherits.attribute_directory)
-            self._local_memory = inherits.local_memory
+            self._instance_memory = inherits.instance_memory
 
     @property
     def name(self) -> str:
         """The name of the class.
-        
+
         Returns:
             - The name [str] of the class.
         """
@@ -49,15 +50,15 @@ class ClassScope:
     @property
     def attribute_directory(self) -> SymbolTable:
         """The SymbolTable which keeps track of the attributes in the class.
-        
+
         Returns:
             - The SymbolTable instance.
         """
         return self._attribute_directory
 
     @property
-    def local_memory(self) -> Memory:
-        return self._local_memory
+    def instance_memory(self) -> Memory:
+        return self._instance_memory
 
     def add_method(self, name: str, access_modifier: str) -> MethodScope:
         """Adds a method to the class.
@@ -70,7 +71,7 @@ class ClassScope:
             - The MethodScope object created for this method.
         """
         method_scope = MethodScope(
-            name, access_modifier, self._attribute_directory, self._local_memory)
+            name, access_modifier, self._attribute_directory)
         self._method_directory.add_symbol(method_scope)
 
         return method_scope
@@ -83,6 +84,6 @@ class ClassScope:
             - var_type [str]: The type of the attribute.
             - access_modifier [str]: Whether the attribute is public or private.
         """
-        memory_address = self._local_memory.next_memory_space(var_type)
+        memory_address = self._instance_memory.next_memory_space(var_type)
         self._attribute_directory.add_symbol(
             Variable(f"@{name}", var_type, memory_address, access_modifier=access_modifier))
