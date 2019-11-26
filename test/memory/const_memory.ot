@@ -1,8 +1,4 @@
 Class Main {
-  public Main() {
-
-  }
-
   public def testPublic(): void {
     let myInt: int = 4;
     let myInt2: int = 4;
@@ -13,6 +9,7 @@ Class Main {
     let myStr2: string = "123";
     let myStr3: string = "456";
     let myStr4: string = "456";
+    write(myStr4);
 
     let myBool: bool = truthy;
     let myBool2: bool = truthy;
@@ -23,5 +20,9 @@ Class Main {
     let myFloat2: float = 1.2;
     let myFloat3: float = 1.3;
     let myFloat4: float = 1.3;
+  }
+
+  public Main() {
+    self.testPublic();
   }
 }

@@ -64,6 +64,7 @@ class ConstMemory:
         elif Types.is_bool(var_type):
             memory_space = self.__bool_memory.next_available()
         elif Types.is_string(var_type):
+            value = value.strip("\"")
             memory_space = self.__string_memory.next_available()
         else:
             raise ValueError(f"Unrecognized constant type '{var_type}'.")
