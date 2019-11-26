@@ -40,7 +40,7 @@ class MethodMemory:
         elif ScopeRanges.is_instance(address):
             self.__instance_memory[remove_base_prefix(address)] = value
         else:
-            raise NotImplementedError("Variable no es temp ni local ni global.")
+            raise NotImplementedError(f"Variable {address} no es temp ni local ni global.")
 
     def get_value(self, address: int) -> Any:
         """ Sets the provided value to the provided address.

@@ -151,7 +151,7 @@ class VirtualMachine:
         upper_bound = quad[3]
         lower_bound = quad[2]
         if not (index >= lower_bound and index < upper_bound):
-            raise ValueError("Segmentation fault.")
+            raise ValueError(f"Segmentation fault. Index: {index} is out of range({lower_bound, upper_bound})")
 
         self.increase_instruction_pointer()
 
@@ -269,7 +269,7 @@ class VirtualMachine:
         quad = self.current_instruction
 
         val = self.get_value(quad[1])
-        print(val)
+        print(val, end="")
         self.increase_instruction_pointer()
 
     def assign(self):
