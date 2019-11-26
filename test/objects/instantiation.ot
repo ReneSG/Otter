@@ -22,7 +22,7 @@ Class B inherits A {
 Class Main {
   public Main() {
     let a: B = new B();
-    let c: A = new A();
+    let c: A = new A(10);
     write("NEW");
     a.test();
     c.test();

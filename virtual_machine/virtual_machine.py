@@ -56,6 +56,7 @@ class VirtualMachine:
             Operations.LESS: self.solveExpression,
             Operations.LESS_EQUAL_THAN: self.solveExpression,
             Operations.NOT: self.not_op,
+            Operations.NOT_EQUAL: self.solveExpression,
             Operations.EQUAL: self.solveExpression,
             Operations.VER_ACCS: self.verify_access,
             Operations.PROD_LIT: self.literal_product,
@@ -81,6 +82,7 @@ class VirtualMachine:
                 Operations.LESS: operator.lt,
                 Operations.LESS_EQUAL_THAN: operator.le,
                 Operations.EQUAL: operator.eq,
+                Operations.NOT_EQUAL: operator.ne,
 
                 Operations.AND: VirtualMachine.and_op,
                 Operations.OR: VirtualMachine.or_op,

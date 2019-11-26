@@ -22,7 +22,7 @@ Class A {
 
 Class Main {
   public Main() {
-    let a: A = new A();
+    let a: A = new A(10);
     a.publicTest();
   }
 }
