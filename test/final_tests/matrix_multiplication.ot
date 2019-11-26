@@ -1,0 +1,54 @@
+Class Main {
+  public Main() {
+    let a: int[4][2];
+    let b: int[2][3];
+    let result: int[4][3];
+
+    let i: int = 0;
+    let j: int = 0;
+
+    i = 0;
+    for(i until i < 4 by 1) {
+      j = 0;
+      for(j until j < 2 by 1) {
+        a[i][j] = i;
+      }
+    }
+
+    i = 0;
+    for(i until i < 2 by 1) {
+      j = 0;
+      for(j until j < 3 by 1) {
+        b[i][j] = j;
+      }
+    }
+
+    i = 0;
+    for(i until i < 4 by 1) {
+      j = 0;
+      for(j until j < 3 by 1) {
+        result[i][j] = 0;
+      }
+    }
+
+    i = 0;
+    for(i until i < 4 by 1) {
+      j = 0;
+      for(j until j < 3 by 1) {
+        let k: int = 0;
+        for(k until k < 2 by 1) {
+          result[i][j] = result[i][j] + a[i][k] * b[k][j];
+        }
+      }
+    }
+
+    i = 0;
+    for(i until i < 4 by 1) {
+      j = 0;
+      for(j until j < 3 by 1) {
+        write(result[i][j]);
+        write(" ");
+      }
+    }
+  }
+}

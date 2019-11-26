@@ -331,13 +331,20 @@ class Interpreter:
     def complete_dimension_access(self):
         """ Generates the quad to add the base memory of the dimensional address.
         """
-        dim_variable = self.__dim_operands.pop()[0]
-        index = self.__operands.pop()
+        dim_variable, dimension = self.__dim_operands.pop()
         memory_address = CompilationMemory.next_temp_memory_space(
             Types.ARRAY_POINTER)
         var_pointer = Variable(memory_address, Types.ARRAY_POINTER, memory_address)
         var_pointer.pointer_type = dim_variable.var_type
-        self.__quads.append((Operations.ADD_LIT, index, dim_variable.memory_space, var_pointer))
+
+        if dimension > 1:
+            index = self.__operands.pop()
+            add_memory_address = CompilationMemory.next_temp_memory_space(Types.INT)
+            self.__quads.append((Operations.ADD, index, self.__operands.pop(), add_memory_address))
+            self.__operands.push(Variable(add_memory_address, Types.INT, add_memory_address))
+
+        var = self.__operands.pop()
+        self.__quads.append((Operations.ADD_LIT, var, dim_variable.memory_space, var_pointer))
         self.__operands.push(var_pointer)
 
     def allocate_mem_quad(self, instance: str, method: str):
@@ -361,6 +368,9 @@ class Interpreter:
             - method_scope [MethodScope]: The method scope from the function
                 that is being called.
         """
+        if len(method_scope.ordered_arguments) <= self.__current_param_index:
+            raise Exception(f"{method_scope.name} only takes {len(method_scope.ordered_arguments)} parameters")
+
         to_variable = method_scope.ordered_arguments[self.__current_param_index]
 
         if to_variable.has_multiple_dimensions():
@@ -394,6 +404,9 @@ class Interpreter:
             temp = Variable(next_address, method_scope.return_type, next_address)
             self.__quads.append((Operations.ASSIGN, temp, method_scope.return_memory_address))
             self.__operands.push(temp)
+
+        if len(method_scope.ordered_arguments) != self.__current_param_index - 1:
+            raise Exception(f"Number of parameters do not match on {method_scope.name}")
         self.__current_param_index = 0
 
     def add_end_function_quad(self, method_scope: MethodScope):
