@@ -1,0 +1,10 @@
+Class Main {
+  public Main() {
+    let a: string = "Hola";
+    write(a);
+    a = read();
+    write(a);
+  }
+}
+
+

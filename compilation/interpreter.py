@@ -240,8 +240,9 @@ class Interpreter:
         """
         memory_address = CompilationMemory.next_temp_memory_space(
             Types.STRING)
-        self.__quads.append((Operations.READ, Variable(
-            memory_address, Types.STRING, memory_address)))
+        temp = Variable(memory_address, Types.STRING, memory_address)
+        self.__quads.append((Operations.READ, temp))
+        self.__operands.push(temp)
 
     def write_quad(self):
         """ Generates a quad for the write operation.

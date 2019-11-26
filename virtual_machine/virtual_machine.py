@@ -1,5 +1,6 @@
 from helpers.operations import Operations
 from helpers.custom_stack import Stack
+from helpers.types import Types
 from memory.compilation_memory import CompilationMemory
 from .runtime_memory.method_memory import MethodMemory
 from ast import literal_eval
@@ -67,6 +68,7 @@ class VirtualMachine:
             Operations.OR: self.solveExpression,
 
             Operations.WRITE: self.write,
+            Operations.READ: self.read,
 
             Operations.GOTOF: self.go_to_f,
             Operations.GOTOT: self.go_to_t,
@@ -271,7 +273,17 @@ class VirtualMachine:
         quad = self.current_instruction
 
         val = self.get_value(quad[1])
+        if quad[1].var_type == Types.STRING:
+            val = val.strip("\"")
         print(val, end="")
+        self.increase_instruction_pointer()
+
+    def read(self):
+        """ Handler for READ Operation.
+        """
+        quad = self.current_instruction
+        io_input = input()
+        self.__method_memory.set_value(quad[1].memory_space, io_input)
         self.increase_instruction_pointer()
 
     def assign(self):
