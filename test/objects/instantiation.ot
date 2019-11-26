@@ -1,0 +1,31 @@
+Class A {
+  public let foo: int;
+
+  public def test(): void {
+    write(@foo);
+  }
+
+  public A(a: int) {
+    @foo = 70;
+    write(@foo);
+  }
+}
+
+Class B inherits A {
+  public B() {
+    @foo = 100;
+    // write(@foo);
+  }
+}
+
+
+Class Main {
+  public Main() {
+    let a: B = new B();
+    let c: A = new A();
+    write("NEW");
+    a.test();
+    c.test();
+  }
+}
+

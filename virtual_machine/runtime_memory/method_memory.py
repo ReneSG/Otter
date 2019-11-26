@@ -17,11 +17,12 @@ class MethodMemory:
             __global_memory [List[Any]]: Keeps track of the global memory.
             __const_memory [ConstMemory]: Keeps track of the const memory.
     """
-    def __init__(self, const_memory: ConstMemory, global_memory: List):
+    def __init__(self, const_memory: ConstMemory, global_memory: List, instance_memory: List):
         self.__temp_memory = [None] * 12000
         self.__local_memory = [None] * 10000
         self.__global_memory = global_memory
         self.__const_memory = const_memory
+        self.__instance_memory = instance_memory
 
     def set_value(self, address: int, value: Any) -> None:
         """ Sets the provided value to the provided address.
@@ -36,6 +37,8 @@ class MethodMemory:
             self.__temp_memory[remove_base_prefix(address)] = value
         elif ScopeRanges.is_global(address):
             self.__global_memory[remove_base_prefix(address)] = value
+        elif ScopeRanges.is_instance(address):
+            self.__instance_memory[remove_base_prefix(address)] = value
         else:
             raise NotImplementedError("Variable no es temp ni local ni global.")
 
@@ -52,6 +55,8 @@ class MethodMemory:
             return self.__temp_memory[remove_base_prefix(address)]
         elif ScopeRanges.is_global(address):
             return self.__global_memory[remove_base_prefix(address)]
+        elif ScopeRanges.is_instance(address):
+            return self.__instance_memory[remove_base_prefix(address)]
         elif ScopeRanges.is_const(address):
             return self.__const_memory.get_value_from_address(address)
         else:

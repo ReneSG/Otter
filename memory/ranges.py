@@ -43,9 +43,10 @@ class ScopeRanges():
     GLOBAL = range_tuple(0, 9999)
     LOCAL = range_tuple(10000, 19999)
     CONSTANTS = range_tuple(20000, 29999)
+    INSTANCE = range_tuple(30000, 39999)
 
     # Only temps have array pointers, so they have an extra 2,000 spaces.
-    TEMP = range_tuple(30000, 41999)
+    TEMP = range_tuple(40000, 51999)
 
     @staticmethod
     def is_global(value: int) -> bool:
@@ -96,6 +97,18 @@ class ScopeRanges():
         return ScopeRanges.CONSTANTS.inf <= value <= ScopeRanges.CONSTANTS.max
 
     @staticmethod
+    def is_instance(value: int) -> bool:
+        """Whether a value is instance based on its address.
+
+        Arguments:
+            - value [int]: The memory address.
+
+        Returns:
+            - [bool] True if it is instance. False otherwise.
+        """
+        return ScopeRanges.INSTANCE.inf <= value <= ScopeRanges.INSTANCE.max
+
+    @staticmethod
     def get_range(address: int) -> (int, int):
         """Gets the range an address belongs to.
 
@@ -114,6 +127,8 @@ class ScopeRanges():
             return ScopeRanges.CONSTANTS
         if ScopeRanges.is_temp(address):
             return ScopeRanges.TEMP
+        if ScopeRanges.is_instance(address):
+            return ScopeRanges.INSTANCE
 
         raise ValueError(f"Invalid memory address: f{address}.")
 

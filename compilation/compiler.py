@@ -9,7 +9,8 @@ import logging
 
 
 FORMAT = "%(name)-25s %(message)s"
-logging.basicConfig(level=logging.DEBUG, format=FORMAT)
+# logging.basicConfig(level=logging.DEBUG, format=FORMAT)
+logging.basicConfig(level=logging.WARNING, format=FORMAT)
 logger = logging.getLogger('compiler.Compiler')
 
 
@@ -74,6 +75,10 @@ class Compiler:
         Compiler._current_class = None
 
     @staticmethod
+    def end_class_constructor() -> None:
+        Compiler._interpreter.add_end_constructor_quad(Compiler._current_method)
+
+    @staticmethod
     def add_instance_variable(name: str, var_type: str, access_modifier: str) -> None:
         """Adds an instance variable to _current_class attribute table.
 
@@ -118,8 +123,8 @@ class Compiler:
     def end_method_scope() -> None:
         """Ends the scope of _current_method. Sets it back to the global scope."""
         logger.debug(f"Ended method {Compiler._current_method.name} scope.")
+        Compiler._interpreter.add_end_function_quad(Compiler._current_method)
         Compiler._current_method = Compiler._global_scope
-        Compiler._interpreter.add_end_function_quad()
 
     @staticmethod
     def add_constructor(name: str, access_modifier: str) -> None:

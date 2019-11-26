@@ -1,0 +1,19 @@
+Class Main {
+  public let a: int;
+
+  public def modifyAttribute(): void {
+    @a = 2020;
+  }
+
+  public Main() {
+    @a = 1000;
+    write(@a);
+    self.modifyAttribute();
+    write(@a);
+  }
+}
+
+
+
+
+

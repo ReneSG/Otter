@@ -32,7 +32,8 @@ class VirtualMachine:
         self.__global_memory = [None] * 10000
         self.__instruction_pointer = 0
         self.__quads = quads
-        self.__method_memory = MethodMemory(CompilationMemory.get_const_memory(), self.__global_memory)
+        self.__current_instance = [None] * 10000
+        self.__method_memory = MethodMemory(CompilationMemory.get_const_memory(), self.__global_memory, self.__current_instance)
         self.__memory_stack = Stack()
         self.__jump_stack = Stack()
         self.__keep_running = True
@@ -184,7 +185,13 @@ class VirtualMachine:
         """ Handler for ERA Operation. Creates a new method memory for the method
             that is going to be called.
         """
-        new_memory = MethodMemory(CompilationMemory.get_const_memory(), self.__global_memory)
+        quad = self.current_instruction
+        if quad[1] == "constructor":
+            self.__current_instance = [None] * 10000
+        elif quad[1] != "self":
+            self.__current_instance = self.get_value(quad[1])
+
+        new_memory = MethodMemory(CompilationMemory.get_const_memory(), self.__global_memory, self.__current_instance)
         self.__memory_stack.push(new_memory)
         self.increase_instruction_pointer()
 
@@ -208,9 +215,17 @@ class VirtualMachine:
 
         function_memory = self.__memory_stack.top()
 
-        from_variable_value = self.get_value(quad[1])
+        from_variable = quad[1]
         to_variable = quad[2]
-        function_memory.set_value(to_variable.memory_space, from_variable_value)
+
+        if from_variable.has_multiple_dimensions():
+            for index in range(0, from_variable.size):
+                from_variable_value = self.get_value_from_memory_address(from_variable.memory_space + index)
+                function_memory.set_value(to_variable.memory_space + index, from_variable_value)
+
+        else:
+            from_variable_value = self.get_value(quad[1])
+            function_memory.set_value(to_variable.memory_space, from_variable_value)
         self.increase_instruction_pointer()
 
     @property
@@ -293,6 +308,7 @@ class VirtualMachine:
             # END PROGRAM
             self.__keep_running = False
             return
+
         self.move_instruction_pointer(self.__jump_stack.pop())
 
     def go_to_f(self):
@@ -326,8 +342,17 @@ class VirtualMachine:
         """ Handler for RETURN Operation. Swaps active memory and moves the instruction pointer
             to where it was before the GOSUB Operation.
         """
-        self.__method_memory = self.__memory_stack.pop()
-        self.move_instruction_pointer(self.__jump_stack.pop())
+        quad = self.current_instruction
+
+        # The return from Main will not have a next memory.
+        if not self.__jump_stack.isEmpty():
+            if not self.__memory_stack.isEmpty() and len(quad) > 1 and quad[1] == "constructor":
+                self.__memory_stack.top().set_value(quad[2].memory_space, self.__current_instance)
+
+            self.__method_memory = self.__memory_stack.pop()
+            self.move_instruction_pointer(self.__jump_stack.pop())
+        else:
+            self.increase_instruction_pointer()
 
     def increase_instruction_pointer(self):
         """ Increases the instruction pointer by one.
@@ -359,6 +384,9 @@ class VirtualMachine:
             address = memory.get_value(variable.memory_space)
             return memory.get_value(address)
         return memory.get_value(variable.memory_space)
+
+    def get_value_from_memory_address(self, address):
+        return self.__method_memory.get_value(address)
 
     def move_instruction_pointer(self, new_pointer: int):
         """ Moves the instruction pointer to the provided address.

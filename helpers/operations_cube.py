@@ -98,5 +98,4 @@ class OperationsCube:
             Returns:
                 - [Types]: The result type of the operation or Types.ERROR if it is not valid.
         """
-        if left_op == Types.ARRAY_POINTER or right_op == Types.ARRAY_POINTER: return Types.ARRAY_POINTER
         return OperationsCube.cube.get((left_op, right_op, op), Types.ERROR)

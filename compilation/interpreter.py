@@ -336,11 +336,9 @@ class Interpreter:
         memory_address = CompilationMemory.next_temp_memory_space(
             Types.ARRAY_POINTER)
         var_pointer = Variable(memory_address, Types.ARRAY_POINTER, memory_address)
-        temp_var_address = CompilationMemory.next_temp_memory_space(dim_variable.var_type)
-        temp_var = Variable(temp_var_address, dim_variable.var_type, temp_var_address)
+        var_pointer.pointer_type = dim_variable.var_type
         self.__quads.append((Operations.ADD_LIT, index, dim_variable.memory_space, var_pointer))
-        self.__quads.append((Operations.RES_POINTER, var_pointer, temp_var))
-        self.__operands.push(temp_var)
+        self.__operands.push(var_pointer)
 
     def allocate_mem_quad(self, instance: str, method: str):
         """ Creates a ERA quad.
@@ -349,7 +347,13 @@ class Interpreter:
                 - instance [str]: The instance name of the method to be allocated..
                 - method [str]: The method name to be allocated.
         """
-        self.__quads.append((Operations.ERA, instance, method))
+        print(instance)
+        if instance != "constructor" and instance != "self":
+            operand = self.__operands.top()
+        else:
+            operand = instance
+
+        self.__quads.append((Operations.ERA, operand, method))
 
     def add_method_parameter(self, method_scope: MethodScope):
         """ Creates a quad to assing the variable from the current memory, to the
@@ -393,10 +397,16 @@ class Interpreter:
             self.__operands.push(temp)
         self.__current_param_index = 0
 
-    def add_end_function_quad(self):
+    def add_end_function_quad(self, method_scope: MethodScope):
         """ Creates a quad to indicate the end of a function.
         """
+        if method_scope.return_type == "void":
+            self.__quads.append((Operations.RETURN,))
+
         self.__quads.append((Operations.END_FUNC,))
+
+    def add_end_constructor_quad(self, method_scope: MethodScope):
+        self.__quads.append((Operations.RETURN, "constructor", method_scope.return_memory_address))
 
     def gen_start_quad(self):
         """ Generates the GOTO quad to the main function and stores in the

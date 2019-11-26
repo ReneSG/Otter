@@ -7,6 +7,7 @@ class Scopes(Enum):
     LOCAL = "local"
     CONSTANT = "constant"
     TEMP = "temp"
+    INSTANCE = "instance"
 
     @staticmethod
     def is_global_scope(scope: str) -> bool:
@@ -43,3 +44,12 @@ class Scopes(Enum):
             - [bool] Whether the scope is temporary.
         """
         return scope == Scopes.TEMP
+
+    @staticmethod
+    def is_instance_scope(scope: str) -> bool:
+        """Checks if the scope is temporary.
+
+        Returns:
+            - [bool] Whether the scope is temporary.
+        """
+        return scope == Scopes.INSTANCE
