@@ -60,6 +60,7 @@ class VirtualMachine:
             Operations.VER_ACCS: self.verify_access,
             Operations.PROD_LIT: self.literal_product,
             Operations.ADD_LIT: self.literal_add,
+            Operations.RES_POINTER: self.resolve_pointer,
 
             Operations.AND: self.solveExpression,
             Operations.OR: self.solveExpression,
@@ -329,6 +330,13 @@ class VirtualMachine:
             self.move_instruction_pointer(quad[2])
         else:
             self.increase_instruction_pointer()
+
+    def resolve_pointer(self):
+        quad = self.current_instruction
+
+        value = self.get_value(quad[1])
+        self.__method_memory.set_value(quad[2].memory_space, value)
+        self.increase_instruction_pointer()
 
     def return_op(self):
         """ Handler for RETURN Operation. Swaps active memory and moves the instruction pointer
