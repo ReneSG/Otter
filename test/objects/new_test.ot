@@ -2,11 +2,11 @@ Class A {
   public let foo: int;
 
   public def test(): void {
-    write(@foo);
+    write("Calling from B");
   }
 
   public A(a: int) {
-    @foo = 70;
+    @foo = 100;
     write(@foo);
   }
 }
@@ -14,7 +14,8 @@ Class A {
 Class B inherits A {
   public B() {
     @foo = 100;
-    // write(@foo);
+    write(@foo);
+    self.test();
   }
 }
 
@@ -22,10 +23,5 @@ Class B inherits A {
 Class Main {
   public Main() {
     let a: B = new B();
-    let c: A = new A();
-    write("NEW");
-    a.test();
-    c.test();
   }
 }
-

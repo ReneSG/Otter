@@ -1,0 +1,39 @@
+Class Animal {
+  public let sound: string;
+  public let name: string;
+}
+
+Class Dog inherits Animal {
+  public let breed: string;
+
+  public Dog(name: string) {
+    @sound = "woof";
+    @name = name;
+    @breed = "unknown";
+  }
+
+  public def getInfo(): void {
+    write(@sound);
+    write(@name);
+    write(@breed);
+  }
+}
+
+Class Yorkshire inherits Dog {
+  public Yorkshire(name: string) {
+    @sound = "woof woof";
+    @name = name;
+    @breed = "yorkshire";
+  }
+}
+
+Class Main {
+  public Main() {
+    let dog: Dog = new Dog("my dog");
+    let yorkie: Yorkshire = new Yorkshire("yorkshire");
+
+    dog.getInfo();
+    write("-------");
+    yorkie.getInfo();
+  }
+}

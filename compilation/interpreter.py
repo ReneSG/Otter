@@ -195,8 +195,6 @@ class Interpreter:
             jump address to the GOTOF quad, and generates a GOTO quad to the start of the 
             loop.
         """
-        print("")
-        print(vars(self.__jumps))
         goToFAddress = self.__jumps.pop()
         goToFQuad = self.__quads[goToFAddress]
         self.gen_goto_quad_to(self.__jumps.pop())
@@ -349,7 +347,13 @@ class Interpreter:
                 - instance [str]: The instance name of the method to be allocated..
                 - method [str]: The method name to be allocated.
         """
-        self.__quads.append((Operations.ERA, instance, method))
+        print(instance)
+        if instance != "constructor" and instance != "self":
+            operand = self.__operands.top()
+        else:
+            operand = instance
+
+        self.__quads.append((Operations.ERA, operand, method))
 
     def add_method_parameter(self, method_scope: MethodScope):
         """ Creates a quad to assing the variable from the current memory, to the
@@ -358,8 +362,6 @@ class Interpreter:
             - method_scope [MethodScope]: The method scope from the function
                 that is being called.
         """
-        self.debug_quads()
-        print(vars(self.__operands))
         to_variable = method_scope.ordered_arguments[self.__current_param_index]
 
         if to_variable.has_multiple_dimensions():
@@ -395,9 +397,12 @@ class Interpreter:
             self.__operands.push(temp)
         self.__current_param_index = 0
 
-    def add_end_function_quad(self):
+    def add_end_function_quad(self, method_scope: MethodScope):
         """ Creates a quad to indicate the end of a function.
         """
+        if method_scope.return_type == "void":
+            self.__quads.append((Operations.RETURN,))
+
         self.__quads.append((Operations.END_FUNC,))
 
     def add_end_constructor_quad(self, method_scope: MethodScope):

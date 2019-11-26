@@ -187,6 +187,8 @@ class VirtualMachine:
         quad = self.current_instruction
         if quad[1] == "constructor":
             self.__current_instance = [None] * 10000
+        elif quad[1] != "self":
+            self.__current_instance = self.get_value(quad[1])
 
         new_memory = MethodMemory(CompilationMemory.get_const_memory(), self.__global_memory, self.__current_instance)
         self.__memory_stack.push(new_memory)
