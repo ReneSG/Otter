@@ -155,6 +155,8 @@ class Compiler:
             - arg_type [str]: The type of the argument.
         """
         try:
+            if not Types.is_valid_type(arg_type) and Compiler._class_directory.search(arg_type) is None:
+                raise Exception(f"Invalid type {arg_type} for argument {name}.")
             Compiler._current_method.add_argument(name, arg_type)
             logger.debug(
                 f"Added argument: {name} {arg_type}, in method {Compiler._current_method.name}")
@@ -182,6 +184,9 @@ class Compiler:
             - var_type [str]: The type of the variable.
         """
         try:
+            if not Types.is_valid_type(var_type) and Compiler._class_directory.search(var_type) is None:
+                raise Exception(f"Invalid type {var_type} for variable {name}.")
+
             Compiler._current_method.add_variable(name, var_type)
             logger.debug(
                 f"Added var: {name} {var_type}, in method {Compiler._current_method.name}")

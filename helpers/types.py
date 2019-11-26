@@ -33,3 +33,11 @@ class Types():
     @staticmethod
     def is_array_pointer(var_type: str) -> bool:
         return var_type == Types.ARRAY_POINTER
+
+    @staticmethod
+    def is_valid_type(var_type: str) -> bool:
+        return (Types.is_int(var_type) or
+                Types.is_float(var_type) or
+                Types.is_string(var_type) or
+                Types.is_bool(var_type) or
+                Types.is_array_pointer(var_type))

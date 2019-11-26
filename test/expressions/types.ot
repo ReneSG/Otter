@@ -1,0 +1,12 @@
+Class Main {
+  public let a: int;
+
+  public def modifyAttribute(invalidParam: Invalid): void {
+    @a = 2020;
+  }
+
+  public Main() {
+    write("EXPECTED INVALID TESTS");
+    let invalidType: Invalid = new Invalid();
+  }
+}
