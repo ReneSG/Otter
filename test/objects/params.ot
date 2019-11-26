@@ -1,0 +1,38 @@
+Class B {
+  private let value: int;
+
+  public B(value: int) {
+    @value = value;
+  }
+
+  public def getValue(): int {
+    return @value;
+  }
+}
+
+Class A {
+  public let myB: B;
+
+  public def objectParamTest(obj: B): void {
+    write(obj.getValue());
+  }
+
+  public def compositionTest(): void {
+    write(@myB.getValue());
+  }
+
+  public A(myB: B) {
+    @myB = myB;
+  }
+}
+
+Class Main {
+  public Main() {
+    let myB: B = new B(1200);
+    let myA: A = new A(myB);
+
+    // myA.objectParamTest(myB);
+    myA.compositionTest();
+  }
+}
+
