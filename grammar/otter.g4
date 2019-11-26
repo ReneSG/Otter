@@ -101,7 +101,7 @@ declaration:
     LET var_name=ID COLON var_type=otterType {Compiler.add_variable($var_name.text, $var_type.text)} {Compiler.push_variable($var_name.text)} ASSIGN {Compiler.push_op($ASSIGN.text)} term {Compiler.gen_quad_assign()} SEMICOLON
     | listAssigment;
 
-assignment: <assoc=right> reference ASSIGN {Compiler.push_op($ASSIGN.text)} term {Compiler.gen_quad_assign()} SEMICOLON;
+assignment: <assoc=right> reference ASSIGN {Compiler.push_op($ASSIGN.text)} (term | readIO) {Compiler.gen_quad_assign()} SEMICOLON;
 
 methodCall: {Compiler.open_par()} instance=reference DOT name=ID {Compiler.check_access_modifier($instance.text, $name.text)} {Compiler.allocate_mem_quad($instance.text, $name.text)} OPEN_PAR (term {Compiler.add_method_parameter($name.text, $instance.text)} (COMMA term {Compiler.add_method_parameter($name.text, $instance.text)})*)? CLOSE_PAR {Compiler.complete_method_call($name.text, $instance.text)} SEMICOLON? {Compiler.close_par()} ;
 
@@ -143,7 +143,7 @@ returnStatement: RETURN term {Compiler.return_quad()} SEMICOLON;
 writeIO:
     WRITE OPEN_PAR term {Compiler.write_quad()} CLOSE_PAR SEMICOLON;
 
-readIO: READ OPEN_PAR CLOSE_PAR {Compiler.read_quad()} SEMICOLON;
+readIO: READ OPEN_PAR CLOSE_PAR {Compiler.read_quad()} SEMICOLON?;
 
 listAssigment:
     LET name=ID COLON var_type=otterType {Compiler.add_variable($name.text, $var_type.text)} (OPEN_SQUARE size=INT_PRIMITIVE CLOSE_SQUARE {Compiler.add_dimension($name.text, $size.text)})+ {Compiler.populate_dimension_attributes($name.text)} SEMICOLON;
