@@ -422,10 +422,15 @@ class Compiler:
                 - [MethodScope]: The method scope associated to the provieded
                     method name and instance.
         """
+
         if instance == None:
             # Case when method is the constructor
             class_name = method
             method_name = f"constructor_{method}"
+        elif "[" in instance:
+            variable_name = instance.partition("[")[0]
+            class_name = Compiler._current_method.variables_directory.search(variable_name).var_type
+            method_name = method
         elif instance == "self":
             class_name = Compiler._current_class.name
             method_name = method

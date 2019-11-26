@@ -1,0 +1,30 @@
+Class A {
+  public let value: int;
+
+  public A(value: int) {
+    @value = value;
+  }
+
+  public def print(): void {
+    write(@value);
+  }
+}
+
+Class Main {
+  public Main() {
+    let a: A[10];
+    let b: A = new A(10);
+
+    let i: int = 0;
+    for(i until i < 10 by 1) {
+      a[i] = new A(i);
+    }
+
+    i = 0;
+    for(i until i < 10 by 1) {
+      a[i].print();
+    }
+  }
+}
+
+
