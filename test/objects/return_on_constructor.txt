@@ -1,0 +1,18 @@
+Class A {
+  public let foo: int;
+
+  public A(a: int) {
+  }
+}
+
+Class Main {
+
+  public def test(): int {
+    return 10;
+  }
+
+  public Main() {
+    let a: A = new A(10);
+  }
+}
+

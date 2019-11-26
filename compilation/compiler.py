@@ -345,6 +345,8 @@ class Compiler:
     def return_quad():
         """ Compiler handler generate a return quad.
         """
+        if "constructor" in Compiler._current_method.name:
+            raise Exception("Constructor cannot have a return statement.")
         Compiler._interpreter.return_quad(Compiler._current_method)
 
     @staticmethod
