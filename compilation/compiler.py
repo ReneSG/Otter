@@ -9,8 +9,8 @@ import logging
 
 
 FORMAT = "%(name)-25s %(message)s"
-logging.basicConfig(level=logging.DEBUG, format=FORMAT)
-# logging.basicConfig(level=logging.WARNING, format=FORMAT)
+# logging.basicConfig(level=logging.DEBUG, format=FORMAT)
+logging.basicConfig(level=logging.WARNING, format=FORMAT)
 logger = logging.getLogger('compiler.Compiler')
 
 
@@ -61,7 +61,7 @@ class Compiler:
                 return
 
         try:
-            class_scope = ClassScope(class_name, inherits_scope)
+            class_scope = ClassScope(class_name, inherits_scope, Compiler._global_scope.variables_directory)
             Compiler._class_directory.add_symbol(class_scope)
             logger.debug(
                 f"Added class: {class_name}, inherits: {inherit_name}")
@@ -360,6 +360,10 @@ class Compiler:
         """ Compiler handler end a loop.
         """
         Compiler._interpreter.end_for_quad()
+    
+    @staticmethod
+    def gen_goto_main():
+        Compiler._interpreter.gen_goto_main()
 
     @staticmethod
     def debug_quads():
@@ -441,4 +445,3 @@ class Compiler:
             class_name = Compiler._current_method.variables_directory.search(instance).var_type
             method_name = method
         return Compiler._class_directory.search(class_name).method_directory.search(method_name)
-

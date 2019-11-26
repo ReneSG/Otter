@@ -1,17 +1,9 @@
 Class Main {
   public Main() {
-    let a: int[4][2];
-    let b: int[2][3];
-    let c: int[4][3];
-
-    let i: int = 2;
-    let j: int = 0;
-    let k: int = 1;
-    a[i][k] = 90;
-    b[k][j] = 20;
-
-    c[i][j] = a[i][k] * b[k][j];
-    write(c[i][j]);
+    let index: int = 3;
+    let val: int = 10;
+    let a: int[4];
+    a[index] = val;
   }
 }
 

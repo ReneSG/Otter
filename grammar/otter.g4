@@ -78,7 +78,7 @@ WS: [ \t\r\n\u000C]+ -> skip;
 
 /* START GRAMMAR */
 
-program: (classDeclaration | declaration)* {Compiler.debug_quads()};
+program: (declaration)* {Compiler.gen_goto_main()} (classDeclaration)* {Compiler.debug_quads()};
 
 classDeclaration:
     CLASS class_id = ID (INHERITS inherit_id = ID)? {Compiler.add_class($class_id.text, $inherit_id.text)

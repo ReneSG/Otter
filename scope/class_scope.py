@@ -9,7 +9,7 @@ from scope.scopes import Scopes
 
 class ClassScope:
     # Recursive typing, see: https://stackoverflow.com/a/38341145
-    def __init__(self, name: str, inherits: Optional["ClassScope"] = None):
+    def __init__(self, name: str, inherits: Optional["ClassScope"] = None, global_scope: Optional["SymbolTable"] = None):
         """ClassScope is responsible for keeping track of a classes methods, attributes, and local memory.
 
         Arguments:
@@ -19,7 +19,7 @@ class ClassScope:
         self._name = name
         if inherits is None:
             self._method_directory = SymbolTable(name)
-            self._attribute_directory = SymbolTable(name)
+            self._attribute_directory = SymbolTable(name, global_scope)
             self._instance_memory = Memory(
                 Scopes.INSTANCE, ScopeRanges.INSTANCE)
         else:

@@ -10,15 +10,18 @@ let global_f: bool = global_e;
 let global_g: float = 1.234;
 let global_h: float = global_g;
 
-/*Class A {*/
-  /*public A() {*/
-    /*global_c = "Modificado";*/
-    /*write(global_c);*/
-  /*}*/
-/*}*/
+Class A {
+  public A() {
+    global_c = "Modificado";
+    write(global_c);
+  }
+}
 
 Class Main {
   public Main() {
+    write(global_c);
+    let a: A = new A();
+    write("Despues de a");
     write(global_c);
   }
 }

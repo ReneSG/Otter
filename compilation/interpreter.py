@@ -37,8 +37,8 @@ class Interpreter:
         self.__dim_operands = Stack()
         self.__operators = Stack()
         self.__jumps = Stack()
-        # DO NOT REMOVE None, its replaced by the initial goto to main.
-        self.__quads = [None]
+        self.__goto_main = None
+        self.__quads = []
         self.__current_param_index = 0
 
     @property
@@ -189,6 +189,10 @@ class Interpreter:
         self.__quads.append((Operations.GOTO, None))
         self.end_condition_quad()
         self.__jumps.push(self.getCurrentInstructionAddr())
+
+    def gen_goto_main(self):
+        self.__quads.append((Operations.GOTO, None))
+        self.__goto_main = self.getCurrentInstructionAddr()
 
     def end_while_quad(self):
         """ Completes the quads previously generated when parsing a loop statement. Adds the
@@ -424,7 +428,7 @@ class Interpreter:
         """ Generates the GOTO quad to the main function and stores in the
             first element of the quad list.
         """
-        self.__quads[0] = (Operations.GOTO, None, self.getNextInstructionAddr())
+        self.__quads[self.__goto_main] = (Operations.GOTO, None, self.getNextInstructionAddr())
 
     def allocate_memory_for_array(self, variable: Variable):
         """ Allocates the memory chunk for a dimensional variable.

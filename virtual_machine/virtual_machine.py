@@ -5,6 +5,7 @@ from .runtime_memory.method_memory import MethodMemory
 from ast import literal_eval
 from scope.variable import Variable
 from typing import Tuple, List
+from compilation.compiler import Compiler
 import operator
 import logging
 
