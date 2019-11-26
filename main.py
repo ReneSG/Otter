@@ -16,7 +16,7 @@ def main(argv):
     stream = CommonTokenStream(lexer)
     parser = otterParser(stream)
     tree = parser.program()
-    print(Trees.toStringTree(tree, None, parser))
+    logger.debug(Trees.toStringTree(tree, None, parser))
 
     if parser.getNumberOfSyntaxErrors() == 0 and len(Compiler.errors) == 0:
         logger.debug("PROGRAMA CORRECTO")

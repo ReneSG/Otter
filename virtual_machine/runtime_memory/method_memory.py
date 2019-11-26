@@ -65,16 +65,16 @@ class MethodMemory:
     def debug_memory(self):
         """ Pretty prints the memory.
         """
-        print("======= TEMP ========")
+        logger.debug("======= TEMP ========")
         for i in range(0, len(self.__temp_memory)):
             el = self.__temp_memory[i]
-            if el is not None: print(f"{el} @{i+30000}")
-        print("======= LOCAL ========")
+            if el is not None: logger.debug(f"{el} @{i+30000}")
+        logger.debug("======= LOCAL ========")
         for i in range(0, len(self.__local_memory)):
             el = self.__local_memory[i]
-            if el is not None: print(f"{el} @{i+10000}")
-        print("======= GLOBAL ========")
+            if el is not None: logger.debug(f"{el} @{i+10000}")
+        logger.debug("======= GLOBAL ========")
         for i in range(0, len(self.__global_memory)):
             el = self.__global_memory[i]
-            if el is not None: print(f"{el} @{i}")
+            if el is not None: logger.debug(f"{el} @{i}")
 

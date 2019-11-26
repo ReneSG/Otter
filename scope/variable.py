@@ -145,8 +145,8 @@ class Variable:
 
     def debug_dimensions(self) -> None:
         """Method used to debug the dimensions of an object."""
-        print("==============")
+        logger.debug("================== DEBUG DIMENSIONS ==================")
         current_dimension = self._dimension_info
         while current_dimension:
-            print(vars(current_dimension))
+            logger.debug(vars(current_dimension))
             current_dimension = current_dimension.next_dimension

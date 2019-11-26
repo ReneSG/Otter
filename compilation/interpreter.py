@@ -347,7 +347,6 @@ class Interpreter:
                 - instance [str]: The instance name of the method to be allocated..
                 - method [str]: The method name to be allocated.
         """
-        print(instance)
         if instance != "constructor" and instance != "self":
             operand = self.__operands.top()
         else:
