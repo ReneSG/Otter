@@ -27,6 +27,7 @@ def main(argv):
         vm.run()
     else:
         [logger.error(msg) for msg in Compiler.errors]
+        exit(1)
 
 
 if __name__ == '__main__':
