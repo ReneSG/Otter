@@ -368,6 +368,9 @@ class Interpreter:
             - method_scope [MethodScope]: The method scope from the function
                 that is being called.
         """
+        if len(method_scope.ordered_arguments) <= self.__current_param_index:
+            raise Exception(f"{method_scope.name} only takes {len(method_scope.ordered_arguments)} parameters")
+
         to_variable = method_scope.ordered_arguments[self.__current_param_index]
 
         if to_variable.has_multiple_dimensions():
@@ -401,6 +404,9 @@ class Interpreter:
             temp = Variable(next_address, method_scope.return_type, next_address)
             self.__quads.append((Operations.ASSIGN, temp, method_scope.return_memory_address))
             self.__operands.push(temp)
+
+        if len(method_scope.ordered_arguments) != self.__current_param_index - 1:
+            raise Exception(f"Number of parameters do not match on {method_scope.name}")
         self.__current_param_index = 0
 
     def add_end_function_quad(self, method_scope: MethodScope):
