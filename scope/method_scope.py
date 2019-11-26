@@ -41,6 +41,9 @@ class MethodScope:
         self._variables_directory = SymbolTable(name, self._arguments)
 
     @property
+    def access_modifier(self):
+        return self._access_modifier
+    @property
     def name(self) -> str:
         """The name of the class.
         

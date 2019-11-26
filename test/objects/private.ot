@@ -1,0 +1,27 @@
+Class A {
+  public let foo: int;
+
+  public def publicTest(): void {
+    write("Inside publicTest");
+    write(@foo);
+  }
+
+  private def privateTest(): void {
+    write("Inside privateTest");
+    write(@foo);
+  }
+
+  public A(a: int) {
+    @foo = 70;
+    self.privateTest();
+  }
+}
+
+
+Class Main {
+  public Main() {
+    let a: A = new A();
+    a.publicTest();
+  }
+}
+

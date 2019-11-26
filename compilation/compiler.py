@@ -404,6 +404,13 @@ class Compiler:
         Compiler._interpreter.complete_method_call(Compiler.get_method_scope(method, instance), instance)
 
     @staticmethod
+    def check_access_modifier(instance, method):
+        method_scope = Compiler.get_method_scope(method, instance)
+        if method_scope is not None and method_scope.access_modifier == "private" and instance != "self":
+            raise Exception(f"Method {method} is a private method, unable to call it.")
+
+
+    @staticmethod
     def get_method_scope(method: str, instance: str):
         """ Computes the method scope based on the method name and the instance provided.
 
