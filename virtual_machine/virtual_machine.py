@@ -3,6 +3,7 @@ from helpers.custom_stack import Stack
 from helpers.types import Types
 from memory.compilation_memory import CompilationMemory
 from .runtime_memory.method_memory import MethodMemory
+from .runtime_memory.runtime_memory import RuntimeMemory
 from ast import literal_eval
 from scope.variable import Variable
 from typing import Tuple, List
@@ -31,10 +32,10 @@ class VirtualMachine:
     """
 
     def __init__(self, quads: List):
-        self.__global_memory = [None] * 10000
+        self.__global_memory = RuntimeMemory(CompilationMemory.get_global_memory().actual_memory_needed())
         self.__instruction_pointer = 0
         self.__quads = quads
-        self.__current_instance = [None] * 10000
+        self.__current_instance = RuntimeMemory(Compiler._class_directory.search("Main").instance_memory.actual_memory_needed())
         self.__method_memory = MethodMemory(CompilationMemory.get_const_memory(), self.__global_memory, self.__current_instance)
         self.__memory_stack = Stack()
         self.__jump_stack = Stack()
@@ -192,7 +193,7 @@ class VirtualMachine:
         """
         quad = self.current_instruction
         if quad[1] == "constructor":
-            self.__current_instance = [None] * 10000
+            self.__current_instance = RuntimeMemory(Compiler._class_directory.search(quad[2]).instance_memory.actual_memory_needed())
         elif quad[1] != "self":
             self.__current_instance = self.get_value(quad[1])
 
@@ -276,7 +277,7 @@ class VirtualMachine:
         val = self.get_value(quad[1])
         if quad[1].var_type == Types.STRING:
             val = val.strip("\"")
-        print(val, end="")
+        print(val)
         self.increase_instruction_pointer()
 
     def read(self):

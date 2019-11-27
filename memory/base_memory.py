@@ -18,6 +18,10 @@ class BaseMemory:
         self.__inf_limit, self.__max_limit = limits
         self.__variable_counter = 0
 
+    @property
+    def variable_counter(self):
+        return self.__variable_counter
+
     def next_available(self) -> int:
         """Retrieves the single next available space in memory.
 

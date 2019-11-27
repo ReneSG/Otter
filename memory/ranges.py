@@ -38,6 +38,14 @@ def remove_base_prefix(address: int) -> int:
     return address - inf_range
 
 
+def remove_base_type_prefix(address: int) -> int:
+    without_scope_base = remove_base_prefix(address)
+
+    # E.g. 9000 // 2000 = 4 * 2000 = 8000. Remove 8000 from base.
+    type_base = (without_scope_base // 2000) * 2000
+    return without_scope_base - type_base
+
+
 class ScopeRanges():
     """The ranges in memory for the different types of scope."""
     GLOBAL = range_tuple(0, 9999)
@@ -152,7 +160,7 @@ class TypeRanges():
         Returns:
             - [bool] True if it is const. False otherwise.
         """
-        return TypeRanges.INT.inf <= value <= TypeRanges.INT.max
+        return TypeRanges.INT.inf <= remove_base_prefix(value) <= TypeRanges.INT.max
 
     @staticmethod
     def is_float(value: int) -> bool:
@@ -164,10 +172,10 @@ class TypeRanges():
         Returns:
             - [bool] True if it is a float. False otherwise.
         """
-        return TypeRanges.FLOAT.inf <= value <= TypeRanges.FLOAT.max
+        return TypeRanges.FLOAT.inf <= remove_base_prefix(value) <= TypeRanges.FLOAT.max
 
     @staticmethod
-    def is_boolean(value: int) -> bool:
+    def is_bool(value: int) -> bool:
         """Whether a value is a boolean based on its address.
 
         Arguments:
@@ -176,7 +184,7 @@ class TypeRanges():
         Returns:
             - [bool] True if it is a boolean. False otherwise.
         """
-        return TypeRanges.BOOL.inf <= value <= TypeRanges.BOOL.max
+        return TypeRanges.BOOL.inf <= remove_base_prefix(value) <= TypeRanges.BOOL.max
 
     @staticmethod
     def is_string(value: int) -> bool:
@@ -188,7 +196,7 @@ class TypeRanges():
         Returns:
             - [bool] True if it is a string. False otherwise.
         """
-        return TypeRanges.STRING.inf <= value <= TypeRanges.STRING.max
+        return TypeRanges.STRING.inf <= remove_base_prefix(value) <= TypeRanges.STRING.max
 
     @staticmethod
     def is_object(value: int) -> bool:
@@ -200,7 +208,7 @@ class TypeRanges():
         Returns:
             - [bool] True if it is an object. False otherwise.
         """
-        return TypeRanges.OBJECT.inf <= value <= TypeRanges.OBJECT.max
+        return TypeRanges.OBJECT.inf <= remove_base_prefix(value) <= TypeRanges.OBJECT.max
 
     @staticmethod
     def is_array_pointer(value: int) -> bool:
@@ -212,4 +220,4 @@ class TypeRanges():
         Returns:
             - [bool] True if it is an array pointer. False otherwise.
         """
-        return TypeRanges.ARRAY_POINTER.inf <= value <= TypeRanges.ARRAY_POINTER.max
+        return TypeRanges.ARRAY_POINTER.inf <= remove_base_prefix(value) <= TypeRanges.ARRAY_POINTER.max

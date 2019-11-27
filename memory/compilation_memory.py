@@ -19,6 +19,10 @@ class CompilationMemory:
                 - [Memory]: The const memory.
         """
         return CompilationMemory.__const_memory
+    
+    @staticmethod
+    def get_global_memory():
+        return CompilationMemory.__global_memory
 
     @staticmethod
     def next_const_memory_space(value: str, var_type: str) -> int:
@@ -68,7 +72,7 @@ class CompilationMemory:
         Returns:
             - [int] The first memory address of the global.
         """
-        return CompilationMemory.__temp_memory.next_memory_chunk(value, var_type)
+        return CompilationMemory.__temp_memory.next_memory_chunk(var_type, size)
 
     @staticmethod
     def next_global_memory_chunk(var_type: str, size: int) -> int:
@@ -81,7 +85,7 @@ class CompilationMemory:
         Returns:
             - [int] The first memory address of the global.
         """
-        return CompilationMemory.__global_memory.next_memory_chunk(value, var_type)
+        return CompilationMemory.__global_memory.next_memory_chunk(var_type, size)
 
     @staticmethod
     def clear_temp_memory() -> None:

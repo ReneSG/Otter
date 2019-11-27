@@ -28,6 +28,18 @@ class Memory:
         if Scopes.is_temp_scope(scope_name):
             self.__array_pointer_memory = BaseMemory(
                 scope_name, Types.ARRAY_POINTER, merge_ranges(scope_limits, TypeRanges.ARRAY_POINTER))
+        else:
+            self.__array_pointer_memory = None
+
+    def actual_memory_needed(self) -> (int, int, int, int, int, int):
+        array_pointer_counter = 0 if self.__array_pointer_memory is None else self.__array_pointer_memory.variable_counter
+            
+        return (self.__int_memory.variable_counter,
+                self.__float_memory.variable_counter,
+                self.__bool_memory.variable_counter,
+                self.__string_memory.variable_counter,
+                self.__object_memory.variable_counter,
+                array_pointer_counter)
 
     def next_memory_space(self, var_type: str) -> int:
         """Gets the next memory address for the type of variable.
