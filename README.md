@@ -14,7 +14,7 @@
 To compile the grammar use the following command:
 
 ```bash
-$ ntlr4 -Dlanguage=Python3 grammar/otter.g4
+$ Antlr4 -Dlanguage=Python3 grammar/otter.g4
 ```
 
 To run a Otter program run (The grammar has to be compiled at least once to be able to run the following command):
