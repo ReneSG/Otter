@@ -116,7 +116,6 @@ class Compiler:
             Compiler._current_method = method_scope
 
         except Exception as error:
-            raise error
             Compiler.errors.append(error)
 
     @staticmethod
@@ -216,13 +215,19 @@ class Compiler:
         """
         variable = Compiler._current_method.variables_directory.search(name)
         variable.populate_dimension_attributes()
-        Compiler._current_method.allocate_memory_chunk(variable)
+        try:
+            Compiler._current_method.allocate_memory_chunk(variable)
+        except Exception as error:
+            Compiler.errors.append(error)
 
     @staticmethod
     def gen_quad_assign():
         """ Compiler handler for assign quad.
         """
-        Compiler._interpreter.assign()
+        try:
+            Compiler._interpreter.assign()
+        except Exception as error:
+            Compiler.errors.append(error)
 
     @staticmethod
     def push_op(op):
@@ -250,8 +255,11 @@ class Compiler:
                 - type_ [str]: Type of constant.
                 - value [str]: Value of constant.
         """
-        memory_space = CompilationMemory.next_const_memory_space(value, type_)
-        Compiler._interpreter.push_constant(type_, memory_space)
+        try:
+            memory_space = CompilationMemory.next_const_memory_space(value, type_)
+            Compiler._interpreter.push_constant(type_, memory_space)
+        except Exception as error:
+            Compiler.errors.append(error)
 
     @staticmethod
     def push_variable(name):
@@ -260,34 +268,47 @@ class Compiler:
             Arguments:
                 - name [str]: Name of variable.
         """
-        current_scope = Compiler._current_method
-        # logger.debug(current_scope.variables_directory)
-
-        Compiler._interpreter.push_variable(current_scope, name)
+        try:
+            current_scope = Compiler._current_method
+            Compiler._interpreter.push_variable(current_scope, name)
+        except Exception as error:
+            Compiler.errors.append(error)
 
     @staticmethod
     def check_pending_sum_sub():
         """ Compiler handler to check pending sum or substractions.
         """
-        Compiler._interpreter.check_pending_sum_sub()
+        try:
+            Compiler._interpreter.check_pending_sum_sub()
+        except Exception as error:
+            Compiler.errors.append(error)
 
     @staticmethod
     def check_pending_div_prod():
         """ Compiler handler to check pending division or products..
         """
-        Compiler._interpreter.check_pending_div_prod()
+        try:
+            Compiler._interpreter.check_pending_div_prod()
+        except Exception as error:
+            Compiler.errors.append(error)
 
     @staticmethod
     def check_pending_rel_op():
         """ Compiler handler to check pending relational operations.
         """
-        Compiler._interpreter.check_pending_rel_op()
+        try:
+            Compiler._interpreter.check_pending_rel_op()
+        except Exception as error:
+            Compiler.errors.append(error)
 
     @staticmethod
     def check_pending_and_or():
         """ Compiler handler to check pending boolean operations.
         """
-        Compiler._interpreter.check_pending_and_or()
+        try:
+            Compiler._interpreter.check_pending_and_or()
+        except Exception as error:
+            Compiler.errors.append(error)
 
     @staticmethod
     def maybe_gen_not_quad():
@@ -350,9 +371,12 @@ class Compiler:
     def return_quad():
         """ Compiler handler generate a return quad.
         """
-        if "constructor" in Compiler._current_method.name:
-            raise Exception("Constructor cannot have a return statement.")
-        Compiler._interpreter.return_quad(Compiler._current_method)
+        try:
+            if "constructor" in Compiler._current_method.name:
+                raise Exception("Constructor cannot have a return statement.")
+            Compiler._interpreter.return_quad(Compiler._current_method)
+        except Exception as error:
+            Compiler.errors.append(error)
 
     @staticmethod
     def start_for_quad():
@@ -402,7 +426,10 @@ class Compiler:
                 - method [str]: The method being called.
                 - instance [str]: The name of the instance calling the method.
         """
-        Compiler._interpreter.add_method_parameter(Compiler.get_method_scope(method, instance))
+        try:
+            Compiler._interpreter.add_method_parameter(Compiler.get_method_scope(method, instance))
+        except Exception as error:
+            Compiler.errors.append(error)
 
     @staticmethod
     def complete_method_call(method, instance: str = None):
@@ -412,13 +439,19 @@ class Compiler:
                 - method [str]: The method being called.
                 - instance [str]: The name of the instance calling the method.
         """
-        Compiler._interpreter.complete_method_call(Compiler.get_method_scope(method, instance), instance)
+        try:
+            Compiler._interpreter.complete_method_call(Compiler.get_method_scope(method, instance), instance)
+        except Exception as error:
+            Compiler.errors.append(error)
 
     @staticmethod
     def check_access_modifier(instance, method):
-        method_scope = Compiler.get_method_scope(method, instance)
-        if method_scope is not None and method_scope.access_modifier == "private" and instance != "self":
-            raise Exception(f"Method {method} is a private method, unable to call it.")
+        try:
+            method_scope = Compiler.get_method_scope(method, instance)
+            if method_scope is not None and method_scope.access_modifier == "private" and instance != "self":
+                raise Exception(f"Method {method} is a private method, unable to call it.")
+        except Exception as error:
+            Compiler.errors.append(error)
 
 
     @staticmethod

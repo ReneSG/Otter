@@ -24,7 +24,10 @@ def main(argv):
             "===========================================STARTING VIRTUAL MACHINE EXECUTION===========================================")
         quads = Compiler.get_quads()
         vm = VirtualMachine(quads)
-        vm.run()
+        try:
+            vm.run()
+        except Exception as error:
+            logger.error(error)
     else:
         [logger.error(msg) for msg in Compiler.errors]
         exit(1)
