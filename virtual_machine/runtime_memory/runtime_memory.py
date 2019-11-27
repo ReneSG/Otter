@@ -4,8 +4,6 @@ from typing import Any
 
 class RuntimeMemory:
     def __init__(self, memory_counters: (int, int, int, int, int, int)):
-        print("CREATED MEMORY WITH")
-        print(memory_counters)
         int_m, float_m, bool_m, string_m, object_m, ap_m = memory_counters
         self.__int_memory = [None] * int_m
         self.__float_memory = [None] * float_m
