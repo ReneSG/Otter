@@ -1,7 +1,7 @@
 from memory.ranges import ScopeRanges, remove_base_prefix
 from typing import Any, List
 from memory.const_memory import ConstMemory
-
+from .runtime_memory import RuntimeMemory
 import logging
 
 logger = logging.getLogger(__name__)
@@ -17,7 +17,7 @@ class MethodMemory:
             __global_memory [List[Any]]: Keeps track of the global memory.
             __const_memory [ConstMemory]: Keeps track of the const memory.
     """
-    def __init__(self, const_memory: ConstMemory, global_memory: List, instance_memory: List):
+    def __init__(self, const_memory: ConstMemory, global_memory: RuntimeMemory, instance_memory: RuntimeMemory):
         self.__temp_memory = [None] * 12000
         self.__local_memory = [None] * 10000
         self.__global_memory = global_memory
@@ -36,9 +36,9 @@ class MethodMemory:
         elif ScopeRanges.is_temp(address):
             self.__temp_memory[remove_base_prefix(address)] = value
         elif ScopeRanges.is_global(address):
-            self.__global_memory[remove_base_prefix(address)] = value
+            self.__global_memory.set_value(address, value)
         elif ScopeRanges.is_instance(address):
-            self.__instance_memory[remove_base_prefix(address)] = value
+            self.__instance_memory.set_value(address, value)
         else:
             raise NotImplementedError(f"Variable {address} no es temp ni local ni global.")
 
@@ -54,9 +54,9 @@ class MethodMemory:
         elif ScopeRanges.is_temp(address):
             return self.__temp_memory[remove_base_prefix(address)]
         elif ScopeRanges.is_global(address):
-            return self.__global_memory[remove_base_prefix(address)]
+            return self.__global_memory.get_value(address)
         elif ScopeRanges.is_instance(address):
-            return self.__instance_memory[remove_base_prefix(address)]
+            return self.__instance_memory.get_value(address)
         elif ScopeRanges.is_const(address):
             return self.__const_memory.get_value_from_address(address)
         else:

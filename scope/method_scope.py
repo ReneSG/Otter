@@ -43,6 +43,7 @@ class MethodScope:
     @property
     def access_modifier(self):
         return self._access_modifier
+
     @property
     def name(self) -> str:
         """The name of the class.
@@ -51,6 +52,10 @@ class MethodScope:
             - The name [str] of the method.
         """
         return self._name
+
+    @property
+    def local_memory(self) -> Memory:
+        return self._local_memory
 
     @property
     def variables_directory(self) -> SymbolTable:
